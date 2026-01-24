@@ -62,9 +62,6 @@ export class TipFieldAnswerEntryComponent implements OnInit {
     if(this.tipService.tip){
       this.filterWbFilesByReferenceId(this.tipService.tip.wbfiles,this.entry['index']);
     }
-    if(this.field.type === "voice"){
-      this.loadAudioFile(this.field.id);
-    }
   }
 
   loadAudioFile(reference_id: string): void {
