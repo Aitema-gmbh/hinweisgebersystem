@@ -51,8 +51,8 @@ uuid_regexp_or_closed = r'([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0
 key_regexp = r'([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}|[a-z_]{0,100})'
 
 COMPILED_RE_MOBILE_UA = re.compile(br'Mobi|Android', re.IGNORECASE)
-COMPILED_RE_TID_UUID = re.compile(br'^/t/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})')
-COMPILED_RE_TID_SUB = re.compile(br'^/t/([0-9a-z-]+)')
+COMPILED_RE_TID_UUID = re.compile(br'^/t/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})(/.*)$')
+COMPILED_RE_TID_SUB = re.compile(br'^/t/([0-9a-z-]+)(/.*)$')
 
 api_spec = [
     ('/api/health', health.HealthStatusHandler),
