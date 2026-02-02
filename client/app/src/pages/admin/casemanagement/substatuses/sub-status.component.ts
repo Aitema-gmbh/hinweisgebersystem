@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, inject} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output, inject} from "@angular/core";
 import {UtilsService} from "@app/shared/services/utils.service";
 import {HttpClient} from "@angular/common/http";
 import {NgbModal, NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
@@ -23,6 +23,7 @@ export class SubStatusComponent implements OnInit {
   private http = inject(HttpClient);
 
   @Input() submissionsStatus: Status;
+  @Output() deleted = new EventEmitter<string>();
   subStatusEditing: boolean[] = [];
   newSubStatus: { label: string; } = {label: ""};
   showAddSubStatus = false;
@@ -119,7 +120,7 @@ export class SubStatusComponent implements OnInit {
         observer.complete()
         const url = "api/admin/statuses/" + arg.submissionstatus_id + "/substatuses/" + arg.id;
         return this.utilsService.deleteSubStatus(url).subscribe(_ => {
-          this.utilsService.deleteResource(this.submissionsStatus.substatuses, arg);
+          this.deleted.emit(arg.id);
         });
       };
     });

@@ -76,4 +76,8 @@ export class UsersTab1Component implements OnInit {
   toggleAddUser(): void {
     this.showAddUser = !this.showAddUser;
   }
+
+  onDelete(id: string) {
+   this.usersData = this.usersData.filter(user => user.id !== id);
+  }
 }

@@ -30,7 +30,7 @@ export class TipUploadWbFileComponent {
   @ViewChild('uploader') uploaderInput: ElementRef<HTMLInputElement>;
   @Input() tip: RecieverTipData;
   @Input() key: string;
-  @Output() dataToParent = new EventEmitter<string>();
+  @Output() updated = new EventEmitter<string>();
   collapsed = false;
   file_upload_description = "";
   fileInput = "fileinput";
@@ -45,7 +45,7 @@ export class TipUploadWbFileComponent {
       flowJsInstance.opts.singleFile = true;
       flowJsInstance.opts.query = {description: this.file_upload_description, visibility: this.key, fileSizeLimit: this.appDataService.public.node.maximum_filesize * 1024 * 1024};
       flowJsInstance.on("fileSuccess", (_) => {
-        this.dataToParent.emit()
+        this.updated.emit()
         this.errorFile = null;
         this.cdr.detectChanges();
       });
@@ -62,9 +62,9 @@ export class TipUploadWbFileComponent {
     }
   }
 
-  listenToWbfiles(files: string) {
-    this.utilsService.deleteResource(this.tip.rfiles, files);
-    this.dataToParent.emit()
+  listenToWbfiles(id: string) {
+    this.utilsService.deleteResource(this.tip.rfiles, id);
+    this.updated.emit();
   }
 
   protected dismissError() {

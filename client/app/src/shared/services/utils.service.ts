@@ -194,11 +194,11 @@ export class UtilsService {
     }).subscribe();
   }
 
-  toggleCfg(authenticationService: AuthenticationService, tlsConfig:TlsConfig, dataToParent:EventEmitter<string>) {
+  toggleCfg(authenticationService: AuthenticationService, tlsConfig:TlsConfig, updated:EventEmitter<string>) {
     if (tlsConfig.enabled) {
       const authHeader = authenticationService.getHeader();
       this.httpService.disableTLSConfig(tlsConfig, authHeader).subscribe(() => {
-        dataToParent.emit();
+        updated.emit();
       });
     } else {
       const authHeader = authenticationService.getHeader();
@@ -674,8 +674,8 @@ export class UtilsService {
     }
   }
 
-  deleteResource( list: any[], res: any): void {
-      list.splice(list.indexOf(res), 1);
+  deleteResource<T extends { id: string }>(list: T[], id: string): T[] {
+    return list.filter(i => i.id !== id);
   }
 
   acceptPrivacyPolicyDialog(): Observable<string> {

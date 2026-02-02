@@ -38,7 +38,7 @@ export class UserEditorComponent implements OnInit {
   @Input() users: userResolverModel[];
   @Input() index: number;
   @Input() editUser: NgForm;
-  @Output() dataToParent = new EventEmitter<string>();
+  @Output() deleted = new EventEmitter<string>();
   @ViewChild("uploader") uploaderInput: ElementRef;
   editing = false;
   setPasswordArgs: { user_id: string, password: string };
@@ -105,19 +105,13 @@ export class UserEditorComponent implements OnInit {
       user.pgp_key_remove = false;
     }
     return this.utilsService.updateAdminUser(userData.id, userData).subscribe({
-      next:()=>{
-        this.sendDataToParent();
-      },
+      next:()=>{},
       error:()=>{
         if (this.uploaderInput) {
           this.uploaderInput.nativeElement.value = "";
         }
       }
     });
-  }
-
-  sendDataToParent() {
-    this.dataToParent.emit();
   }
 
   deleteUser(user: userResolverModel) {
@@ -132,10 +126,8 @@ export class UserEditorComponent implements OnInit {
       modalRef.componentInstance.scope = scope;
 
       modalRef.componentInstance.confirmFunction = () => {
-        observer.complete()
         return this.utilsService.deleteAdminUser(arg.id).subscribe(_ => {
-          this.utilsService.deleteResource(this.users, arg);
-          this.sendDataToParent();
+          this.deleted.emit(this.user.id);
         });
       };
     });

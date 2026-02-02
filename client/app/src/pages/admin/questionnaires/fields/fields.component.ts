@@ -10,7 +10,6 @@ import {NodeResolver} from "@app/shared/resolvers/node.resolver";
 import {FieldUtilitiesService} from "@app/shared/services/field-utilities.service";
 import {HttpService} from "@app/shared/services/http.service";
 import {UtilsService} from "@app/shared/services/utils.service";
-import {QuestionnaireService} from "@app/pages/admin/questionnaires/questionnaire.service";
 import {map, Observable, of} from "rxjs";
 import {Step, questionnaireResolverModel} from "@app/models/resolvers/questionnaire-model";
 import {ParsedFields} from "@app/models/component-model/parsedFields";
@@ -32,7 +31,6 @@ import {TranslateModule} from "@ngx-translate/core";
 })
 export class FieldsComponent implements OnInit {
   private authenticationService = inject(AuthenticationService);
-  private questionnaireService = inject(QuestionnaireService);
   private modalService = inject(NgbModal);
   nodeResolver = inject(NodeResolver);
   private httpService = inject(HttpService);
@@ -46,7 +44,7 @@ export class FieldsComponent implements OnInit {
   @Input() type: string;
   @Input() step: Step;
   @Input() parsedFields: ParsedFields;
-  @Output() dataToParent = new EventEmitter<string>();
+  @Output() deleted = new EventEmitter<string>();
   custom = "custom";
   editing = false;
   openMinDate = false;
@@ -73,24 +71,20 @@ export class FieldsComponent implements OnInit {
     }
     this.fieldIsMarkableSubjectToStats = this.isMarkableSubjectToStats(this.field);
     this.fieldIsMarkableSubjectToPreview = this.isMarkableSubjectToPreview(this.field);
-    this.instance = this.questionnaireService.sharedData;
-    if (this.instance === "template") {
-      this.parsedFields = this.fieldUtilities.parseFields(this.fieldTemplates.dataModel, {
-        fields: [],
-        fields_by_id: {},
-        options_by_id: {}
-      });
-    }
+    //this.instance = this.questionnaireService.sharedData;
+    //if (this.instance === "template") {
+    //  this.parsedFields = this.fieldUtilities.parseFields(this.fieldTemplates.dataModel, {
+    //    fields: [],
+    //    fields_by_id: {},
+    //    options_by_id: {}
+    //  });
+    //}
     this.children = this.field.children;
   }
 
-  saveField(field: Step | Field,editing?:boolean) {
+  saveField(field: Step | Field, editing?:boolean) {
     this.utilsService.assignUniqueOrderIndex(field.options);
-    return this.httpService.requestUpdateAdminQuestionnaireField(field.id, field).subscribe(_ => {
-      if(!editing){
-        this.dataToParent.emit()
-      }
-    });
+    return this.httpService.requestUpdateAdminQuestionnaireField(field.id, field).subscribe();
   }
 
   minDateFormat(value: { year: number; month: number; day: number } | string): string {
@@ -162,9 +156,8 @@ export class FieldsComponent implements OnInit {
       modalRef.componentInstance.scope = scope;
 
       modalRef.componentInstance.confirmFunction = () => {
-        observer.complete()
         return this.httpService.requestDeleteAdminQuestionareField(arg.id).subscribe(() => {
-          return this.utilsService.deleteResource(this.fields, arg);
+          this.deleted.emit(this.field.id);
         });
       };
     });

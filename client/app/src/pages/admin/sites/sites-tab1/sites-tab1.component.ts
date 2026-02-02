@@ -40,8 +40,12 @@ export class SitesTab1Component implements OnInit {
 
   addTenant() {
     this.httpService.addTenant(this.newTenant).subscribe(res => {
-      this.tenants.push(res);
+      this.tenants = [...this.tenants, res];
       this.newTenant.name = "";
     });
+  }
+
+  onDelete(id: number) {
+    this.tenants = this.tenants.filter(i => i.id !== id);
   }
 }
