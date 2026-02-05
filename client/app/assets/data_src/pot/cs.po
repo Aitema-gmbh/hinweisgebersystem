@@ -7,7 +7,7 @@
 # b33a4006134bb6ee62b30fc0fac5cec6, 2013
 # b33a4006134bb6ee62b30fc0fac5cec6, 2013
 # Jiří Podhorecký <jirka.p@volny.cz>, 2019
-# Jiří Skryja, 2022-2025
+# Jiří Skryja, 2022-2026
 # Jiří Podhorecký <jirka.p@volny.cz>, 2019
 # Jiří Podhorecký <jirka.p@volny.cz>, 2018-2019,2021
 # Lenka Ježková <lenka.jezkova@oziveni.cz>, 2019-2020
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GlobaLeaks\n"
 "PO-Revision-Date: 2013-05-29 17:59+0000\n"
-"Last-Translator: Jiří Skryja, 2022-2025\n"
+"Last-Translator: Jiří Skryja, 2022-2026\n"
 "Language-Team: Czech (http://app.transifex.com/otf/globaleaks/language/cs/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -708,7 +708,7 @@ msgid "License"
 msgstr "Licence"
 
 msgid "Listen"
-msgstr ""
+msgstr "Poslouchat"
 
 msgid "Log accesses of internal users"
 msgstr "Přístupy interních uživatelů"
@@ -976,7 +976,7 @@ msgid "Questions"
 msgstr "Dotazy"
 
 msgid "Read receipt"
-msgstr ""
+msgstr "Potvrzení o přečtení"
 
 msgid "Receivers"
 msgstr "Příjemci"
@@ -1592,7 +1592,7 @@ msgid ""
 msgstr "Připojujete se k serveru neanonymně. Tento server podporuje pouze anonymní oznámení."
 
 msgid "You are entering a report received through other channels."
-msgstr ""
+msgstr "Zadáváte zprávu přijatou jinými kanály."
 
 msgid ""
 "You are strongly advised to visit this site using the app called Tor "

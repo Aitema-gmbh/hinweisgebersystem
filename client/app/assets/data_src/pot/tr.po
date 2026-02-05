@@ -722,7 +722,7 @@ msgid "License"
 msgstr "Lisans"
 
 msgid "Listen"
-msgstr ""
+msgstr "Dinle"
 
 msgid "Log accesses of internal users"
 msgstr "İç kullanıcıların erişimleri günlüğe kaydedilsin"

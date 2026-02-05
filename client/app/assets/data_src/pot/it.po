@@ -4,7 +4,7 @@
 # b33a4006134bb6ee62b30fc0fac5cec6, 2013
 # marco calamari <marcoc@marcoc.it>, 2013
 # Giovanni Pellerano <giovanni.pellerano@globaleaks.org>, 2013-2024
-# Giovanni Pellerano <giovanni.pellerano@globaleaks.org>, 2025
+# Giovanni Pellerano <giovanni.pellerano@globaleaks.org>, 2025-2026
 # b33a4006134bb6ee62b30fc0fac5cec6, 2013
 # b33a4006134bb6ee62b30fc0fac5cec6, 2013-2016
 # b33a4006134bb6ee62b30fc0fac5cec6, 2013
@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GlobaLeaks\n"
 "PO-Revision-Date: 2013-05-29 17:59+0000\n"
-"Last-Translator: Giovanni Pellerano <giovanni.pellerano@globaleaks.org>, 2025\n"
+"Last-Translator: Giovanni Pellerano <giovanni.pellerano@globaleaks.org>, 2025-2026\n"
 "Language-Team: Italian (http://app.transifex.com/otf/globaleaks/language/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -718,7 +718,7 @@ msgid "License"
 msgstr "Licenza"
 
 msgid "Listen"
-msgstr ""
+msgstr "Ascolta"
 
 msgid "Log accesses of internal users"
 msgstr "Registra gli accessi degli utenti interni"
