@@ -1,5 +1,5 @@
 <!-- Search bar -->
-<div class="row mb-3">
+<div *ngIf="items.length" class="row mb-3">
   <div class="col d-flex justify-content-end">
     <app-search-input
       [(value)]="searchText"
