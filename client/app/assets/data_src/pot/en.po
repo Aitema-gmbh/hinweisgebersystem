@@ -1595,9 +1595,6 @@ msgstr "Welcome!"
 msgid "Reporting person"
 msgstr "Reporting person"
 
-msgid "Reporting person's last access"
-msgstr "Reporting person's last access"
-
 msgid "Whistleblowing Policy"
 msgstr "Whistleblowing Policy"
 
