@@ -3,24 +3,23 @@ import * as pages from '../support/pages';
 describe("globaleaks process", function () {
   let receipts: any = [];
 
-  const perform_submission = async (number_of_attachments:number) => {
-    const wbPage = pages.WhistleblowerPage;
-
-    wbPage.performSubmission(number_of_attachments).then((receipt) => {
+  const perform_submission = (n: number) => {
+    return pages.WhistleblowerPage.performSubmission(n).then((receipt) => {
       receipts.unshift(receipt);
+      return receipt;
     });
   };
 
   it("Whistleblower should be able to file a report with 0 attachments", function () {
-    perform_submission(0);
+    return perform_submission(0);
   });
 
   it("Whistleblower should be able to file a report with 1 attachments", function () {
-    perform_submission(1);
+    return perform_submission(1);
   });
 
   it("Whistleblower should be able to file a report with 2 attachments", function () {
-    perform_submission(2);
+    return perform_submission(2);
   });
 
   it("Whistleblower should be able to access a report with the receipt and perform further actions", function () {

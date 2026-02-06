@@ -154,10 +154,12 @@ Cypress.Commands.add("login_whistleblower", (receipt) => {
 
   cy.get('[name="receipt"]').type(receipt);
   cy.get("#ReceiptButton").click();
+  cy.waitForPageIdle();
 });
 
 Cypress.Commands.add("logout", () => {
   cy.get('#LogoutLink').should('be.visible').click();
+  cy.waitForPageIdle();
 });
 
 Cypress.Commands.add("simple_login_admin", (username, password, url, firstlogin) => {
