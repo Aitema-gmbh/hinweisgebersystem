@@ -4,7 +4,7 @@
 # Build Arguments:
 #   BASE_IMAGE:     The base image for the OS (e.g., debian:trixie-slim@sha256:...)
 #   DISTRIBUTION:   The target distribution codename (e.g., trixie)
-ARG BASE_IMAGE=debian:trixie-slim@sha256:f2306da7a8fb6440535937baed0ce0018736742d6dc5beec9d6a31355b259726
+ARG BASE_IMAGE=debian:trixie-slim@sha256:38af8d51386e2fc12cc71c038c6343205450691f739fc5840dad7380a31e382e
 ARG DISTRIBUTION=trixie
 
 FROM ${BASE_IMAGE}
