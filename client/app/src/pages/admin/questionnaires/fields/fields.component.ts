@@ -71,14 +71,6 @@ export class FieldsComponent implements OnInit {
     }
     this.fieldIsMarkableSubjectToStats = this.isMarkableSubjectToStats(this.field);
     this.fieldIsMarkableSubjectToPreview = this.isMarkableSubjectToPreview(this.field);
-    //this.instance = this.questionnaireService.sharedData;
-    //if (this.instance === "template") {
-    //  this.parsedFields = this.fieldUtilities.parseFields(this.fieldTemplates.dataModel, {
-    //    fields: [],
-    //    fields_by_id: {},
-    //    options_by_id: {}
-    //  });
-    //}
     this.children = this.field.children;
   }
 
@@ -101,40 +93,6 @@ export class FieldsComponent implements OnInit {
     } else {
       return value;
     }
-  }
-
-  listenToFields(): Observable<void> {
-    if (this.type === "step") {
-      return this.httpService.requestQuestionnairesResource().pipe(
-        map(response => {
-          response.forEach((step: questionnaireResolverModel) => {
-            if (step.id === this.step.questionnaire_id) {
-              step.steps.forEach((innerStep: any) => {
-                if (innerStep.id === this.step.id) {
-                  innerStep.children.forEach((field: Step | Field) => {
-                    if (field.id === this.field.id && field.step_id === this.field.step_id) {
-                      this.children = field.children;
-                    }
-                  });
-                }
-              });
-            }
-          });
-        })
-      );
-    }
-    if (this.type === "template") {
-      return this.httpService.requestAdminFieldTemplateResource().pipe(
-        map(response => {
-          response.forEach((field: fieldtemplatesResolverModel) => {
-            if (field.id === this.field.id) {
-              this.children = field.children;
-            }
-          });
-        })
-      );
-    }
-    return of(undefined);
   }
 
   toggleEditing() {
@@ -342,14 +300,6 @@ export class FieldsComponent implements OnInit {
 
   toggleAddQuestion() {
     this.showAddQuestion = !this.showAddQuestion;
-    this.showAddQuestionFromTemplate = false;
-  }
-
-  listenToAddField() {
-    this.showAddQuestion = false;
-  }
-
-  listenToAddFieldFormTemplate() {
     this.showAddQuestionFromTemplate = false;
   }
 

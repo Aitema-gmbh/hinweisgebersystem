@@ -4,7 +4,7 @@ import {DeleteConfirmationComponent} from "@app/shared/modals/delete-confirmatio
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {HttpService} from "@app/shared/services/http.service";
 import {UtilsService} from "@app/shared/services/utils.service";
-import {NgForm, FormsModule} from "@angular/forms";
+import {FormsModule} from "@angular/forms";
 import {NodeResolver} from "@app/shared/resolvers/node.resolver";
 import {tenantResolverModel} from "@app/models/resolvers/tenant-resolver-model";
 import {Observable} from "rxjs";

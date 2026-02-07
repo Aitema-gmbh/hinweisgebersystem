@@ -1,7 +1,6 @@
 import {HttpClient} from "@angular/common/http";
 import {Component, ElementRef, OnInit, ViewChild, inject} from "@angular/core";
 import {FieldTemplatesResolver} from "@app/shared/resolvers/field-templates-resolver.service";
-import {QuestionnairesResolver} from "@app/shared/resolvers/questionnaires.resolver";
 import {HttpService} from "@app/shared/services/http.service";
 import {UtilsService} from "@app/shared/services/utils.service";
 import {fieldtemplatesResolverModel} from "@app/models/resolvers/field-template-model";

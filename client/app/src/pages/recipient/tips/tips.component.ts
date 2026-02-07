@@ -2,9 +2,6 @@ import {Component, HostListener, OnInit, inject} from "@angular/core";
 import {AppConfigService} from "@app/services/root/app-config.service";
 import {NgbDate, NgbModal, NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 import {AppDataService} from "@app/app-data.service";
-import {GrantAccessComponent} from "@app/shared/modals/grant-access/grant-access.component";
-import {RevokeAccessComponent} from "@app/shared/modals/revoke-access/revoke-access.component";
-import {TransferAccessComponent} from "@app/shared/modals/transfer-access/transfer-access.component";
 import {PreferenceResolver} from "@app/shared/resolvers/preference.resolver";
 import {RTipsResolver} from "@app/shared/resolvers/r-tips-resolver.service";
 import {UtilsService} from "@app/shared/services/utils.service";
@@ -13,7 +10,6 @@ import {IDropdownSettings, NgMultiSelectDropDownModule} from "ng-multiselect-dro
 import {TokenResource} from "@app/shared/services/token-resource.service";
 import {Router, RouterLink} from "@angular/router";
 import {rtipResolverModel} from "@app/models/resolvers/rtips-resolver-model";
-import {Receiver} from "@app/models/receiver/receiver-tip-data";
 import {AuthenticationService} from "@app/services/helper/authentication.service";
 import {HttpService} from "@app/shared/services/http.service";
 import {concatMap, delay, from, tap} from "rxjs";

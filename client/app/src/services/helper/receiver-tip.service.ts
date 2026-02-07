@@ -52,7 +52,7 @@ export class ReceiverTipService {
         this.utils.reloadComponent();
         return of(null);
       })
-    ).subscribe();;
+    ).subscribe();
   }
 
   updateRedaction(content: RedactionData, tip_id?: string) {

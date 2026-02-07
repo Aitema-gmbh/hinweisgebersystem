@@ -36,8 +36,8 @@ import { ReceiptValidatorDirective } from "@app/shared/directive/receipt-validat
 import { mockEngine } from "@app/services/helper/mocks";
 import { MarkdownRendererService } from '@app/services/helper/markdown.service';
 import { TranslatorPipe } from "@app/shared/pipes/translate";
-import { TranslateService, TranslateModule, TranslateLoader } from "@ngx-translate/core";
-import { HTTP_INTERCEPTORS, withInterceptorsFromDi, provideHttpClient, HttpClient } from "@angular/common/http";
+import { TranslateService, TranslateModule } from "@ngx-translate/core";
+import { HTTP_INTERCEPTORS, withInterceptorsFromDi, provideHttpClient } from "@angular/common/http";
 import { appInterceptor, ErrorCatchingInterceptor, CompletedInterceptor } from "@app/services/root/app-interceptor.service";
 import { APP_BASE_HREF, LocationStrategy, HashLocationStrategy } from "@angular/common";
 import { FlowInjectionToken, NgxFlowModule } from "@flowjs/ngx-flow";

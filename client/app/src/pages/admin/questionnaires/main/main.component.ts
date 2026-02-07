@@ -9,7 +9,6 @@ import {NgClass} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {QuestionnairesListComponent} from "../questionnaires-list/questionnaires-list.component";
 import {TranslatorPipe} from "@app/shared/pipes/translate";
-import {OrderByPipe} from "@app/shared/pipes/order-by.pipe";
 import {TranslateModule} from "@ngx-translate/core";
 import {NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 import {PaginatedInterfaceComponent} from "@app/shared/components/paginated-interface/paginated-interface.component";

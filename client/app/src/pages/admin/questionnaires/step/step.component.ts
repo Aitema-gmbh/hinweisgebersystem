@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, inject} from "@angular/core";
 import {ParsedFields} from "@app/models/component-model/parsedFields";
 import {fieldtemplatesResolverModel} from "@app/models/resolvers/field-template-model";
-import {Step, questionnaireResolverModel} from "@app/models/resolvers/questionnaire-model";
+import {Step} from "@app/models/resolvers/questionnaire-model";
 import {FieldTemplatesResolver} from "@app/shared/resolvers/field-templates-resolver.service";
 import {HttpService} from "@app/shared/services/http.service";
 
