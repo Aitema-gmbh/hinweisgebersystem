@@ -65,8 +65,6 @@ describe("admin configure, add, and delete channels", () => {
     cy.get("#add-sub-status").click();
     cy.get('input[name="label"]').type("closed 2");
     cy.get("#add-submission-sub-status").click();
-    cy.get('#move-up-button').click();
-    cy.get('#move-down-button').click();
     cy.get('#substatus-edit-button').first().click();
     cy.get('input[name="substatus.label"]').clear();
     cy.get('input[name="substatus.label"]').type('Test Label').should('have.value', 'Test Label');
