@@ -1,0 +1,78 @@
+# aitema|Hinweis - Backend Dependencies
+# GlobaLeaks-Fork + Erweiterungen
+
+# === Web Framework ===
+Flask==3.1.0
+flask-cors==5.0.1
+flask-jwt-extended==4.7.1
+flask-limiter==3.12
+flask-socketio==5.5.1
+
+# === Twisted (GlobaLeaks-Kompatibilitaet) ===
+Twisted[tls]==24.11.0
+treq==24.9.1
+
+# === Datenbank ===
+SQLAlchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+psycopg2-binary==2.9.10
+alembic==1.14.1
+sqlalchemy-utils==0.41.2
+
+# === Async Tasks ===
+celery[redis]==5.4.0
+redis==5.2.1
+
+# === Kryptographie & Sicherheit ===
+cryptography==44.0.0
+PyNaCl==1.5.0
+argon2-cffi==23.1.0
+pyotp==2.9.0  # TOTP/MFA
+qrcode[pil]==8.0
+
+# === Validierung & Serialisierung ===
+pydantic==2.10.4
+marshmallow==3.23.2
+email-validator==2.2.0
+
+# === HTTP & Networking ===
+httpx==0.28.1
+requests==2.32.3
+
+# === E-Mail ===
+aiosmtplib==3.0.2
+
+# === Dateien & Upload ===
+python-magic==0.4.27
+Pillow==11.1.0
+
+# === Logging & Monitoring ===
+structlog==24.4.0
+python-json-logger==3.2.1
+sentry-sdk[flask]==2.19.2
+
+# === Utilities ===
+python-dotenv==1.0.1
+python-dateutil==2.9.0
+click==8.1.8
+babel==2.16.0  # Internationalisierung
+
+# === Testing ===
+pytest==8.3.4
+pytest-asyncio==0.25.2
+pytest-cov==6.0.0
+pytest-mock==3.14.0
+factory-boy==3.3.1
+faker==33.1.0
+httpx==0.28.1  # fuer async test client
+
+# === Code Quality ===
+ruff==0.9.3
+mypy==1.14.1
+bandit==1.8.3
+safety==3.2.14
+
+# === Type Stubs ===
+types-redis==4.6.0.20241004
+types-requests==2.32.0.20241016
+types-python-dateutil==2.9.0.20241206
