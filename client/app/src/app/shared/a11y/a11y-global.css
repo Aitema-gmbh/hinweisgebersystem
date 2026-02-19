@@ -1,0 +1,224 @@
+/* aitema|Hinweis - BITV 2.0 / WCAG 2.1 AA Global Styles */
+
+/* ========================================
+   1. Screen Reader Only
+   ======================================== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* ========================================
+   2. Focus Indicators (WCAG 2.4.7, 2.4.11, 2.4.12)
+   ======================================== */
+/* Keyboard focus - high visibility */
+.keyboard-focus,
+*:focus-visible {
+  outline: 3px solid #2563eb !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.2) !important;
+}
+
+/* Remove default outline when using mouse */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Enhanced focus for interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role="button"]:focus-visible,
+[role="link"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ========================================
+   3. Color Contrast (WCAG 1.4.3, 1.4.6)
+   ======================================== */
+/* Ensure minimum 4.5:1 contrast for normal text */
+/* Ensure minimum 3:1 contrast for large text */
+:root {
+  --color-text-primary: #111827;    /* contrast 15.4:1 on white */
+  --color-text-secondary: #4b5563;  /* contrast 7.5:1 on white */
+  --color-text-muted: #6b7280;      /* contrast 5.0:1 on white */
+  --color-link: #1d4ed8;            /* contrast 7.2:1 on white */
+  --color-link-visited: #6d28d9;    /* contrast 7.0:1 on white */
+  --color-error: #991b1b;           /* contrast 10.1:1 on white */
+  --color-success: #166534;         /* contrast 8.6:1 on white */
+  --color-warning: #92400e;         /* contrast 7.1:1 on white */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-border: #d1d5db;
+}
+
+/* ========================================
+   4. Forced Colors / High Contrast (WCAG 1.4.11)
+   ======================================== */
+@media (forced-colors: active) {
+  .status-badge,
+  .priority-badge,
+  .frist-card,
+  .stat-card,
+  .btn {
+    border: 2px solid !important;
+    forced-color-adjust: none;
+  }
+  
+  .bar-fill {
+    background: Highlight !important;
+  }
+  
+  a { text-decoration: underline !important; }
+  
+  *:focus-visible {
+    outline: 3px solid Highlight !important;
+  }
+}
+
+/* ========================================
+   5. Reduced Motion (WCAG 2.3.3)
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ========================================
+   6. Touch Targets (WCAG 2.5.8)
+   ======================================== */
+/* Minimum 44x44px touch targets */
+button,
+a,
+input[type="checkbox"],
+input[type="radio"],
+select,
+[role="button"],
+[role="tab"],
+[role="menuitem"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Allow smaller inline links in text */
+p a, li a, td a, .inline-link {
+  min-height: auto;
+  min-width: auto;
+}
+
+/* ========================================
+   7. Text Spacing (WCAG 1.4.12)
+   ======================================== */
+/* Support user text spacing overrides */
+body {
+  line-height: 1.5;
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+
+p, li, dd, dt, td, th, label, legend {
+  line-height: 1.5;
+}
+
+/* ========================================
+   8. Reflow / Responsive (WCAG 1.4.10)
+   ======================================== */
+/* Content should reflow at 320px width (400% zoom on 1280px) */
+@media (max-width: 320px) {
+  body {
+    overflow-x: hidden;
+  }
+  
+  .info-grid,
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+/* ========================================
+   9. Error Identification (WCAG 3.3.1)
+   ======================================== */
+.form-error {
+  color: var(--color-error);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.form-error::before {
+  content: "\26A0";
+  font-size: 1rem;
+}
+
+input[aria-invalid="true"],
+textarea[aria-invalid="true"],
+select[aria-invalid="true"] {
+  border-color: var(--color-error) !important;
+  box-shadow: 0 0 0 1px var(--color-error);
+}
+
+/* ========================================
+   10. Content on Hover/Focus (WCAG 1.4.13)
+   ======================================== */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]:hover::after,
+[data-tooltip]:focus::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem 0.75rem;
+  background: var(--color-text-primary);
+  color: var(--color-bg-primary);
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Tooltip dismissable with Escape (handled in JS) */
+/* Tooltip persistent while hovered */
+[data-tooltip]:hover::after {
+  pointer-events: auto;
+}

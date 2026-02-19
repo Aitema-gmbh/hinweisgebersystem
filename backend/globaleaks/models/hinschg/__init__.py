@@ -324,3 +324,6 @@ class _HinschgReport(Model):
 
 class HinschgReport(_HinschgReport, Base):
     pass
+
+# Tenant Settings (Multi-Tenant Architecture)
+from globaleaks.models.hinschg.tenant_settings import HinschgTenantSettings
