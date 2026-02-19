@@ -1,0 +1,1128 @@
+openapi: 3.0.3
+info:
+  title: aitema|Hinweis API
+  description: |
+    HinSchG-konformes Hinweisgebersystem API (basierend auf GlobaLeaks).
+    Ermoeglicht die anonyme Abgabe von Hinweisen, Fallverwaltung durch
+    Ombudspersonen und Compliance-Beauftragte sowie Fristenueberwachung
+    gemaess Hinweisgeberschutzgesetz (HinSchG).
+
+    ## Authentifizierung
+    - Token-basiert ueber /api/auth/token
+    - Receipt-Code fuer Whistleblower (anonymer Zugang)
+    - Session-basiert fuer Admin/Recipient/Custodian
+
+    ## Rollen
+    - **Whistleblower**: Anonyme Hinweisgabe und Nachverfolgung
+    - **Recipient (Ombudsperson)**: Fallbearbeitung und Kommunikation
+    - **Custodian**: Identitaetszugriffsverwaltung
+    - **Admin**: Systemkonfiguration und Mandantenverwaltung
+    - **Analyst**: Statistiken und Berichte
+  version: 1.0.0
+  contact:
+    name: aitema GmbH
+    url: https://aitema.de
+    email: support@aitema.de
+  license:
+    name: AGPL-3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.html
+
+servers:
+  - url: http://localhost:8082
+    description: Lokale Entwicklungsumgebung
+  - url: https://hinweis.aitema.de
+    description: Produktion
+
+tags:
+  - name: Health
+    description: System-Gesundheitspruefung
+  - name: Authentication
+    description: Authentifizierung und Session-Verwaltung
+  - name: Public
+    description: Oeffentliche Endpunkte (Konfiguration, Kontexte)
+  - name: Whistleblower
+    description: Hinweisgeber-Endpunkte (Einreichung, Kommunikation)
+  - name: Recipient
+    description: Ombudsperson/Empfaenger-Endpunkte (Fallbearbeitung)
+  - name: Custodian
+    description: Vertrauensperson-Endpunkte (Identitaetszugriff)
+  - name: Analyst
+    description: Statistiken und Analyse
+  - name: Admin
+    description: Administration und Konfiguration
+
+paths:
+  /api/health:
+    get:
+      tags: [Health]
+      summary: System-Gesundheitsstatus
+      description: Prueft ob das System betriebsbereit ist.
+      operationId: getHealthStatus
+      responses:
+        '200':
+          description: System ist betriebsbereit
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, degraded, error]
+                  version:
+                    type: string
+
+  /api/public:
+    get:
+      tags: [Public]
+      summary: Oeffentliche Konfiguration abrufen
+      description: |
+        Gibt die oeffentliche Konfiguration des Mandanten zurueck,
+        inkl. verfuegbarer Kontexte (Meldekanale), Sprachen und Datenschutzeinstellungen.
+      operationId: getPublicConfig
+      responses:
+        '200':
+          description: Oeffentliche Konfiguration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicConfig'
+
+  /api/auth/token:
+    post:
+      tags: [Authentication]
+      summary: Authentifizierungstoken anfordern
+      description: Erzeugt ein Proof-of-Work-Token fuer die Authentifizierung.
+      operationId: requestAuthToken
+      responses:
+        '200':
+          description: Token erfolgreich erzeugt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+
+  /api/auth/authentication:
+    post:
+      tags: [Authentication]
+      summary: Anmelden (Benutzername/Passwort)
+      operationId: authenticate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password, authcode]
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                authcode:
+                  type: string
+                  description: 2FA-Code (falls aktiviert)
+      responses:
+        '200':
+          description: Erfolgreich angemeldet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '401':
+          description: Ungueltige Anmeldedaten
+
+  /api/auth/receiptauth:
+    post:
+      tags: [Authentication]
+      summary: Anmelden mit Empfangscode (Whistleblower)
+      operationId: authenticateWithReceipt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [receipt]
+              properties:
+                receipt:
+                  type: string
+                  description: 16-stelliger Empfangscode
+      responses:
+        '200':
+          description: Whistleblower-Session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '401':
+          description: Ungueltiger Empfangscode
+
+  /api/auth/session:
+    get:
+      tags: [Authentication]
+      summary: Aktuelle Session pruefen
+      operationId: getSession
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Aktive Session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '401':
+          description: Keine aktive Session
+    delete:
+      tags: [Authentication]
+      summary: Abmelden
+      operationId: deleteSession
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Erfolgreich abgemeldet
+
+  /api/whistleblower/submission:
+    post:
+      tags: [Whistleblower]
+      summary: Neuen Hinweis einreichen
+      description: |
+        Erstellt eine neue anonyme Meldung. Der Whistleblower erhaelt
+        einen 16-stelligen Empfangscode zur Nachverfolgung.
+      operationId: createSubmission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionRequest'
+      responses:
+        '201':
+          description: Hinweis erfolgreich eingereicht
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionResponse'
+
+  /api/whistleblower/submission/attachment:
+    post:
+      tags: [Whistleblower]
+      summary: Anhang zur Einreichung hinzufuegen
+      operationId: addSubmissionAttachment
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Anhang hinzugefuegt
+
+  /api/whistleblower/wbtip:
+    get:
+      tags: [Whistleblower]
+      summary: Eigenen Hinweis-Status abrufen
+      operationId: getWhistleblowerTip
+      security:
+        - receiptAuth: []
+      responses:
+        '200':
+          description: Hinweis-Details und Kommunikation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WhistleblowerTip'
+
+  /api/whistleblower/wbtip/comments:
+    get:
+      tags: [Whistleblower]
+      summary: Kommentare zum Hinweis abrufen
+      operationId: getWhistleblowerComments
+      security:
+        - receiptAuth: []
+      responses:
+        '200':
+          description: Liste der Kommentare
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+    post:
+      tags: [Whistleblower]
+      summary: Kommentar zum Hinweis hinzufuegen
+      operationId: addWhistleblowerComment
+      security:
+        - receiptAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content:
+                  type: string
+      responses:
+        '201':
+          description: Kommentar hinzugefuegt
+
+  /api/whistleblower/wbtip/identity:
+    post:
+      tags: [Whistleblower]
+      summary: Identitaet freiwillig offenlegen
+      operationId: provideIdentity
+      security:
+        - receiptAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Identitaet gespeichert
+
+  /api/recipient/rtips:
+    get:
+      tags: [Recipient]
+      summary: Alle zugewiesenen Faelle auflisten
+      operationId: listRecipientTips
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Liste der zugewiesenen Hinweise
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipientTip'
+
+  /api/recipient/rtips/{id}:
+    get:
+      tags: [Recipient]
+      summary: Fall-Details abrufen
+      operationId: getRecipientTip
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Fall-Details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipientTipDetail'
+        '404':
+          description: Fall nicht gefunden
+    put:
+      tags: [Recipient]
+      summary: Fall aktualisieren
+      operationId: updateRecipientTip
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+                enable_two_way_comments:
+                  type: boolean
+                enable_attachments:
+                  type: boolean
+      responses:
+        '200':
+          description: Fall aktualisiert
+
+  /api/recipient/rtips/{id}/comments:
+    get:
+      tags: [Recipient]
+      summary: Kommentare zu einem Fall abrufen
+      operationId: getRecipientTipComments
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Kommentare
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+    post:
+      tags: [Recipient]
+      summary: Kommentar zu einem Fall hinzufuegen
+      operationId: addRecipientComment
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content:
+                  type: string
+      responses:
+        '201':
+          description: Kommentar hinzugefuegt
+
+  /api/recipient/rtips/{id}/iars:
+    get:
+      tags: [Recipient]
+      summary: Identitaetszugriffsanfragen auflisten
+      operationId: listIdentityAccessRequests
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: IAR-Liste
+
+  /api/recipient/rtips/{id}/export:
+    get:
+      tags: [Recipient]
+      summary: Fall als ZIP exportieren
+      operationId: exportRecipientTip
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: ZIP-Datei mit Fall-Export
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+
+  /api/custodian/iars:
+    get:
+      tags: [Custodian]
+      summary: Alle Identitaetszugriffsanfragen
+      operationId: listAllIARs
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Liste aller IAR
+
+  /api/custodian/iars/{id}:
+    put:
+      tags: [Custodian]
+      summary: IAR genehmigen oder ablehnen
+      operationId: decideIAR
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reply]
+              properties:
+                reply:
+                  type: string
+                  enum: [authorized, denied]
+                reply_motivation:
+                  type: string
+      responses:
+        '200':
+          description: Entscheidung gespeichert
+
+  /api/analyst/stats:
+    get:
+      tags: [Analyst]
+      summary: Statistiken abrufen
+      operationId: getAnalystStats
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Statistik-Daten
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statistics'
+
+  /api/admin/node:
+    get:
+      tags: [Admin]
+      summary: Knotenkonfiguration abrufen
+      operationId: getNodeConfig
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Knotenkonfiguration
+    put:
+      tags: [Admin]
+      summary: Knotenkonfiguration aktualisieren
+      operationId: updateNodeConfig
+      security:
+        - sessionAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeConfig'
+      responses:
+        '200':
+          description: Konfiguration aktualisiert
+
+  /api/admin/users:
+    get:
+      tags: [Admin]
+      summary: Alle Benutzer auflisten
+      operationId: listUsers
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Benutzerliste
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags: [Admin]
+      summary: Benutzer erstellen
+      operationId: createUser
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '201':
+          description: Benutzer erstellt
+
+  /api/admin/users/{id}:
+    get:
+      tags: [Admin]
+      summary: Benutzer-Details
+      operationId: getUser
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Benutzer-Details
+    put:
+      tags: [Admin]
+      summary: Benutzer aktualisieren
+      operationId: updateUser
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '200':
+          description: Benutzer aktualisiert
+    delete:
+      tags: [Admin]
+      summary: Benutzer loeschen
+      operationId: deleteUser
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Benutzer geloescht
+
+  /api/admin/contexts:
+    get:
+      tags: [Admin]
+      summary: Meldekanale (Kontexte) auflisten
+      operationId: listContexts
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Liste der Kontexte
+    post:
+      tags: [Admin]
+      summary: Neuen Meldekanal erstellen
+      operationId: createContext
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+      responses:
+        '201':
+          description: Kontext erstellt
+
+  /api/admin/contexts/{id}:
+    put:
+      tags: [Admin]
+      summary: Meldekanal aktualisieren
+      operationId: updateContext
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+      responses:
+        '200':
+          description: Kontext aktualisiert
+
+  /api/admin/questionnaires:
+    get:
+      tags: [Admin]
+      summary: Frageboegen auflisten
+      operationId: listQuestionnaires
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Liste der Frageboegen
+
+  /api/admin/notification:
+    get:
+      tags: [Admin]
+      summary: Benachrichtigungskonfiguration abrufen
+      operationId: getNotificationConfig
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Benachrichtigungskonfiguration
+    put:
+      tags: [Admin]
+      summary: Benachrichtigungskonfiguration aktualisieren
+      operationId: updateNotificationConfig
+      security:
+        - sessionAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Konfiguration aktualisiert
+
+  /api/admin/auditlog:
+    get:
+      tags: [Admin]
+      summary: Audit-Log abrufen
+      operationId: getAuditLog
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Audit-Log-Eintraege
+
+  /api/admin/auditlog/tips:
+    get:
+      tags: [Admin]
+      summary: Hinweis-Statistik fuer Audit
+      operationId: getAuditTips
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Hinweis-Audit-Daten
+
+  /api/admin/statuses:
+    get:
+      tags: [Admin]
+      summary: Bearbeitungsstatus auflisten
+      operationId: listSubmissionStatuses
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Status-Liste
+    post:
+      tags: [Admin]
+      summary: Neuen Status erstellen
+      operationId: createSubmissionStatus
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [label]
+              properties:
+                label:
+                  type: string
+      responses:
+        '201':
+          description: Status erstellt
+
+  /api/admin/tenants:
+    get:
+      tags: [Admin]
+      summary: Mandanten auflisten (Multi-Tenant)
+      operationId: listTenants
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Mandantenliste
+    post:
+      tags: [Admin]
+      summary: Neuen Mandanten erstellen
+      operationId: createTenant
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, subdomain]
+              properties:
+                name:
+                  type: string
+                subdomain:
+                  type: string
+                mode:
+                  type: string
+                  enum: [default, demo]
+      responses:
+        '201':
+          description: Mandant erstellt
+
+  /api/report:
+    post:
+      tags: [Public]
+      summary: Problembericht senden
+      operationId: sendReport
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                text:
+                  type: string
+      responses:
+        '200':
+          description: Bericht gesendet
+
+  /api/support:
+    post:
+      tags: [Public]
+      summary: Support-Anfrage senden
+      operationId: sendSupportRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                text:
+                  type: string
+                url:
+                  type: string
+      responses:
+        '200':
+          description: Support-Anfrage gesendet
+
+components:
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: header
+      name: X-Session
+      description: Session-Token (erhalten bei Authentifizierung)
+    receiptAuth:
+      type: apiKey
+      in: header
+      name: X-Session
+      description: Session-Token (erhalten per Empfangscode)
+
+  schemas:
+    PublicConfig:
+      type: object
+      properties:
+        node:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            languages_enabled:
+              type: array
+              items:
+                type: string
+            default_language:
+              type: string
+            maximum_filesize:
+              type: integer
+        contexts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Context'
+
+    AuthToken:
+      type: object
+      properties:
+        id:
+          type: string
+        creation_date:
+          type: string
+          format: date-time
+
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+        role:
+          type: string
+          enum: [admin, receiver, custodian, whistleblower, analyst]
+        user_id:
+          type: string
+        properties:
+          type: object
+        two_factor:
+          type: boolean
+
+    SubmissionRequest:
+      type: object
+      required: [context_id, answers]
+      properties:
+        context_id:
+          type: string
+          format: uuid
+          description: Meldekanal-ID
+        receivers:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Empfaenger-IDs (optional)
+        answers:
+          type: object
+          description: Antworten auf den Fragebogen (key=field_id)
+        identity_provided:
+          type: boolean
+          default: false
+
+    SubmissionResponse:
+      type: object
+      properties:
+        receipt:
+          type: string
+          description: 16-stelliger Empfangscode fuer Nachverfolgung
+        id:
+          type: string
+          format: uuid
+
+    WhistleblowerTip:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        context_id:
+          type: string
+          format: uuid
+        creation_date:
+          type: string
+          format: date-time
+        last_access:
+          type: string
+          format: date-time
+        status:
+          type: string
+        substatus:
+          type: string
+        enable_two_way_comments:
+          type: boolean
+        msg_receiver_count:
+          type: integer
+        msg_sent_count:
+          type: integer
+
+    RecipientTip:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        creation_date:
+          type: string
+          format: date-time
+        last_access:
+          type: string
+          format: date-time
+        update_date:
+          type: string
+          format: date-time
+        status:
+          type: string
+        substatus:
+          type: string
+        context_id:
+          type: string
+          format: uuid
+        new:
+          type: boolean
+
+    RecipientTipDetail:
+      allOf:
+        - $ref: '#/components/schemas/RecipientTip'
+        - type: object
+          properties:
+            answers:
+              type: object
+            enable_two_way_comments:
+              type: boolean
+            enable_attachments:
+              type: boolean
+            rfiles_count:
+              type: integer
+            wbfiles_count:
+              type: integer
+            comments_count:
+              type: integer
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        creation_date:
+          type: string
+          format: date-time
+        content:
+          type: string
+        author:
+          type: string
+          enum: [whistleblower, receiver]
+
+    Context:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        receivers:
+          type: array
+          items:
+            type: string
+            format: uuid
+        questionnaire_id:
+          type: string
+        tip_timetolive:
+          type: integer
+          description: Aufbewahrungsfrist in Tagen
+        maximum_selectable_receivers:
+          type: integer
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum: [admin, receiver, custodian, analyst]
+        enabled:
+          type: boolean
+        last_login:
+          type: string
+          format: date-time
+        mail_address:
+          type: string
+          format: email
+
+    UserCreate:
+      type: object
+      required: [username, name, role, mail_address]
+      properties:
+        username:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum: [admin, receiver, custodian, analyst]
+        mail_address:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        enabled:
+          type: boolean
+          default: true
+
+    NodeConfig:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        presentation:
+          type: string
+        footer:
+          type: string
+        default_language:
+          type: string
+        languages_enabled:
+          type: array
+          items:
+            type: string
+        maximum_filesize:
+          type: integer
+        allow_unencrypted:
+          type: boolean
+        allow_iframes_inclusion:
+          type: boolean
+        enable_signup:
+          type: boolean
+
+    Statistics:
+      type: object
+      properties:
+        tips_count:
+          type: integer
+        tips_average_days:
+          type: number
+        submission_statuses:
+          type: object
+          additionalProperties:
+            type: integer

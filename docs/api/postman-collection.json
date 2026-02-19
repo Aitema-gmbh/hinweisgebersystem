@@ -1,0 +1,413 @@
+{
+  "info": {
+    "name": "aitema|Hinweis API",
+    "description": "HinSchG-konformes Hinweisgebersystem - Postman Collection\n\nRollen: Whistleblower, Recipient, Custodian, Admin, Analyst",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      { "key": "key", "value": "X-Session", "type": "string" },
+      { "key": "value", "value": "{{session_token}}", "type": "string" },
+      { "key": "in", "value": "header", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8082", "type": "string" },
+    { "key": "session_token", "value": "", "type": "string" },
+    { "key": "receipt_code", "value": "", "type": "string" },
+    { "key": "tip_id", "value": "", "type": "string" },
+    { "key": "user_id", "value": "", "type": "string" },
+    { "key": "context_id", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "System Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/health",
+            "auth": { "type": "noauth" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Get Public Config",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/public",
+            "auth": { "type": "noauth" }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.contexts && jsonData.contexts.length > 0) {",
+                  "    pm.collectionVariables.set('context_id', jsonData.contexts[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Send Report",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/report",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"text\": \"Problembeschreibung\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Send Support Request",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/support",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"text\": \"Support-Anfrage\",\n  \"url\": \"https://example.com\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Request Auth Token",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/auth/token",
+            "auth": { "type": "noauth" }
+          }
+        },
+        {
+          "name": "Login (Username/Password)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/auth/authentication",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password\",\n  \"authcode\": \"\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "    pm.collectionVariables.set('session_token', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login with Receipt (Whistleblower)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/auth/receiptauth",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"receipt\": \"{{receipt_code}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "    pm.collectionVariables.set('session_token', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Check Session",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/auth/session"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/auth/session"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Whistleblower",
+      "item": [
+        {
+          "name": "Submit New Tip",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/whistleblower/submission",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"context_id\": \"{{context_id}}\",\n  \"receivers\": [],\n  \"answers\": {},\n  \"identity_provided\": false\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.receipt) {",
+                  "    pm.collectionVariables.set('receipt_code', jsonData.receipt);",
+                  "}",
+                  "if (jsonData.id) {",
+                  "    pm.collectionVariables.set('tip_id', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Tip Status",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/whistleblower/wbtip"
+          }
+        },
+        {
+          "name": "Get Comments",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/whistleblower/wbtip/comments"
+          }
+        },
+        {
+          "name": "Add Comment",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/whistleblower/wbtip/comments",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Zusaetzliche Information zum Hinweis\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Provide Identity",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/whistleblower/wbtip/identity",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Max Mustermann\",\n  \"email\": \"max@example.com\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recipient",
+      "item": [
+        {
+          "name": "List All Tips",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/recipient/rtips"
+          }
+        },
+        {
+          "name": "Get Tip Detail",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/recipient/rtips/{{tip_id}}"
+          }
+        },
+        {
+          "name": "Update Tip",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/recipient/rtips/{{tip_id}}",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"Wichtiger Fall\",\n  \"enable_two_way_comments\": true,\n  \"enable_attachments\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Tip Comments",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/recipient/rtips/{{tip_id}}/comments"
+          }
+        },
+        {
+          "name": "Add Comment to Tip",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/recipient/rtips/{{tip_id}}/comments",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Antwort der Ombudsperson\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Export Tip as ZIP",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/recipient/rtips/{{tip_id}}/export"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Custodian",
+      "item": [
+        {
+          "name": "List All IARs",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/custodian/iars"
+          }
+        },
+        {
+          "name": "Decide IAR",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/custodian/iars/{{tip_id}}",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reply\": \"authorized\",\n  \"reply_motivation\": \"Begruendung fuer den Zugriff\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analyst",
+      "item": [
+        {
+          "name": "Get Statistics",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/analyst/stats"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get Node Config",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/admin/node"
+          }
+        },
+        {
+          "name": "Update Node Config",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/admin/node",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mein Hinweisgebersystem\",\n  \"default_language\": \"de\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/admin/users"
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/admin/users",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"ombudsperson1\",\n  \"name\": \"Erika Muster\",\n  \"role\": \"receiver\",\n  \"mail_address\": \"erika@example.com\",\n  \"password\": \"sicheres-passwort\",\n  \"enabled\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "List Contexts",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/admin/contexts"
+          }
+        },
+        {
+          "name": "List Questionnaires",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/admin/questionnaires"
+          }
+        },
+        {
+          "name": "Get Audit Log",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/admin/auditlog"
+          }
+        },
+        {
+          "name": "List Submission Statuses",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/admin/statuses"
+          }
+        },
+        {
+          "name": "List Tenants",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/admin/tenants"
+          }
+        }
+      ]
+    }
+  ]
+}

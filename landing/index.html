@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="aitema|Hinweis – HinSchG-konformes Hinweisgebersystem für Kommunen. Open-Source, DSGVO-konform, Made in Germany.">
+  <meta name="keywords" content="Hinweisgebersystem, HinSchG, Kommune, Whistleblowing, Open Source, DSGVO">
+  <title>aitema|Hinweis – HinSchG-konformes Hinweisgebersystem für Kommunen</title>
+  <style>
+    :root {
+      --primary: #1a56db;
+      --primary-dark: #1e40af;
+      --accent: #f59e0b;
+      --bg: #ffffff;
+      --bg-alt: #f8fafc;
+      --bg-dark: #0f172a;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --text-inverse: #f1f5f9;
+      --border: #e2e8f0;
+      --success: #059669;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      --max-width: 1140px;
+    }
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --bg-alt: #1e293b;
+      --text: #f1f5f9;
+      --text-light: #94a3b8;
+      --border: #334155;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem; }
+    /* Navigation */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+    }
+    nav .container {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .logo {
+      font-size: 1.25rem; font-weight: 700; color: var(--primary); text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; list-style: none; }
+    .nav-links a {
+      color: var(--text-light); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .theme-toggle {
+      background: none; border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 0.4rem 0.6rem; cursor: pointer; font-size: 1rem; color: var(--text);
+    }
+    /* Hero */
+    .hero {
+      padding: 5rem 0 4rem;
+      text-align: center;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 100%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: #dbeafe; color: var(--primary-dark);
+      padding: 0.3rem 1rem; border-radius: 2rem;
+      font-size: 0.85rem; font-weight: 600; margin-bottom: 1.5rem;
+    }
+    [data-theme="dark"] .hero-badge { background: #1e3a5f; }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 1rem; max-width: 800px; margin-left: auto; margin-right: auto;
+    }
+    .hero p {
+      font-size: 1.25rem; color: var(--text-light);
+      max-width: 600px; margin: 0 auto 2.5rem;
+    }
+    .cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 1.75rem; border-radius: var(--radius);
+      font-size: 1rem; font-weight: 600; text-decoration: none;
+      transition: all 0.2s; cursor: pointer; border: none;
+    }
+    .btn-primary {
+      background: var(--primary); color: #fff;
+    }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+    .btn-secondary {
+      background: transparent; color: var(--primary); border: 2px solid var(--primary);
+    }
+    .btn-secondary:hover { background: var(--primary); color: #fff; }
+    /* Features */
+    .features { padding: 5rem 0; }
+    .section-title {
+      text-align: center; font-size: 2rem; font-weight: 700; margin-bottom: 0.75rem;
+    }
+    .section-subtitle {
+      text-align: center; color: var(--text-light); font-size: 1.1rem;
+      max-width: 600px; margin: 0 auto 3rem;
+    }
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+    .feature-card {
+      background: var(--bg-alt); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .feature-icon {
+      font-size: 2.5rem; margin-bottom: 1rem; display: block;
+    }
+    .feature-card h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+    .feature-card p { color: var(--text-light); font-size: 0.95rem; }
+    .feature-tag {
+      display: inline-block; background: #dbeafe; color: var(--primary-dark);
+      font-size: 0.75rem; font-weight: 600; padding: 0.15rem 0.5rem;
+      border-radius: 4px; margin-bottom: 0.75rem;
+    }
+    [data-theme="dark"] .feature-tag { background: #1e3a5f; }
+    /* Pricing */
+    .pricing { padding: 5rem 0; background: var(--bg-alt); }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem; max-width: 960px; margin: 0 auto;
+    }
+    .price-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2.5rem 2rem;
+      position: relative;
+    }
+    .price-card.featured {
+      border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary);
+    }
+    .price-card.featured::before {
+      content: "Empfohlen";
+      position: absolute; top: -0.75rem; left: 50%; transform: translateX(-50%);
+      background: var(--primary); color: #fff;
+      padding: 0.2rem 1rem; border-radius: 2rem; font-size: 0.8rem; font-weight: 600;
+    }
+    .price-card h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+    .price-card .price {
+      font-size: 2.25rem; font-weight: 800; margin: 1rem 0;
+    }
+    .price-card .price small { font-size: 0.9rem; font-weight: 400; color: var(--text-light); }
+    .price-card ul {
+      list-style: none; margin: 1.5rem 0;
+    }
+    .price-card li {
+      padding: 0.4rem 0; font-size: 0.95rem; color: var(--text-light);
+    }
+    .price-card li::before { content: "\2713\00a0"; color: var(--success); font-weight: 700; }
+    /* Trust */
+    .trust { padding: 5rem 0; }
+    .trust-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem; margin-top: 2.5rem;
+    }
+    .trust-item {
+      text-align: center; padding: 1.5rem;
+      background: var(--bg-alt); border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    .trust-item .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .trust-item h4 { font-size: 1rem; margin-bottom: 0.3rem; }
+    .trust-item p { color: var(--text-light); font-size: 0.85rem; }
+    /* FAQ */
+    .faq { padding: 5rem 0; background: var(--bg-alt); }
+    .faq-list { max-width: 720px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid var(--border); overflow: hidden;
+    }
+    .faq-question {
+      width: 100%; background: none; border: none; text-align: left;
+      padding: 1.25rem 0; font-size: 1.05rem; font-weight: 600;
+      color: var(--text); cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .faq-question::after { content: "+"; font-size: 1.5rem; color: var(--text-light); transition: transform 0.3s; }
+    .faq-item.active .faq-question::after { content: "\2212"; }
+    .faq-answer {
+      max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+    }
+    .faq-answer p { padding: 0 0 1.25rem; color: var(--text-light); font-size: 0.95rem; line-height: 1.7; }
+    .faq-item.active .faq-answer { max-height: 300px; }
+    /* Footer */
+    footer {
+      padding: 3rem 0; border-top: 1px solid var(--border);
+      text-align: center; font-size: 0.85rem; color: var(--text-light);
+    }
+    footer .links { margin-top: 0.75rem; }
+    footer .links a {
+      color: var(--text-light); text-decoration: none; margin: 0 0.75rem;
+    }
+    footer .links a:hover { color: var(--primary); }
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero { padding: 3rem 0 2.5rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="#" class="logo">aitema<span>|</span>Hinweis</a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Preise</a></li>
+        <li><a href="#trust">Konformitaet</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><button class="theme-toggle" onclick="toggleTheme()" title="Farbschema wechseln">&#9790;</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <span class="hero-badge">Open Source &middot; AGPLv3</span>
+      <h1>HinSchG-konformes Hinweisgebersystem f&uuml;r Ihre Kommune</h1>
+      <p>Open-Source. DSGVO-konform. Made in Germany. Die sichere Meldeplattform f&uuml;r Kommunen, Landkreise und IT-Zweckverb&auml;nde.</p>
+      <div class="cta-group">
+        <a href="mailto:hinweis@aitema.de?subject=Demo-Anfrage%20aitema|Hinweis" class="btn btn-primary">&#9993; Demo anfordern</a>
+        <a href="https://github.com/aitema/aitema-hinweis" class="btn btn-secondary">&#8681; Community Edition herunterladen</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="features">
+    <div class="container">
+      <h2 class="section-title">Alle Anforderungen des HinSchG erf&uuml;llt</h2>
+      <p class="section-subtitle">Jedes Feature basiert auf einer konkreten gesetzlichen Anforderung des Hinweisgeberschutzgesetzes.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="feature-icon">&#9200;</span>
+          <span class="feature-tag">&sect;8 HinSchG</span>
+          <h3>Fristenautomat</h3>
+          <p>Automatische &Uuml;berwachung der 7-Tage-Eingangsbest&auml;tigung und 3-Monate-R&uuml;ckmeldungsfrist. Eskalation bei Fristablauf an die Ombudsperson.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">&#128266;</span>
+          <span class="feature-tag">&sect;16 HinSchG</span>
+          <h3>Multi-Kanal-Eingang</h3>
+          <p>Meldungen &uuml;ber Online-Formular, Telefon-Protokoll, Posteingang und pers&ouml;nliche Vorsprache. Alle Kan&auml;le in einem System.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">&#128274;</span>
+          <span class="feature-tag">&sect;8 Abs. 1 HinSchG</span>
+          <h3>Anonymit&auml;t garantiert</h3>
+          <p>Zero-Knowledge-Verschl&uuml;sselung. Anonymer R&uuml;ckkanal f&uuml;r Kommunikation ohne Identit&auml;tsoffenlegung. Ende-zu-Ende verschl&uuml;sselt.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">&#127970;</span>
+          <span class="feature-tag">Mandantenf&auml;hig</span>
+          <h3>Ideal f&uuml;r IT-Zweckverb&auml;nde</h3>
+          <p>Multi-Tenant-Architektur f&uuml;r mehrere Kommunen auf einer Instanz. Strikte Datentrennung zwischen Mandanten.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">&#128737;</span>
+          <span class="feature-tag">BSI IT-Grundschutz</span>
+          <h3>BSI-konform</h3>
+          <p>Kompatibel mit IT-Grundschutz-Kompendium. Dokumentierte Sicherheitsarchitektur. Regelm&auml;&szlig;ige Sicherheitsaudits.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">&#9855;</span>
+          <span class="feature-tag">BITV 2.0 / WCAG 2.1 AA</span>
+          <h3>Barrierefrei</h3>
+          <p>Vollst&auml;ndige Barrierefreiheit nach BITV 2.0 und WCAG 2.1 Level AA. Screenreader-kompatibel, Tastaturnavigation, Kontrastmodus.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="pricing">
+    <div class="container">
+      <h2 class="section-title">Transparente Preise</h2>
+      <p class="section-subtitle">Commercial Open Source: Community Edition kostenfrei, Managed und Enterprise f&uuml;r sorgenfreien Betrieb.</p>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <h3>Community</h3>
+          <p>F&uuml;r IT-affine Kommunen</p>
+          <div class="price">0 &euro; <small>/ f&uuml;r immer</small></div>
+          <ul>
+            <li>Voller Funktionsumfang</li>
+            <li>Self-Hosted (eigene Server)</li>
+            <li>AGPLv3 Open Source Lizenz</li>
+            <li>Community Support (GitHub)</li>
+            <li>Docker Compose Deployment</li>
+            <li>Dokumentation &amp; Wiki</li>
+          </ul>
+          <a href="https://github.com/aitema/aitema-hinweis" class="btn btn-secondary" style="width:100%;justify-content:center;">Jetzt starten</a>
+        </div>
+        <div class="price-card featured">
+          <h3>Managed</h3>
+          <p>F&uuml;r Kommunen ohne eigene IT</p>
+          <div class="price">ab 299 &euro; <small>/ Monat</small></div>
+          <ul>
+            <li>Hosting auf deutschen Servern</li>
+            <li>Automatische Updates &amp; Backups</li>
+            <li>E-Mail &amp; Ticket Support</li>
+            <li>99,5% Verf&uuml;gbarkeits-SLA</li>
+            <li>SSL/TLS &amp; Monitoring inklusive</li>
+            <li>DSGVO-konforme Auftragsverarbeitung</li>
+          </ul>
+          <a href="mailto:hinweis@aitema.de?subject=Managed-Anfrage" class="btn btn-primary" style="width:100%;justify-content:center;">Angebot anfordern</a>
+        </div>
+        <div class="price-card">
+          <h3>Enterprise</h3>
+          <p>F&uuml;r Landkreise &amp; Verb&auml;nde</p>
+          <div class="price">Auf Anfrage</div>
+          <ul>
+            <li>Individuelles SLA (bis 99,9%)</li>
+            <li>24/7 Telefon-Support</li>
+            <li>Schulungen &amp; Workshops</li>
+            <li>ALLRIS-Integration</li>
+            <li>Individuelle Anpassungen</li>
+            <li>Dedizierte Instanz</li>
+          </ul>
+          <a href="mailto:hinweis@aitema.de?subject=Enterprise-Anfrage" class="btn btn-secondary" style="width:100%;justify-content:center;">Kontakt aufnehmen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust / Compliance -->
+  <section id="trust" class="trust">
+    <div class="container">
+      <h2 class="section-title">Entwickelt f&uuml;r deutsche Kommunen</h2>
+      <p class="section-subtitle">Jede Funktion basiert auf konkreten Paragraphen des Hinweisgeberschutzgesetzes (HinSchG).</p>
+      <div class="trust-grid">
+        <div class="trust-item">
+          <div class="icon">&#9878;</div>
+          <h4>&sect;12 HinSchG</h4>
+          <p>Unabh&auml;ngigkeit der Meldestelle und Vertraulichkeitsgebot</p>
+        </div>
+        <div class="trust-item">
+          <div class="icon">&#128196;</div>
+          <h4>&sect;11 HinSchG</h4>
+          <p>Dokumentationspflicht mit automatischer L&ouml;schung nach 3 Jahren</p>
+        </div>
+        <div class="trust-item">
+          <div class="icon">&#128218;</div>
+          <h4>&sect;27 HinSchG</h4>
+          <p>Jahresberichte &uuml;ber Anzahl und Ausgang der Meldungen</p>
+        </div>
+        <div class="trust-item">
+          <div class="icon">&#128272;</div>
+          <h4>&sect;8 HinSchG</h4>
+          <p>Vertraulichkeit: Identit&auml;tsschutz der hinweisgebenden Person</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="faq">
+    <div class="container">
+      <h2 class="section-title">H&auml;ufige Fragen</h2>
+      <p class="section-subtitle">Antworten auf die wichtigsten Fragen zum HinSchG und aitema|Hinweis.</p>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">Sind Kommunen verpflichtet, ein Hinweisgebersystem einzurichten?</button>
+          <div class="faq-answer">
+            <p>Ja. Seit dem 17. Dezember 2023 sind alle Kommunen mit 50 oder mehr Besch&auml;ftigten verpflichtet, eine interne Meldestelle einzurichten (&sect;12 HinSchG). Bei Verst&ouml;&szlig;en drohen Bu&szlig;gelder bis zu 50.000 Euro (&sect;40 HinSchG). Auch kleinere Kommunen profitieren von einem strukturierten Meldesystem.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Wie wird die Anonymit&auml;t der Hinweisgeber gew&auml;hrleistet?</button>
+          <div class="faq-answer">
+            <p>aitema|Hinweis setzt auf Zero-Knowledge-Verschl&uuml;sselung. Meldungen k&ouml;nnen vollst&auml;ndig anonym abgegeben werden. Ein anonymer R&uuml;ckkanal erm&ouml;glicht die Kommunikation zwischen Meldestelle und Hinweisgeber, ohne dass die Identit&auml;t offengelegt wird. Auch Administratoren haben keinen Zugriff auf entschl&uuml;sselte Meldungsinhalte.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Wo werden die Daten gespeichert?</button>
+          <div class="faq-answer">
+            <p>Bei der Community Edition auf Ihren eigenen Servern &ndash; Sie behalten die volle Kontrolle. Bei der Managed Edition auf deutschen Servern in ISO-27001-zertifizierten Rechenzentren. Alle Daten bleiben in Deutschland. Eine Auftragsverarbeitungsvereinbarung (AVV) ist selbstverst&auml;ndlich Bestandteil des Managed-Vertrags.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Kann ich von einem bestehenden System migrieren?</button>
+          <div class="faq-answer">
+            <p>Ja. Wir bieten Migrations-Support f&uuml;r g&auml;ngige Systeme (BKMS, Hintbox) im Enterprise-Paket. Die API-basierte Architektur erm&ouml;glicht auch individuelle Migrationsscripte. Bestehende F&auml;lle k&ouml;nnen per CSV oder JSON importiert werden.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Warum Open Source? Ist das sicher genug?</button>
+          <div class="faq-answer">
+            <p>Open Source bedeutet maximale Transparenz: Jede Zeile Code ist &ouml;ffentlich einsehbar und pr&uuml;fbar. Sicherheitsl&uuml;cken werden schneller entdeckt und behoben. Die AGPLv3-Lizenz stellt sicher, dass Verbesserungen der Gemeinschaft zugutekommen. Viele sicherheitskritische Systeme (OpenSSL, Linux) sind Open Source &ndash; Transparenz erh&ouml;ht die Sicherheit.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <a href="#" class="logo" style="font-size:1.1rem;">aitema<span>|</span>Hinweis</a>
+      <p style="margin-top:0.75rem;">&copy; 2025 aitema GmbH. Alle Rechte vorbehalten.<br>
+        Lizenziert unter AGPLv3 &ndash; Open Source f&uuml;r das Gemeinwohl.</p>
+      <div class="links">
+        <a href="/impressum">Impressum</a>
+        <a href="/datenschutz">Datenschutz</a>
+        <a href="https://github.com/aitema/aitema-hinweis">GitHub</a>
+        <a href="mailto:hinweis@aitema.de">Kontakt</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Theme Toggle
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute("data-theme");
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+    }
+    (function() {
+      const saved = localStorage.getItem("theme");
+      if (saved) document.documentElement.setAttribute("data-theme", saved);
+      else if (window.matchMedia("(prefers-color-scheme: dark)").matches)
+        document.documentElement.setAttribute("data-theme", "dark");
+    })();
+    // FAQ Accordion
+    document.querySelectorAll(".faq-question").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        var item = this.parentElement;
+        var wasActive = item.classList.contains("active");
+        document.querySelectorAll(".faq-item").forEach(function(el) { el.classList.remove("active"); });
+        if (!wasActive) item.classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>
