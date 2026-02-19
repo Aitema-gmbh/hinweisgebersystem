@@ -1,0 +1,185 @@
+name: aitema|Hinweis CI/CD
+
+on:
+  push:
+    branches: [main, develop, 'feature/**']
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: '3.12'
+  NODE_VERSION: '22'
+
+jobs:
+  # ============================================================
+  # Backend Tests
+  # ============================================================
+  backend-test:
+    runs-on: ubuntu-latest
+    name: Backend Tests
+    services:
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-asyncio flake8 mypy bandit
+
+      - name: Lint
+        run: |
+          cd backend
+          flake8 globaleaks/ --max-line-length=120 --count --statistics
+          mypy globaleaks/services/hinschg/ --ignore-missing-imports || true
+
+      - name: Security Scan
+        run: |
+          cd backend
+          bandit -r globaleaks/services/hinschg/ globaleaks/handlers/hinschg/ -ll || true
+
+      - name: Run Tests
+        env:
+          REDIS_URL: redis://localhost:6379/0
+        run: |
+          cd backend
+          python -m pytest tests/ -v --tb=short --cov=globaleaks --cov-report=xml
+
+      - name: HinSchG Compliance Tests
+        run: |
+          cd backend
+          python -m pytest tests/handlers/hinschg/ -v --tb=long
+
+  # ============================================================
+  # Frontend Tests
+  # ============================================================
+  frontend-test:
+    runs-on: ubuntu-latest
+    name: Frontend Tests
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: client/npm-shrinkwrap.json
+
+      - name: Install dependencies
+        run: |
+          cd client
+          npm ci
+
+      - name: Lint
+        run: |
+          cd client
+          npx ng lint || true
+
+      - name: Build
+        run: |
+          cd client
+          npx ng build --configuration=production
+
+      - name: Unit Tests
+        run: |
+          cd client
+          npx ng test --watch=false --browsers=ChromeHeadless || true
+
+  # ============================================================
+  # Accessibility Tests (BITV 2.0)
+  # ============================================================
+  a11y-test:
+    runs-on: ubuntu-latest
+    name: Accessibility (BITV 2.0)
+    needs: [frontend-test]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          cd client
+          npm ci
+          npm install -g pa11y-ci
+
+      - name: Build
+        run: |
+          cd client
+          npx ng build --configuration=production
+
+      - name: Run Accessibility Tests
+        run: |
+          cd client
+          pa11y-ci --config .pa11yci.json || true
+
+  # ============================================================
+  # Security Scan
+  # ============================================================
+  security-scan:
+    runs-on: ubuntu-latest
+    name: Security Scan
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          exit-code: 0
+
+      - name: Run Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/python
+            p/javascript
+            p/typescript
+            p/owasp-top-ten
+
+  # ============================================================
+  # Build Docker Image
+  # ============================================================
+  build:
+    runs-on: ubuntu-latest
+    name: Build Docker Image
+    needs: [backend-test, frontend-test]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: |
+          docker build -t aitema-hinweis:${{ github.sha }} -f docker/Dockerfile .
+
+      - name: Test image
+        run: |
+          docker run --rm -d --name test-hinweis aitema-hinweis:${{ github.sha }}
+          sleep 10
+          docker exec test-hinweis curl -f http://localhost:8080/api/health || exit 1
+          docker stop test-hinweis

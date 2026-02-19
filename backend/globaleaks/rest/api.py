@@ -739,3 +739,40 @@ class APIResourceWrapper(Resource):
 
         request.language = cache.default_language
         return request.language
+
+
+# ============================================================
+# aitema|Hinweis - HinSchG Extensions
+# ============================================================
+from globaleaks.handlers.hinschg import (
+    HinschgCaseCollection,
+    HinschgCaseInstance,
+    HinschgCaseStatusChange,
+    HinschgDashboard,
+    HinschgReportCollection,
+    OmbudspersonCollection,
+    HinschgFristenOverview,
+)
+
+hinschg_api_spec = [
+    # Case Management
+    ('/api/hinschg/cases', HinschgCaseCollection),
+    ('/api/hinschg/cases/', HinschgCaseInstance, r'/api/hinschg/cases/' + uuid_regexp),
+    ('/api/hinschg/cases/status', HinschgCaseStatusChange, r'/api/hinschg/cases/' + uuid_regexp + r'/status'),
+
+    # Dashboard
+    ('/api/hinschg/dashboard', HinschgDashboard),
+
+    # Deadline Overview
+    ('/api/hinschg/fristen', HinschgFristenOverview),
+
+    # Compliance Reports
+    ('/api/hinschg/reports', HinschgReportCollection),
+
+    # Ombudsperson Configuration
+    ('/api/hinschg/ombudspersonen', OmbudspersonCollection),
+]
+
+# Add HinSchG routes to main API spec
+hinschg_api_spec = [t if len(t) == 3 else (*t, re.escape(t[0])) for t in hinschg_api_spec]
+api_spec.extend(hinschg_api_spec)
