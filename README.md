@@ -1,5 +1,13 @@
 # aitema|Hinweis – Open-Source-Hinweisgeberschutzsystem
 
+![GitHub License](https://img.shields.io/github/license/Aitema-gmbh/hinweisgebersystem?style=flat-square&color=blue)
+![GitHub Stars](https://img.shields.io/github/stars/Aitema-gmbh/hinweisgebersystem?style=flat-square)
+![GitHub Issues](https://img.shields.io/github/issues/Aitema-gmbh/hinweisgebersystem?style=flat-square)
+![publiccode.yml](https://img.shields.io/badge/publiccode-0.4-brightgreen?style=flat-square)
+![HinSchG konform](https://img.shields.io/badge/HinSchG-konform-blue?style=flat-square)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
+
+
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![GitHub Stars](https://img.shields.io/github/stars/Aitema-gmbh/hinweisgebersystem)](https://github.com/Aitema-gmbh/hinweisgebersystem/stargazers)
 [![Made in Germany](https://img.shields.io/badge/Made_in-Germany-black)](https://aitema.de)
