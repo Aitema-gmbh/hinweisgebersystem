@@ -15,7 +15,8 @@
     "e2e": "ng e2e",
     "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
     "format:check": "prettier --check \"src/**/*.{ts,html,scss}\"",
-    "i18n:extract": "ng extract-i18n --output-path src/locale"
+    "i18n:extract": "ng extract-i18n --output-path src/locale",
+    "test:load": "k6 run ../tests/load/load-test.js"
   },
   "dependencies": {
     "@angular/animations": "^17.3.0",
