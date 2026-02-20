@@ -1,0 +1,45 @@
+name: "Förderprojekt-Anfrage"
+description: "Gemeinsamen Förderantrag für Weiterentwicklungen anfragen"
+title: "[Förderung] "
+labels: ["förderung", "kommune"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Sie möchten eine Weiterentwicklung über ein Förderprogramm finanzieren?
+        Wir unterstützen Kommunen bei Prototype Fund, Sovereign Tech Fund und
+        kommunalen Förderprogrammen.
+  - type: dropdown
+    id: foerderprogramm
+    attributes:
+      label: "Angestrebtes Förderprogramm"
+      options:
+        - Prototype Fund (BMBF)
+        - Sovereign Tech Fund / Agency
+        - EU Digital Europe
+        - Kommunales Förderprogramm
+        - Noch unklar
+  - type: textarea
+    id: vorhaben
+    attributes:
+      label: "Beschreibung des Vorhabens"
+      placeholder: "Was soll entwickelt oder verbessert werden?"
+    validations:
+      required: true
+  - type: input
+    id: deadline
+    attributes:
+      label: "Antragsdeadline"
+      placeholder: "z.B. 30. November 2026"
+  - type: input
+    id: budget
+    attributes:
+      label: "Förderbetrag (ca.)"
+      placeholder: "z.B. 50.000 EUR"
+  - type: checkboxes
+    id: kontakt
+    attributes:
+      label: "Nächste Schritte"
+      options:
+        - label: "Bitte kontaktiert mich für ein erstes Gespräch"
+          required: true
