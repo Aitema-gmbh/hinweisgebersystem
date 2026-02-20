@@ -1,0 +1,21 @@
+{
+  "": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "schedule": ["before 6am on Monday"],
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 5,
+  "labels": ["dependencies"],
+  "commitMessagePrefix": "chore:",
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": false,
+      "addLabels": ["auto-update"]
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["breaking-change"],
+      "automerge": false
+    }
+  ]
+}
