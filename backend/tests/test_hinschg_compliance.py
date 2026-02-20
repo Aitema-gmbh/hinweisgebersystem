@@ -126,7 +126,7 @@ class TestEncryption:
         plaintext = "Test-Nachricht"
         ct1 = service.encrypt(plaintext)
         ct2 = service.encrypt(plaintext)
-        assert ct1 \!= ct2
+        assert ct1 != ct2
 
     def test_context_binding(self):
         """Verschluesselung mit unterschiedlichem Kontext ergibt unterschiedliche Ergebnisse."""
@@ -134,7 +134,7 @@ class TestEncryption:
         plaintext = "Test-Nachricht"
         ct1 = service.encrypt(plaintext, context="tenant-1")
         ct2 = service.encrypt(plaintext, context="tenant-2")
-        assert ct1 \!= ct2
+        assert ct1 != ct2
 
     def test_empty_string_handling(self):
         """Leere Strings werden korrekt behandelt."""

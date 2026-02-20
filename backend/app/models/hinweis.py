@@ -163,7 +163,7 @@ class Hinweis(Base):
     sprache: Mapped[str] = mapped_column(String(5), default="de")
     ip_hash: Mapped[Optional[str]] = mapped_column(
         String(64)
-    )  # Gehashte IP (kein Klartext\!)
+    )  # Gehashte IP (kein Klartext!)
     user_agent_hash: Mapped[Optional[str]] = mapped_column(String(64))
 
     # Interne Bewertung
@@ -203,7 +203,7 @@ class Hinweis(Base):
     )
 
     def __repr__(self) -> str:
-        return f"<Hinweis(ref={self.reference_code\!r}, status={self.status.value\!r})>"
+        return f"<Hinweis(ref={self.reference_code!r}, status={self.status.value!r})>"
 
     @staticmethod
     def generate_reference_code() -> str:

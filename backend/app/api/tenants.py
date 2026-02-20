@@ -23,7 +23,7 @@ tenants_bp = Blueprint("tenants", __name__)
 def list_tenants():
     """Alle Mandanten auflisten (nur System-Admins)."""
     claims = get_jwt()
-    if claims.get("role") \!= "admin":
+    if claims.get("role") != "admin":
         return jsonify({"error": "Nur Administratoren haben Zugriff"}), 403
 
     session = current_app.Session()
@@ -67,7 +67,7 @@ def create_tenant():
         }
     """
     claims = get_jwt()
-    if claims.get("role") \!= "admin":
+    if claims.get("role") != "admin":
         return jsonify({"error": "Nur Administratoren koennen Mandanten anlegen"}), 403
 
     data = request.get_json()
@@ -150,7 +150,7 @@ def create_tenant():
 def get_tenant(tenant_id: str):
     """Mandanten-Details abrufen."""
     claims = get_jwt()
-    if claims.get("role") \!= "admin" and claims.get("tenant_id") \!= tenant_id:
+    if claims.get("role") != "admin" and claims.get("tenant_id") != tenant_id:
         return jsonify({"error": "Keine Berechtigung"}), 403
 
     session = current_app.Session()
@@ -183,7 +183,7 @@ def get_tenant(tenant_id: str):
 def update_tenant(tenant_id: str):
     """Mandanten-Daten aktualisieren."""
     claims = get_jwt()
-    if claims.get("role") \!= "admin":
+    if claims.get("role") != "admin":
         return jsonify({"error": "Nur Administratoren koennen Mandanten bearbeiten"}), 403
 
     data = request.get_json()
@@ -207,7 +207,7 @@ def update_tenant(tenant_id: str):
             if field in data:
                 old_value = getattr(tenant, field)
                 new_value = data[field]
-                if old_value \!= new_value:
+                if old_value != new_value:
                     setattr(tenant, field, new_value)
                     changes[field] = {"old": str(old_value), "new": str(new_value)}
 

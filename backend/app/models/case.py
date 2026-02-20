@@ -80,7 +80,7 @@ class CaseEvent(Base):
     )
 
     def __repr__(self) -> str:
-        return f"<CaseEvent(case_id={self.case_id\!r}, type={self.event_type\!r})>"
+        return f"<CaseEvent(case_id={self.case_id!r}, type={self.event_type!r})>"
 
 
 class Case(Base):
@@ -178,7 +178,7 @@ class Case(Base):
     )
 
     def __repr__(self) -> str:
-        return f"<Case(number={self.case_number\!r}, status={self.status.value\!r})>"
+        return f"<Case(number={self.case_number!r}, status={self.status.value!r})>"
 
     @staticmethod
     def generate_case_number(tenant_slug: str) -> str:

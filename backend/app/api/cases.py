@@ -50,7 +50,7 @@ def create_case():
         if not hinweis:
             return jsonify({"error": "Meldung nicht gefunden"}), 404
 
-        if str(hinweis.tenant_id) \!= str(tenant_id):
+        if str(hinweis.tenant_id) != str(tenant_id):
             return jsonify({"error": "Keine Berechtigung"}), 403
 
         # Pruefen ob bereits ein Fall existiert
@@ -233,7 +233,7 @@ def update_case_status(case_id: str):
         if not case:
             return jsonify({"error": "Fall nicht gefunden"}), 404
 
-        if str(case.tenant_id) \!= claims.get("tenant_id"):
+        if str(case.tenant_id) != claims.get("tenant_id"):
             return jsonify({"error": "Keine Berechtigung"}), 403
 
         # Statusuebergang pruefen

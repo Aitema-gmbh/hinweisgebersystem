@@ -28,7 +28,7 @@ def app():
         "CELERY_BROKER_URL": "redis://localhost:6379/14",
         "SECRET_KEY": "test-secret-key",
         "JWT_SECRET_KEY": "test-jwt-secret",
-        "ENCRYPTION_MASTER_KEY": "test-encryption-master-key-32chars\!",
+        "ENCRYPTION_MASTER_KEY": "test-encryption-master-key-32chars!",
         "RATE_LIMIT_ENABLED": False,
         "HINSCHG_EINGANGSBESTAETIGUNG_TAGE": 7,
         "HINSCHG_RUECKMELDUNG_TAGE": 90,
@@ -89,7 +89,7 @@ def sample_admin(db_session, sample_tenant) -> User:
     user = User(
         tenant_id=sample_tenant.id,
         email="admin@test.de",
-        password_hash=ph.hash("TestPasswort123\!"),
+        password_hash=ph.hash("TestPasswort123!"),
         first_name="Admin",
         last_name="User",
         role=UserRole.ADMIN,
@@ -107,7 +107,7 @@ def sample_ombudsperson(db_session, sample_tenant) -> User:
     user = User(
         tenant_id=sample_tenant.id,
         email="ombuds@test.de",
-        password_hash=ph.hash("TestPasswort123\!"),
+        password_hash=ph.hash("TestPasswort123!"),
         first_name="Ombuds",
         last_name="Person",
         role=UserRole.OMBUDSPERSON,
@@ -164,7 +164,7 @@ def auth_headers(client, sample_admin):
     """Login und Auth-Header fuer API-Tests."""
     response = client.post("/api/v1/auth/login", json={
         "email": "admin@test.de",
-        "password": "TestPasswort123\!",
+        "password": "TestPasswort123!",
     })
     token = response.get_json().get("access_token", "")
     return {"Authorization": f"Bearer {token}"}

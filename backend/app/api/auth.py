@@ -304,7 +304,7 @@ def verify_mfa():
     try:
         user = session.query(User).get(uuid.UUID(user_id))
         user.mfa_enabled = True
-        user.mfa_secret = secret  # In Produktion verschluesselt speichern\!
+        user.mfa_secret = secret  # In Produktion verschluesselt speichern!
         session.commit()
 
         current_app.redis.delete(f"mfa_setup:{user_id}")

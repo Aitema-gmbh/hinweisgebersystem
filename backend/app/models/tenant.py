@@ -101,7 +101,7 @@ class Tenant(Base):
     )
 
     def __repr__(self) -> str:
-        return f"<Tenant(slug={self.slug\!r}, name={self.name\!r})>"
+        return f"<Tenant(slug={self.slug!r}, name={self.name!r})>"
 
     @property
     def is_hinschg_pflichtig(self) -> bool:
