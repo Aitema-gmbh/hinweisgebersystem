@@ -1,0 +1,219 @@
+name: Hinweisgebersystem CI/CD
+
+on:
+  push:
+    branches:
+      - "aitema/main"
+  pull_request:
+    branches:
+      - "aitema/main"
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: aitema-gmbh/hinweisgebersystem
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python lint dependencies
+        run: |
+          pip install flake8 mypy
+          if [ -f backend/requirements.txt ]; then pip install -r backend/requirements.txt; fi
+          if [ -f backend/requirements-dev.txt ]; then pip install -r backend/requirements-dev.txt; fi
+
+      - name: Run flake8
+        run: flake8 backend/ --max-line-length=120 --exclude=migrations,venv,.venv
+
+      - name: Run mypy
+        run: mypy backend/ --ignore-missing-imports --exclude migrations
+        continue-on-error: true
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install Angular dependencies
+        working-directory: client
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: client
+        run: npm run lint -- --max-warnings=0
+        continue-on-error: true
+
+  test-backend:
+    name: Test Backend
+    runs-on: ubuntu-latest
+    needs: lint
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: hinweisgebersystem_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install pytest pytest-cov pytest-asyncio
+          if [ -f backend/requirements.txt ]; then pip install -r backend/requirements.txt; fi
+          if [ -f backend/requirements-dev.txt ]; then pip install -r backend/requirements-dev.txt; fi
+
+      - name: Run pytest with coverage
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hinweisgebersystem_test
+          TESTING: 'true'
+        run: |
+          pytest --cov=. --cov-report=xml --cov-report=term-missing -v
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: backend/coverage.xml
+          flags: backend
+
+  test-frontend:
+    name: Test Frontend
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install dependencies
+        working-directory: client
+        run: npm ci
+
+      - name: Run Angular tests
+        working-directory: client
+        run: npx ng test --watch=false --browsers=ChromeHeadless --code-coverage
+        env:
+          CHROME_BIN: /usr/bin/google-chrome
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: client/coverage/lcov.info
+          flags: frontend
+
+  build-docker:
+    name: Build and Push Docker
+    runs-on: ubuntu-latest
+    needs:
+      - test-backend
+      - test-frontend
+    if: github.event_name == 'push' && github.ref == 'refs/heads/aitema/main'
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-
+            type=raw,value=latest
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to Hetzner
+    runs-on: ubuntu-latest
+    needs: build-docker
+    if: github.event_name == 'push' && github.ref == 'refs/heads/aitema/main'
+
+    environment:
+      name: production
+      url: https://hinweis.aitema.de
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: 49.13.15.44
+          username: root
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -e
+            cd /opt/aitema/hinweisgebersystem/aitema-hinweis
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            git fetch origin aitema/main
+            git checkout aitema/main
+            git pull origin aitema/main
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans
+            docker system prune -f
+            echo "Deployment completed at $(date)"
+
+      - name: Health check
+        run: |
+          sleep 30
+          curl --fail --retry 5 --retry-delay 10 https://hinweis.aitema.de/api/health || echo "Health check warning"

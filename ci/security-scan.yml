@@ -1,0 +1,156 @@
+name: Security Scan
+
+on:
+  push:
+    branches:
+      - "aitema/main"
+  pull_request:
+    branches:
+      - "aitema/main"
+  schedule:
+    - cron: '0 3 * * 1'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: aitema-gmbh/hinweisgebersystem
+
+jobs:
+  trivy-scan:
+    name: Trivy Container Scan
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image for scanning
+        run: docker build -t ${{ env.IMAGE_NAME }}:scan .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:scan
+          format: sarif
+          output: trivy-results.sarif
+          severity: CRITICAL,HIGH
+          exit-code: '0'
+
+      - name: Upload Trivy scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy-results.sarif
+          category: trivy
+
+      - name: Trivy filesystem scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+          severity: CRITICAL,HIGH
+          exit-code: '1'
+          ignore-unfixed: true
+
+  bandit-scan:
+    name: Bandit Python Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Bandit
+        run: pip install bandit[toml]
+
+      - name: Run Bandit security scan
+        run: |
+          bandit -r backend/             -x backend/tests,backend/migrations             -f json             -o bandit-report.json             -ll             || true
+
+      - name: Display Bandit results
+        if: always()
+        run: |
+          if [ -f bandit-report.json ]; then
+            python3 -c "
+            import json, sys
+            with open('bandit-report.json') as f:
+                data = json.load(f)
+            issues = data.get('results', [])
+            high = [i for i in issues if i['issue_severity'] == 'HIGH']
+            print(f'Total issues: {len(issues)}')
+            print(f'High severity: {len(high)}')
+            for i in high:
+                print(f'  [{i[\"issue_severity\"]}] {i[\"issue_text\"]} in {i[\"filename\"]}:{i[\"line_number\"]}')
+            if len(high) > 0:
+                sys.exit(1)
+            "
+          fi
+
+      - name: Upload Bandit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bandit-security-report
+          path: bandit-report.json
+          retention-days: 30
+
+  owasp-dependency-check:
+    name: OWASP Dependency Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      - name: Run pip-audit (Python dependencies)
+        run: |
+          if [ -f backend/requirements.txt ]; then
+            pip-audit -r backend/requirements.txt --format json --output pip-audit-report.json || true
+          fi
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run npm audit (Frontend dependencies)
+        working-directory: client
+        run: |
+          npm ci
+          npm audit --audit-level=high --json > npm-audit-report.json || true
+
+      - name: OWASP Dependency-Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: hinweisgebersystem
+          path: .
+          format: HTML
+          out: dependency-check-report
+          args: >
+            --enableRetired
+            --failOnCVSS 7
+
+      - name: Upload dependency check report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dependency-check-report
+          path: dependency-check-report/
+          retention-days: 30
