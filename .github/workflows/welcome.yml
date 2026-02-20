@@ -1,0 +1,37 @@
+name: Willkommens-Nachricht für neue Contributors
+
+on:
+  pull_request_target:
+    types: [opened]
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: |
+            Hallo @${{ github.actor }}! 👋
+
+            Danke für dein Issue! Wir melden uns innerhalb von 2–3 Werktagen.
+            
+            Für schnelle Hilfe: Bitte gib deine Installationsversion an.
+            Dokumentation: [docs/installation.md](docs/installation.md)
+            
+            — aitema GmbH
+          pr-message: |
+            Hallo @${{ github.actor }}! 👋
+
+            Vielen Dank für deinen ersten Pull Request! 🎉
+            Wir prüfen ihn so bald wie möglich.
+            
+            Bitte lies unsere [CONTRIBUTING.md](CONTRIBUTING.md) falls noch nicht geschehen.
+            
+            — aitema GmbH

@@ -1,0 +1,17 @@
+name: Deploy auf Hetzner
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deployment-Webhook ausloesen
+        run: |
+          curl -X POST \\
+            -H "Content-Type: application/json" \\
+            -H "X-Hub-Signature-256: ${{ secrets.DEPLOY_WEBHOOK_SIG }}" \\
+            https://deploy.aitema.de \\
+            -d '{"ref":"refs/heads/main","repository":{"name":"${{ github.event.repository.name }}"}}
