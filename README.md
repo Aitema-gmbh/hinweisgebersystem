@@ -1,94 +1,76 @@
-# aitema|Hinweis
+# aitema|Hinweis – Open-Source-Hinweisgeberschutzsystem
 
-**HinSchG-konformes Hinweisgebersystem** - basierend auf einem GlobaLeaks-Fork.
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![GitHub Stars](https://img.shields.io/github/stars/Aitema-gmbh/hinweisgebersystem)](https://github.com/Aitema-gmbh/hinweisgebersystem/stargazers)
+[![Made in Germany](https://img.shields.io/badge/Made_in-Germany-black)](https://aitema.de)
 
-Datenschutzkonformes, sicheres und barrierefreies Meldesystem fuer Organisationen aller Groessen zur Erfuellung der Anforderungen des Hinweisgeberschutzgesetzes (HinSchG).
+Das einzige vollständig quelloffene Hinweisgeberschutzsystem für deutsche Kommunen und Behörden – DSGVO-konform, selbst-hostbar, kostenlos.
 
-## Funktionen
+## 🏛️ Warum aitema|Hinweis?
 
-- Anonyme und nicht-anonyme Meldungsabgabe
-- AES-256-GCM Verschluesselung (Zero-Knowledge-Architektur)
-- HinSchG-konforme Fristenverwaltung (7 Tage / 3 Monate)
-- Multi-Tenant-Faehigkeit (DB-per-Tenant, Schema, Row-Level)
-- Rollenbasierte Zugriffskontrolle (Ombudsperson, Fallbearbeiter, Admin, Melder, Auditor)
-- Fall-Workflow mit Status-Management
-- Revisionssicherer Audit-Trail
-- Barrierefreiheit nach WCAG 2.1 AA / BITV 2.0
-- BSI-Grundschutz konforme Sicherheitseinstellungen
-- Optionaler Tor Hidden Service
-- REST-API mit JWT-Authentifizierung und MFA
+Das [Hinweisgeberschutzgesetz (HinSchG)](https://www.gesetze-im-internet.de/hinschg/) verpflichtet Organisationen ab 50 Beschäftigten zur Einrichtung interner Meldestellen. Proprietäre Lösungen kosten ab 100 €/Monat – aitema|Hinweis ist kostenlos, transparent und selbst-hostbar.
 
-## Technologie-Stack
+| Feature | aitema\|Hinweis | Proprietäre Alternativen |
+|---------|---------------|-------------------------|
+| Preis | **Kostenlos** | 100–500 €/Monat |
+| Selbst-hostbar | ✅ | ❌ |
+| Quellcode-Audit | ✅ Jederzeit möglich | ❌ |
+| DSGVO nachweisbar | ✅ Quellcode prüfbar | ⚠️ Nur vertraglich |
+| Kein Vendor Lock-in | ✅ | ❌ |
 
-| Komponente | Technologie |
-|------------|-------------|
-| Backend | Python 3.12, Flask, Twisted (GlobaLeaks-Fork) |
-| Frontend | Angular 17+, Angular Material |
-| Datenbank | PostgreSQL 16 (Multi-Tenant) |
-| Cache | Redis 7 |
-| Async Tasks | Celery |
-| Proxy | Nginx |
-| Container | Docker Compose |
-
-## Schnellstart
+## 🚀 Schnellstart (Docker)
 
 ```bash
-# Repository klonen
-git clone https://github.com/aitema/hinweisgebersystem.git
+git clone https://github.com/Aitema-gmbh/hinweisgebersystem.git
 cd hinweisgebersystem
-
-# Konfiguration erstellen
-cp .env.example .env
-# .env anpassen (Passwoerter setzen\!)
-
-# Entwicklungsumgebung starten
-make dev
-
-# Oeffne http://localhost:80
+cp .env.example .env  # Konfiguration anpassen
+docker compose up -d
 ```
 
-## Entwicklung
+Öffne http://localhost:3000 – fertig!
 
-```bash
-make dev          # Entwicklungsumgebung starten
-make test         # Alle Tests ausfuehren
-make lint         # Code-Qualitaet pruefen
-make logs         # Logs anzeigen
-make shell        # Shell im Backend-Container
-make shell-db     # PostgreSQL-Shell
-```
+**Vollständige Installationsanleitung:** → [docs/installation.md](docs/installation.md)
 
-## Production Deployment
+## ✨ Funktionen
 
-```bash
-# .env mit sicheren Werten konfigurieren
-# TLS-Zertifikate in nginx/ssl/ ablegen
-make deploy
-```
+- **Anonyme Hinweisgabe** – Keine Registrierung, keine IP-Protokollierung
+- **Verschlüsselte Kommunikation** – Ende-zu-Ende zwischen Hinweisgeber und Meldestelle
+- **Case-Management-Dashboard** – Vollständige Fallbearbeitung für interne Meldestellen
+- **Quittungscode-System** – Hinweisgeber können Fallstatus anonym verfolgen
+- **Mehrsprachig** – Deutsch, weitere Sprachen konfigurierbar
+- **Kategorisierung** – Korruption, Datenschutz, Arbeitssicherheit, und mehr
+- **Fristen-Tracking** – Automatische Erinnerungen für gesetzliche Bearbeitungsfristen
 
-## HinSchG-Compliance
+## 🏗️ Technologie
 
-Das System implementiert die Anforderungen des Hinweisgeberschutzgesetzes:
+| Schicht | Technologie |
+|---------|-------------|
+| Frontend | Angular 17 |
+| Backend | Node.js |
+| Datenbank | PostgreSQL 15 |
+| Deployment | Docker Compose |
+| Lizenz | AGPL-3.0 |
 
-- **Paragraf 8**: Vertraulichkeit der Identitaet
-- **Paragraf 16 Abs. 1**: Anonyme Meldungen moeglich
-- **Paragraf 17 Abs. 1**: Eingangsbestaetigung innerhalb von 7 Tagen
-- **Paragraf 17 Abs. 2**: Rueckmeldung innerhalb von 3 Monaten
-- **Paragraf 11 Abs. 5**: Aufbewahrung 3 Jahre nach Abschluss
-- **Paragraf 36**: Repressalienverbot
+## 📋 Anforderungen
 
-## Lizenz
+- Docker ≥ 24.0
+- Docker Compose ≥ 2.0
+- PostgreSQL 15 (oder als Docker-Container)
+- Mindestens 2 GB RAM, 10 GB Speicher
 
-AGPLv3 - siehe [LICENSE](LICENSE) Datei.
+## 📞 Support & Mitmachen
 
-Kompatibel mit der GlobaLeaks-Lizenz (AGPLv3).
+- **Bug melden:** [GitHub Issues](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=bug-report.yml)
+- **Feature anfragen:** [Feature-Request](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=kommune-feature-request.yml)
+- **Förderprojekt:** [Förderanfrage](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=foerderprojekt.yml)
+- **Kontakt:** kontakt@aitema.de
 
-## COSS-Lizenz-Modell
+Aus einer Behörde? Wir freuen uns besonders über Feedback aus der Praxis!
 
-**aitema|Hinweis** nutzt ein Commercial Open Source Software (COSS) Modell:
-- **Community Edition**: AGPLv3, voller Funktionsumfang
-- **Enterprise Edition**: Zusaetzliche Features (SSO, erweiterte Reports, SLA-Support)
+## 📄 Lizenz
+
+AGPL-3.0 © aitema GmbH
 
 ---
 
-Entwickelt von [aitema GmbH](https://aitema.de)
+*Entwickelt mit ❤️ in Deutschland | [aitema.de](https://aitema.de)*
