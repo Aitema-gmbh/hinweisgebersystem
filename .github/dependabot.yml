@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    groups:
+      angular:
+        patterns:
+          - "@angular*"
+          - "@angular-eslint*"
+      testing:
+        patterns:
+          - "jasmine*"
+          - "karma*"
+          - "@types/jasmine*"
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "monthly"
