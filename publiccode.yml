@@ -1,31 +1,66 @@
-publiccodeYmlVersion: "0.4"
+publiccodeYmlVersion: 0.4
 
-name: aitema Hinweisgebersystem
-applicationSuite: aitema GovTech Suite
-url: "https://github.com/Aitema-gmbh/hinweisgebersystem"
-landingURL: "https://aitema.de/loesungen/hinweisgebersystem"
-
-createdAt: "2023-01-01"
-releaseDate: "2024-01-01"
-logo: "https://aitema.de/logo.svg"
-
-softwareVersion: "1.0.0"
-developmentStatus: stable
-softwareType: standalone/web
+name: aitema|Hinweis
+url: https://github.com/Aitema-gmbh/hinweisgebersystem
+softwareVersion: 1.0.0
+releaseDate: 2025-01-01
+logo: https://raw.githubusercontent.com/Aitema-gmbh/hinweisgebersystem/main/docs/logo.png
 
 platforms:
   - web
-  - linux
 
 categories:
-  - compliance-management
-  - hr
-  - government
+  - compliance
+  - document-management
+  - knowledge-management
 
-usedBy:
-  - aitema GmbH
+developmentStatus: stable
 
-roadmap: "https://github.com/Aitema-gmbh/hinweisgebersystem/issues"
+softwareType: standalone/web
+
+description:
+  de:
+    localisedName: aitema|Hinweis – Hinweisgebersystem
+    genericName: Hinweisgeberschutzsystem
+    shortDescription: >
+      AGPL-lizenziertes Hinweisgebersystem für öffentliche Einrichtungen gemäß HinSchG.
+      Ermöglicht anonyme Meldungen, sichere Kommunikation und lückenlose Dokumentation.
+    longDescription: >
+      aitema|Hinweis ist eine Open-Source-Lösung für öffentliche Verwaltungen, Kommunen und
+      Behörden zur rechtskonformen Umsetzung des Hinweisgeberschutzgesetzes (HinSchG).
+      
+      Das System ermöglicht anonyme Meldungseinreichung über eine sichere Webanwendung,
+      verschlüsselte Zwei-Wege-Kommunikation zwischen Hinweisgebern und zuständigen Stellen,
+      vollständige Dokumentation aller Vorgänge für Prüfzwecke und rollenbasierte
+      Zugriffskontrolle für Bearbeiter und Administratoren.
+      
+      Technisch basiert die Lösung auf Angular (Frontend), Java/Spring Boot (Backend) und
+      PostgreSQL (Datenbank). Der Betrieb ist vollständig self-hosted möglich.
+    features:
+      - Anonyme Meldungseinreichung gemäß HinSchG
+      - Verschlüsselte Zwei-Wege-Kommunikation
+      - Vollständige Audit-Trail-Dokumentation
+      - Rollenbasierte Zugriffsverwaltung
+      - Docker-basierte Installation
+      - DSGVO-konformer Betrieb
+      - Mehrsprachige Oberfläche (DE/EN)
+  en:
+    localisedName: aitema|Hinweis – Whistleblower Protection System
+    genericName: Whistleblower System
+    shortDescription: >
+      AGPL-licensed whistleblower protection system for German public institutions
+      compliant with HinSchG (Whistleblower Protection Act).
+    longDescription: >
+      aitema|Hinweis is an open-source solution for public administrations to implement
+      the German Whistleblower Protection Act (HinSchG). Supports anonymous reporting,
+      encrypted communication, and complete audit trails.
+    features:
+      - Anonymous report submission
+      - Encrypted two-way communication
+      - Complete audit trail documentation
+      - Role-based access management
+      - Docker-based installation
+      - GDPR-compliant operation
 
 legal:
   license: AGPL-3.0-only
@@ -33,7 +68,7 @@ legal:
   repoOwner: aitema GmbH
 
 maintenance:
-  type: internal
+  type: commercial
   contacts:
     - name: aitema GmbH
       email: kontakt@aitema.de
@@ -43,69 +78,14 @@ localisation:
   localisationReady: true
   availableLanguages:
     - de
-
-description:
-  de:
-    localisedName: aitema Hinweisgebersystem
-    genericName: Hinweisgeberschutzsystem
-    shortDescription: >-
-      Open-Source-Hinweisgeberschutzsystem fuer Kommunen und Behoerden nach dem
-      Hinweisgeberschutzgesetz (HinSchG). DSGVO-konform, selbst-hostbar.
-    longDescription: >-
-      Das aitema Hinweisgebersystem ist eine vollstaendig quelloffene Loesung
-      zur gesetzeskonformen Umsetzung des Hinweisgeberschutzgesetzes (HinSchG)
-      fuer oeffentliche Einrichtungen, Kommunen und Behoerden. Es ermoeglicht die
-      anonyme Meldung von Missstaenden, sichere Kommunikation zwischen
-      Hinweisgebern und internen Meldestellen sowie vollstaendiges Case-Management
-      fuer Bearbeiter. Alle Daten verbleiben auf der eigenen Infrastruktur.
-      Keine Cloud-Abhaengigkeit, keine Lizenzkosten.
-    features:
-      - Anonyme Hinweisgabe ohne Registrierung
-      - Verschluesselte Kommunikation zwischen Hinweisgeber und Meldestelle
-      - Case-Management Dashboard fuer Bearbeiter
-      - Statusverfolgung fuer Hinweisgeber per Quittungscode
-      - DSGVO-konform und selbst-hostbar
-      - Erfuellt Anforderungen des Hinweisgeberschutzgesetzes (HinSchG)
-      - Mehrsprachig (Deutsch, weitere Sprachen konfigurierbar)
-    screenshots:
-      - "https://aitema.de/screenshots/hinweis-dashboard.png"
-
-  en:
-    localisedName: aitema Whistleblower System
-    genericName: Whistleblower Protection System
-    shortDescription: >-
-      Open-source whistleblower protection system for German municipalities
-      and public authorities. GDPR-compliant, self-hostable.
-    longDescription: >-
-      The aitema Whistleblower System is a fully open-source solution for
-      legally compliant implementation of the German Whistleblower Protection
-      Act (HinSchG) for public institutions and municipalities. Enables
-      anonymous reporting, secure communication, and complete case management.
-      All data stays on your own infrastructure.
-    features:
-      - Anonymous reporting without registration
-      - Encrypted communication between whistleblower and case handler
-      - Case management dashboard
-      - Status tracking via receipt code
-      - GDPR-compliant and self-hostable
-      - Compliant with German Whistleblower Protection Act (HinSchG)
-
-intendedAudience:
-  countries:
-    - de
-    - at
-    - ch
-  scope:
-    - government
-    - local-authorities
+    - en
 
 dependsOn:
   open:
     - name: Angular
-      versionMin: "17"
-    - name: Node.js
-      versionMin: "20"
+      versionMin: 17
+    - name: Java
+      versionMin: 17
     - name: PostgreSQL
-      versionMin: "15"
+      versionMin: 14
     - name: Docker
-      versionMin: "24"
