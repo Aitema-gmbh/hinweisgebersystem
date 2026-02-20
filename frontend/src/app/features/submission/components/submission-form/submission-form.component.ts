@@ -5,7 +5,7 @@
  */
 import { Component, OnInit, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatStepperModule } from "@angular/material/stepper";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -29,6 +29,7 @@ interface Kategorie {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     MatStepperModule,
     MatFormFieldModule,
     MatInputModule,

@@ -1,48 +1,59 @@
-# aitema|Hinweis – Open-Source-Hinweisgeberschutzsystem
+# aitema|Hinweis 🔒
 
-[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![GitHub Stars](https://img.shields.io/github/stars/Aitema-gmbh/hinweisgebersystem?style=social)](https://github.com/Aitema-gmbh/hinweisgebersystem/stargazers)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://github.com/Aitema-gmbh/hinweisgebersystem/pkgs/container/hinweisgebersystem)
+[![GitHub Issues](https://img.shields.io/github/issues/Aitema-gmbh/hinweisgebersystem)](https://github.com/Aitema-gmbh/hinweisgebersystem/issues)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/Aitema-gmbh/hinweisgebersystem)](https://github.com/Aitema-gmbh/hinweisgebersystem/commits/main)
+[![Docker Image](https://img.shields.io/badge/docker-ghcr.io-blue?logo=docker&logoColor=white)](https://ghcr.io/aitema-gmbh/hinweisgebersystem)
+[![HinSchG konform](https://img.shields.io/badge/HinSchG-konform-green)](https://aitema.de/loesungen/hinweisgebersystem)
+[![WCAG 2.1 AA](https://img.shields.io/badge/WCAG%202.1-AA-brightgreen)](https://aitema.de/barrierefreiheit/)
 [![opencode.de](https://img.shields.io/badge/opencode.de-Kompatibel-0069B4)](https://opencode.de)
-[![HinSchG](https://img.shields.io/badge/HinSchG-konform-green)](https://aitema.de/loesungen/hinweisgebersystem)
-[![API Docs](https://img.shields.io/badge/API-Dokumentation-orange)](https://aitema.de/api-docs/hinweisgebersystem)
 
-Das einzige vollständig quelloffene Hinweisgeberschutzsystem für deutsche Kommunen und Behörden – DSGVO-konform, selbst-hostbar, kostenlos.
+> **Open-Source Hinweisgebersystem** für Kommunen und Behörden — vollständig HinSchG-konform, DSGVO-sicher, selbst gehostet.
 
-## 🏛️ Warum aitema|Hinweis?
+**[🌐 Website](https://aitema.de/loesungen/hinweisgebersystem) · [📖 Dokumentation](docs/installation.md) · [🐛 Issues](https://github.com/Aitema-gmbh/hinweisgebersystem/issues) · [💬 Diskussionen](https://github.com/Aitema-gmbh/hinweisgebersystem/discussions)**
 
-Das [Hinweisgeberschutzgesetz (HinSchG)](https://www.gesetze-im-internet.de/hinschg/) verpflichtet Organisationen ab 50 Beschäftigten zur Einrichtung interner Meldestellen. Proprietäre Lösungen kosten ab 100 €/Monat – aitema|Hinweis ist kostenlos, transparent und selbst-hostbar.
+---
+
+## Was ist aitema|Hinweis?
+
+aitema|Hinweis ist ein **kostenloses, Open-Source Hinweisgebersystem** (Whistleblower-System), das die Anforderungen des deutschen [Hinweisgeberschutzgesetzes (HinSchG)](https://www.gesetze-im-internet.de/hinschg/) und der EU-Richtlinie 2019/1937 vollständig erfüllt.
+
+Das HinSchG verpflichtet Organisationen ab 50 Beschäftigten zur Einrichtung interner Meldestellen. Proprietäre Lösungen kosten ab 100 €/Monat — aitema|Hinweis ist kostenlos, transparent und selbst-hostbar.
+
+### ✨ Features
 
 | Feature | aitema\|Hinweis | Proprietäre Alternativen |
-|---------|---------------|-------------------------|
+|---------|----------------|--------------------------|
 | Preis | **Kostenlos** | 100–500 €/Monat |
 | Selbst-hostbar | ✅ | ❌ |
 | Quellcode-Audit | ✅ Jederzeit möglich | ❌ |
 | DSGVO nachweisbar | ✅ Quellcode prüfbar | ⚠️ Nur vertraglich |
 | Kein Vendor Lock-in | ✅ | ❌ |
 
-## 🚀 Schnellstart (Docker)
+- 🔒 **Vollständige Anonymität** — Tor-kompatibel, keine IP-Speicherung
+- 📋 **HinSchG-konform** — Alle gesetzlichen Anforderungen erfüllt (EU 2019/1937)
+- 🏛️ **DSGVO-sicher** — Kein Cloud-Anbieter, eigene Infrastruktur
+- 🌐 **Mehrsprachig** — Deutsch und Englisch (i18n-ready)
+- ♿ **Barrierefrei** — WCAG 2.1 AA / BITV 2.0 konform
+- 🐳 **Docker-ready** — In 5 Minuten deployed
+- 📊 **Dashboard** — Bearbeiter-Oberfläche mit Status-Tracking und Fristen
+- ☕ **Quittungscode** — Hinweisgeber können Fallstatus anonym verfolgen
 
-```bash
-git clone https://github.com/Aitema-gmbh/hinweisgebersystem.git
-cd hinweisgebersystem
-cp .env.example .env  # Konfiguration anpassen
-docker compose up -d
-```
+## 🚀 Quick Start
 
-Öffne http://localhost:3000 – fertig!
 
-**Vollständige Installationsanleitung:** → [docs/installation.md](docs/installation.md)
 
-## ✨ Funktionen
+Öffne **http://localhost:4200** (Frontend) · **http://localhost:3000** (API)
 
-- **Anonyme Hinweisgabe** – Keine Registrierung, keine IP-Protokollierung
-- **Verschlüsselte Kommunikation** – Ende-zu-Ende zwischen Hinweisgeber und Meldestelle
-- **Case-Management-Dashboard** – Vollständige Fallbearbeitung für interne Meldestellen
-- **Quittungscode-System** – Hinweisgeber können Fallstatus anonym verfolgen
-- **Mehrsprachig** – Deutsch, weitere Sprachen konfigurierbar
-- **Kategorisierung** – Korruption, Datenschutz, Arbeitssicherheit, und mehr
-- **Fristen-Tracking** – Automatische Erinnerungen für gesetzliche Bearbeitungsfristen
+Vollständige Installationsanleitung: [→ docs/installation.md](docs/installation.md)
+
+## 📋 Anforderungen
+
+- Docker ≥ 24.0 und Docker Compose v2
+- 512 MB RAM (Minimum), 1 GB (empfohlen)
+- PostgreSQL 15+ (via Docker oder extern)
+- Optional: Kubernetes / Helm für Enterprise-Deployments
 
 ## 🏗️ Technologie
 
@@ -51,95 +62,34 @@ docker compose up -d
 | Frontend | Angular 17 |
 | Backend | Node.js |
 | Datenbank | PostgreSQL 15 |
-| Deployment | Docker Compose |
+| Deployment | Docker Compose / Helm |
 | Lizenz | AGPL-3.0 |
 
-## 📋 Anforderungen
+## ⚙️ Kubernetes & Helm Deployment
 
-- Docker ≥ 24.0
-- Docker Compose ≥ 2.0
-- PostgreSQL 15 (oder als Docker-Container)
-- Mindestens 2 GB RAM, 10 GB Speicher
+Für Enterprise-Deployments steht eine vollständige Kubernetes-Infrastruktur bereit:
 
 
 
-## Kubernetes & Helm Deployment
-
-Fuer Enterprise-Deployments mit Kubernetes steht eine vollstaendige Infrastruktur bereit:
-
-### Schnellstart mit kubectl
-
-```bash
-# Namespace anlegen
-kubectl apply -f deploy/kubernetes/namespace.yaml
-
-# Secrets erstellen (Beispiel-Datei anpassen!)
-# cp deploy/kubernetes/secret.yaml.example deploy/kubernetes/secret.yaml
-# vim deploy/kubernetes/secret.yaml  # Werte anpassen
-kubectl create secret generic hinweis-secrets \\
-  --namespace=aitema-hinweis \\
-  --from-literal=postgres-db=hinweis_db \\
-  --from-literal=postgres-user=hinweis_user \\
-  --from-literal=postgres-password=$(openssl rand -hex 32) \\
-  --from-literal=database-url="postgresql://hinweis_user:PASS@postgres:5432/hinweis_db" \\
-  --from-literal=jwt-secret=$(openssl rand -hex 32) \\
-  --from-literal=encryption-key=$(openssl rand -hex 16)
-
-# Alle Manifeste anwenden
-kubectl apply -f deploy/kubernetes/
-```
-
-### Schnellstart mit Helm
-
-```bash
-# Helm-Chart installieren
-helm install aitema-hinweis ./deploy/helm \\
-  --namespace aitema-hinweis \\
-  --create-namespace \\
-  --set ingress.host=hinweis.ihre-kommune.de \\
-  --set existingSecret=hinweis-secrets
-
-# Mit eigener values-Datei (empfohlen fuer Produktion)
-cp deploy/helm/values.yaml my-values.yaml
-helm install aitema-hinweis ./deploy/helm \\
-  --namespace aitema-hinweis \\
-  --create-namespace \\
-  -f my-values.yaml
-```
-
-### Verzeichnisstruktur
-
-```
-deploy/
-├── kubernetes/          # Raw Kubernetes Manifeste
-│   ├── namespace.yaml
-│   ├── configmap.yaml
-│   ├── secret.yaml.example
-│   ├── postgres/        # Datenbank-Deployment
-│   ├── backend/         # API-Server
-│   ├── frontend/        # Web-Oberflaeche
-│   └── ingress.yaml     # HTTPS-Routing mit cert-manager
-└── helm/                # Helm Chart fuer Enterprise
-    ├── Chart.yaml
-    ├── values.yaml      # Konfiguration anpassen!
-    └── templates/
-```
-
-Vollstaendige Dokumentation: [docs/kubernetes.md](docs/kubernetes.md)
+Vollständige Kubernetes-Dokumentation: [→ docs/kubernetes.md](docs/kubernetes.md)
 
 ## 📞 Support & Mitmachen
 
 - **Bug melden:** [GitHub Issues](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=bug-report.yml)
 - **Feature anfragen:** [Feature-Request](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=kommune-feature-request.yml)
 - **Förderprojekt:** [Förderanfrage](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=foerderprojekt.yml)
-- **Kontakt:** kontakt@aitema.de
+- **E-Mail:** kontakt@aitema.de
+- **Website:** [aitema.de](https://aitema.de)
 
 Aus einer Behörde? Wir freuen uns besonders über Feedback aus der Praxis!
 
 ## 📄 Lizenz
 
-AGPL-3.0 © aitema GmbH
+[GNU AGPLv3](LICENSE) — Open Source, Änderungen müssen veröffentlicht werden.
 
 ---
 
-*Entwickelt mit ❤️ in Deutschland | [aitema.de](https://aitema.de)*
+<p align="center">
+  Made with ❤️ by <a href="https://aitema.de">aitema GmbH</a> &middot;
+  <a href="https://github.com/Aitema-gmbh/hinweisgebersystem/stargazers">⭐ Star uns auf GitHub</a>
+</p>

@@ -91,7 +91,7 @@ export class ApiService {
     let httpParams = new HttpParams();
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
-        if (value \!== undefined) {
+        if (value !== undefined) {
           httpParams = httpParams.set(key, String(value));
         }
       });
@@ -120,7 +120,7 @@ export class ApiService {
     let httpParams = new HttpParams();
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
-        if (value \!== undefined) {
+        if (value !== undefined) {
           httpParams = httpParams.set(key, String(value));
         }
       });

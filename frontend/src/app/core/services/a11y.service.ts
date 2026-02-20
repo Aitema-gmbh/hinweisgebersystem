@@ -32,7 +32,7 @@ export class A11yService {
     const lastFocusable = focusableElements[focusableElements.length - 1] as HTMLElement;
 
     const handleTab = (event: KeyboardEvent) => {
-      if (event.key \!== "Tab") return;
+      if (event.key !== "Tab") return;
       if (event.shiftKey) {
         if (document.activeElement === firstFocusable) {
           lastFocusable.focus();

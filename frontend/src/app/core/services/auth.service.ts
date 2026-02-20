@@ -39,7 +39,7 @@ export class AuthService {
   private tokenSignal = signal<string | null>(null);
 
   readonly currentUser = this.currentUserSignal.asReadonly();
-  readonly isAuthenticated = computed(() => this.currentUserSignal() \!== null);
+  readonly isAuthenticated = computed(() => this.currentUserSignal() !== null);
   readonly userRole = computed(() => this.currentUserSignal()?.role ?? null);
 
   constructor(
@@ -104,7 +104,7 @@ export class AuthService {
 
   hasRole(roles: string[]): boolean {
     const userRole = this.userRole();
-    return userRole \!== null && roles.includes(userRole);
+    return userRole !== null && roles.includes(userRole);
   }
 
   private clearSession(): void {
