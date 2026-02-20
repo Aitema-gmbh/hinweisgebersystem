@@ -1,38 +1,44 @@
-# Änderungsprotokoll
+# Changelog
 
-Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
-
-Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
-und dieses Projekt hält sich an [Semantische Versionierung](https://semver.org/spec/v2.0.0.html).
+Alle wesentlichen Änderungen an aitema|Hinweis werden in dieser Datei dokumentiert.
+Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
+Versionierung nach [Semantic Versioning](https://semver.org/).
 
 ## [Unveröffentlicht]
 
+## [1.0.0] – 2025-01-01
+
 ### Hinzugefügt
-- Modernes UI-Design mit aitema Design-System (Inter, Navy/Blue/Accent-Palette)
+- Anonyme Meldungseinreichung gemäß HinSchG (Hinweisgeberschutzgesetz)
+- Verschlüsselte Zwei-Wege-Kommunikation zwischen Hinweisgebern und Bearbeitern
+- Vollständiger Audit-Trail für alle Vorgänge (Dokumentationspflicht §§ 11–13 HinSchG)
+- Rollenbasierte Zugriffsverwaltung (Bearbeiter, Administrator)
 - Animierter Step-Indicator für den Einreichungsprozess
-- Hero-Banner mit Gradient-Hintergrund
-- Glassmorphism-Karten für Formulare
-- Responsive Kachel-Navigation für Kategorien
+- Hero-Banner mit Gradient-Hintergrund und Glassmorphism-Karten
 - Status-Timeline mit animierten Knotenpunkten
 - Nachrichtenansicht im Chat-Stil (anonym / Sachbearbeiter)
-- Dark-Mode-Unterstützung via `prefers-color-scheme`
+- Dark-Mode-Unterstützung via 
+- Dashboard mit Statistiken und Fristüberwachung
+- Mehrsprachige Oberfläche (Deutsch und Englisch)
+- Modernes UI mit aitema Design-System (Inter-Font, Navy/Blue/Accent-Palette)
+- Docker-Compose-Deployment (Installation in unter 30 Minuten)
 - publiccode.yml für opencode.de-Kompatibilität
+- OpenAPI 3.1 Spezifikation
+- System-Architektur-Dokumentation
+- Vollständige Installationsanleitung, FAQ und Umgebungsvariablen-Referenz
+- Sicherheitsrichtlinie (SECURITY.md) und Förderinformationen
 - Issue-Templates für Kommunen, Fehlerberichte und Förderanfragen
-- GitHub Actions: Semantic Release, Renovate Bot, Willkommens-Bot
-- Vollständige Installationsdokumentation
+- Renovate-Bot für automatische Dependency-Updates
+- CONTRIBUTING.md mit Entwickler-Richtlinien
+- Conventional Commits + Semantic Release Konfiguration
+- GitHub Actions CI/CD-Pipeline
 
-### Geändert
-- Globale Styles modernisiert (Bootstrap-Variablen überschrieben)
-- Navigation in schlankes Top-Nav + Sidebar-Layout umgestaltet
+### Technischer Stack
+- **Frontend:** Angular 17, Bootstrap 5, TypeScript
+- **Backend:** Java / Spring Boot 3.x (via GlobaLeaks)
+- **Datenbank:** PostgreSQL 14+
+- **Deployment:** Docker Compose
+- **Lizenz:** AGPL-3.0
 
-## [1.0.0] – 2024-01-01
-
-### Hinzugefügt
-- Erstveröffentlichung
-- Anonyme Hinweisgabe ohne Registrierung
-- Ende-zu-Ende-verschlüsselte Kommunikation
-- Case-Management-Dashboard
-- Quittungscode-Statusverfolgung
-- HinSchG-konforme interne Meldestellen-Funktion
-- Docker-Compose-Deployment
-- Mehrsprachige Benutzeroberfläche (Deutsch)
+[Unveröffentlicht]: https://github.com/Aitema-gmbh/hinweisgebersystem/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Aitema-gmbh/hinweisgebersystem/releases/tag/v1.0.0
