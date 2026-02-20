@@ -1,0 +1,98 @@
+version: "3.9"
+
+# ---------------------------------------------------------------------------
+# HinSchG Monitoring Stack
+# Prometheus + Grafana + AlertManager
+# ---------------------------------------------------------------------------
+
+networks:
+  monitoring:
+    name: hinschg_monitoring
+    driver: bridge
+  # Attach to the existing backend network so Prometheus can scrape it
+  backend:
+    name: hinschg_backend
+    external: true
+
+volumes:
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  alertmanager_data:
+    driver: local
+
+services:
+
+  # --------------------------------------------------------------------------
+  prometheus:
+  # --------------------------------------------------------------------------
+    image: prom/prometheus:v2.51.2
+    container_name: hinschg_prometheus
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=90d"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      - "--web.enable-lifecycle"
+      - "--web.route-prefix=/"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alerts:/etc/prometheus/alerts:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+      - backend
+    labels:
+      org.opencontainers.image.description: "Prometheus – HinSchG metrics scraper"
+
+  # --------------------------------------------------------------------------
+  alertmanager:
+  # --------------------------------------------------------------------------
+    image: prom/alertmanager:v0.27.0
+    container_name: hinschg_alertmanager
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+      - "--storage.path=/alertmanager"
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager_data:/alertmanager
+    ports:
+      - "9093:9093"
+    networks:
+      - monitoring
+    labels:
+      org.opencontainers.image.description: "AlertManager – HinSchG alert routing"
+
+  # --------------------------------------------------------------------------
+  grafana:
+  # --------------------------------------------------------------------------
+    image: grafana/grafana:10.4.2
+    container_name: hinschg_grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:-hinschg_secure_2024}"
+      GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_INSTALL_PLUGINS: ""
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
+    labels:
+      org.opencontainers.image.description: "Grafana – HinSchG compliance dashboards"

@@ -1,0 +1,41 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ["alertname", "tid", "severity"]
+  group_wait:      10s
+  group_interval:  5m
+  repeat_interval: 4h
+  receiver: "default"
+  routes:
+    - matchers:
+        - severity = critical
+      receiver: "critical"
+      repeat_interval: 1h
+    - matchers:
+        - severity = warning
+      receiver: "warning"
+      repeat_interval: 6h
+
+receivers:
+  - name: "default"
+
+  - name: "critical"
+    # email_configs:
+    #   - to: "compliance@aitema.de"
+    #     from: "alerts@aitema.de"
+    #     smarthost: "smtp.aitema.de:587"
+    #     auth_username: "alerts@aitema.de"
+    #     auth_password: "SECRET"
+    #     require_tls: true
+    #     headers:
+    #       Subject: "[CRITICAL] HinSchG Alert: {{ .CommonAnnotations.summary }}"
+
+  - name: "warning"
+
+inhibit_rules:
+  - source_matchers:
+      - severity = critical
+    target_matchers:
+      - severity = warning
+    equal: ["alertname", "tid"]

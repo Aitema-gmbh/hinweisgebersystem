@@ -1,0 +1,102 @@
+# ---------------------------------------------------------------------------
+# HinSchG Alert Rules
+# ---------------------------------------------------------------------------
+
+groups:
+
+  - name: hinschg.compliance
+    interval: 60s
+    rules:
+
+      # -----------------------------------------------------------------------
+      # CRITICAL: Overdue deadlines (Fristüberschreitung)
+      # -----------------------------------------------------------------------
+      - alert: HinSchGFristUeberfaellig
+        expr: hinschg_fristen_overdue > 0
+        for: 0m          # fire immediately – every minute of delay is a legal risk
+        labels:
+          severity: critical
+          category: compliance
+          regulation: HinSchG
+        annotations:
+          summary: "HinSchG: Fristüberschreitung bei Tenant {{ $labels.tid }}"
+          description: >
+            {{ $value }} Frist(en) vom Typ '{{ $labels.typ }}' sind überfällig
+            (Tenant: {{ $labels.tid }}).
+            Gesetzliche Fristen nach §17 HinSchG müssen eingehalten werden.
+            Sofortiger Handlungsbedarf!
+          runbook_url: "https://wiki.aitema.de/hinschg/runbooks/frist-ueberfaellig"
+
+      # -----------------------------------------------------------------------
+      # CRITICAL: Escalation detected
+      # -----------------------------------------------------------------------
+      - alert: HinSchGEskalation
+        expr: hinschg_escalations_month > 0
+        for: 0m
+        labels:
+          severity: critical
+          category: escalation
+          regulation: HinSchG
+        annotations:
+          summary: "HinSchG: Eskalation diesen Monat bei Tenant {{ $labels.tid }}"
+          description: >
+            {{ $value }} Fall/Fälle wurden in diesem Monat eskaliert
+            (Tenant: {{ $labels.tid }}).
+            Sofortige Überprüfung durch Compliance-Verantwortliche erforderlich.
+          runbook_url: "https://wiki.aitema.de/hinschg/runbooks/eskalation"
+
+      # -----------------------------------------------------------------------
+      # WARNING: Compliance rate below 90 %
+      # -----------------------------------------------------------------------
+      - alert: HinSchGComplianceLow
+        expr: hinschg_compliance_rate < 90
+        for: 5m
+        labels:
+          severity: warning
+          category: compliance
+          regulation: HinSchG
+        annotations:
+          summary: "HinSchG: Compliance-Rate unter 90% bei Tenant {{ $labels.tid }}"
+          description: >
+            Die Compliance-Rate beträgt nur {{ $value | printf \"%.1f\" }}%
+            (Tenant: {{ $labels.tid }}).
+            Ziel: mindestens 90% aller Fälle innerhalb der gesetzlichen Frist.
+          runbook_url: "https://wiki.aitema.de/hinschg/runbooks/compliance-niedrig"
+
+      # -----------------------------------------------------------------------
+      # WARNING: High backlog – more than 20 open cases
+      # -----------------------------------------------------------------------
+      - alert: HinSchGBacklogHoch
+        expr: >
+          sum by (tid) (
+            hinschg_cases_total{status="eingegangen"}
+          ) > 20
+        for: 10m
+        labels:
+          severity: warning
+          category: capacity
+          regulation: HinSchG
+        annotations:
+          summary: "HinSchG: Hoher Rückstand – >20 eingegangene Fälle bei Tenant {{ $labels.tid }}"
+          description: >
+            {{ $value }} Fälle haben den Status 'eingegangen' und warten auf Bearbeitung
+            (Tenant: {{ $labels.tid }}).
+            Bitte Ressourcen prüfen und Zuweisung sicherstellen.
+          runbook_url: "https://wiki.aitema.de/hinschg/runbooks/backlog-hoch"
+
+      # -----------------------------------------------------------------------
+      # INFO: Many upcoming deadlines in 7 days
+      # -----------------------------------------------------------------------
+      - alert: HinSchGFristenBaldFaellig
+        expr: hinschg_fristen_upcoming > 5
+        for: 0m
+        labels:
+          severity: info
+          category: compliance
+          regulation: HinSchG
+        annotations:
+          summary: "HinSchG: {{ $value }} Fristen in 7 Tagen fällig bei Tenant {{ $labels.tid }}"
+          description: >
+            {{ $value }} Fristen sind in den nächsten 7 Tagen fällig
+            (Tenant: {{ $labels.tid }}).
+            Proaktive Bearbeitung empfohlen.

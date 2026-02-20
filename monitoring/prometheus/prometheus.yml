@@ -1,0 +1,57 @@
+# ---------------------------------------------------------------------------
+# Prometheus configuration – HinSchG Hinweisgebersystem
+# ---------------------------------------------------------------------------
+
+global:
+  scrape_interval:     30s
+  evaluation_interval: 30s
+  scrape_timeout:      10s
+  external_labels:
+    environment: "production"
+    system:      "hinschg"
+
+# Alertmanager endpoints
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - "hinschg_alertmanager:9093"
+
+# Load alert rule files
+rule_files:
+  - "/etc/prometheus/alerts/*.rules.yml"
+
+# ---------------------------------------------------------------------------
+# Scrape configurations
+# ---------------------------------------------------------------------------
+scrape_configs:
+
+  # Prometheus itself
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # HinSchG Backend (GlobaLeaks / Tornado on port 8083 or 443)
+  - job_name: "hinweis-backend"
+    scheme: https
+    tls_config:
+      insecure_skip_verify: true   # internal network; replace with proper cert in prod
+    metrics_path: "/api/hinschg/metrics"
+    # Basic-auth or bearer token; adjust to actual auth mechanism
+    bearer_token_file: /etc/prometheus/secrets/bearer_token
+    scrape_interval: 60s
+    scrape_timeout:  15s
+    static_configs:
+      - targets:
+          - "hinweis-backend:443"
+        labels:
+          app:  "hinweisgebersystem"
+          tier: "backend"
+
+  # Node Exporter (optional, if deployed on the same host)
+  - job_name: "node"
+    static_configs:
+      - targets:
+          - "49.13.15.44:9100"
+        labels:
+          host: "hetzner-main"
