@@ -1,0 +1,43 @@
+name: "Bug Report"
+description: "Einen Fehler melden"
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: hosting
+    attributes:
+      label: "Hosting-Art"
+      options:
+        - Selbst-gehostet (Docker)
+        - Selbst-gehostet (andere)
+        - Managed von aitema
+        - Entwicklungsumgebung
+    validations:
+      required: true
+  - type: textarea
+    id: beschreibung
+    attributes:
+      label: "Fehlerbeschreibung"
+      placeholder: "Was passiert? Was sollte passieren?"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduzieren
+    attributes:
+      label: "Schritte zum Reproduzieren"
+      placeholder: |
+        1. Gehe zu '...'
+        2. Klicke auf '...'
+        3. Fehler erscheint
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: "Version"
+      placeholder: "z.B. v1.2.3 oder Commit-Hash"
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Logs / Screenshots"
+      description: "Relevante Logausgaben oder Screenshots"
