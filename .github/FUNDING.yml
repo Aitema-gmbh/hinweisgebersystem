@@ -1,10 +1,7 @@
-# Unterstütze die Entwicklung von aitema Open-Source-GovTech
-# Möglichkeiten, das Projekt zu fördern:
+# aitema GovTech - Foerderung und Unterstuetzung
+# https://github.com/Aitema-gmbh/hinweisgebersystem
 
-# GitHub Sponsors (falls aktiviert)
-# github: Aitema-gmbh
-
-# Offener Aufruf für kommunale Förderprojekte
+github: [Aitema-gmbh]
 custom:
-  - "https://aitema.de/loesungen/foerderung"
-  - "https://aitema.de/kontakt"
+  - https://aitema.de/foerderung
+  - https://aitema.de/partner
