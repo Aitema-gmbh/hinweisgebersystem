@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100" width="300" height="100">
+  <defs>
+    <linearGradient id="bg_hinweisgebersystem" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e3a5f"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="100" rx="12" fill="url(#bg_hinweisgebersystem)"/>
+  <text x="20" y="42" font-family="Arial,sans-serif" font-size="24" font-weight="900" fill="white">aitema</text>
+  <text x="110" y="42" font-family="Arial,sans-serif" font-size="24" font-weight="900" fill="#3b82f6">|Hinweis</text>
+  <text x="20" y="72" font-family="Arial,sans-serif" font-size="13" fill="rgba(255,255,255,0.6)">Open Source GovTech - AGPL-3.0</text>
+</svg>
