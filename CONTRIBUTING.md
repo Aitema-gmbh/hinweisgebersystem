@@ -1,64 +1,153 @@
-# Beitrag leisten zu aitema|Hinweis
+# Beitragen zu aitema|Hinweisgebersystem
 
-Vielen Dank fuer dein Interesse! Wir freuen uns ueber Beitraege aller Art.
+Herzlich willkommen! Wir freuen uns über jeden Beitrag zu diesem Open-Source-Projekt. Dieser Leitfaden erklärt, wie du dich beteiligen kannst.
 
-## Schnellstart fuer Entwickler
+## Inhaltsverzeichnis
+
+- [Verhaltenskodex](#verhaltenskodex)
+- [Erste Schritte](#erste-schritte)
+- [Entwicklungsumgebung einrichten](#entwicklungsumgebung-einrichten)
+- [Wie kann ich beitragen?](#wie-kann-ich-beitragen)
+- [Pull Request Prozess](#pull-request-prozess)
+- [Commit-Konventionen](#commit-konventionen)
+- [Code-Stil](#code-stil)
+- [Testen](#testen)
+
+## Verhaltenskodex
+
+Dieses Projekt folgt unserem [Verhaltenskodex](CODE_OF_CONDUCT.md). Durch deine Teilnahme verpflichtest du dich, diesen einzuhalten.
+
+## Erste Schritte
+
+1. **Fork** dieses Repository auf GitHub
+2. **Clone** dein Fork: `git clone https://github.com/DEIN-USERNAME/hinweisgebersystem.git`
+3. **Branch** erstellen: `git checkout -b feature/mein-feature`
+4. Änderungen vornehmen und **testen**
+5. **Commit** mit konventionellem Format: `git commit -m "feat: meine neue Funktion"`
+6. **Push**: `git push origin feature/mein-feature`
+7. **Pull Request** auf GitHub öffnen
+
+## Entwicklungsumgebung einrichten
 
 ### Voraussetzungen
-- Docker & Docker Compose
 - Node.js 20+
+- Docker und Docker Compose
 - Git
 
-### Lokale Entwicklungsumgebung
-```bash
-git clone https://github.com/Aitema-gmbh/hinweisgebersystem.git
-cd hinweisgebersystem
-cp .env.example .env
-docker compose up -d
-```
-
-## Wie du beitragen kannst
-
-### 1. Issues
-- **Bug gefunden?** → [Bug-Report erstellen](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=bug_report.md)
-- **Feature-Idee?** → [Feature-Request erstellen](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=feature_request.md)
-- **Fuer Kommunen:** → [Kommune-Anfrage stellen](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=kommune_anfrage.md)
-
-### 2. Pull Requests
+### Installation
 
 ```bash
-# Fork erstellen (GitHub UI)
-git clone https://github.com/DEIN-USERNAME/hinweisgebersystem.git
-git checkout -b feat/meine-verbesserung
-# Aenderungen vornehmen
-git commit -m feat: beschreibe deine Aenderung
-git push origin feat/meine-verbesserung
-# Pull Request auf GitHub erstellen
+# Abhängigkeiten installieren
+cd frontend && npm install
+
+# Entwicklungsserver starten
+npm run dev
 ```
 
-### 3. Commit-Konventionen
+Detaillierte Anleitung: [docs/deployment.md](docs/deployment.md)
 
-Wir folgen [Conventional Commits](https://www.conventionalcommits.org/de/):
+## Wie kann ich beitragen?
 
-| Prefix | Wann |
-|--------|------|
-|  | Neue Funktionalitaet |
-|  | Fehlerbehebung |
-|  | Dokumentation |
-|  | Formatierung (keine Logik-Aenderung) |
-|  | Code-Verbesserung ohne Feature/Fix |
-|  | Tests hinzufuegen/aendern |
-|  | Wartungsaufgaben (Dependencies etc.) |
+### Bugs melden
 
-### 4. Branch-Strategie
+Nutze das [Bug Report Template](.github/ISSUE_TEMPLATE/bug_report.yml) auf GitHub.
 
--  - Stabile Produktion
--  - Entwicklungsbranch (PRs hierhin)
--  - Feature-Branches
--  - Bugfix-Branches
--  - Kritische Fixes direkt auf main
+**Bitte prüfe vorher**, ob das Issue bereits gemeldet wurde.
 
-## Tests ausfuehren
+### Features vorschlagen
+
+Nutze das [Feature Request Template](.github/ISSUE_TEMPLATE/feature_request.yml).
+
+Beschreibe:
+- Das Problem, das gelöst werden soll
+- Deine vorgeschlagene Lösung
+- Mögliche Alternativen
+
+### Dokumentation verbessern
+
+Verbesserungen der Dokumentation sind immer willkommen! Erstelle einfach einen PR.
+
+### Sicherheitslücken
+
+**Wichtig**: Sicherheitslücken bitte NICHT öffentlich auf GitHub melden!
+
+Schicke eine E-Mail an: **security@aitema.de**
+
+Weitere Informationen: [SECURITY.md](SECURITY.md)
+
+## Pull Request Prozess
+
+1. Aktualisiere die `CHANGELOG.md` mit einer Beschreibung deiner Änderungen
+2. Stelle sicher, dass alle Tests erfolgreich sind: `npm test`
+3. Stelle sicher, dass der Code lint-frei ist: `npm run lint`
+4. Wähle das korrekte PR-Template aus
+5. Warte auf mindestens ein Review von einem Maintainer
+6. Adressiere alle Review-Kommentare
+7. Halte deinen Branch aktuell mit: `git rebase main`
+
+### Review-Kriterien
+
+Dein PR wird akzeptiert, wenn:
+- Alle automatischen Checks bestehen
+- Code-Stil eingehalten wird
+- Tests vorhanden und erfolgreich sind
+- Dokumentation aktualisiert wurde (wenn nötig)
+- Kein breaking change ohne Diskussion in einem Issue
+
+## Commit-Konventionen
+
+Wir nutzen [Conventional Commits](https://www.conventionalcommits.org/de/):
+
+```
+<typ>(<scope>): <beschreibung>
+
+[optionaler body]
+
+[optionaler footer]
+```
+
+### Typen
+
+| Typ | Beschreibung |
+|-----|-------------|
+| `feat` | Neue Funktion |
+| `fix` | Bug-Fix |
+| `docs` | Dokumentation |
+| `style` | Formatierung (kein Logik-Change) |
+| `refactor` | Code-Refactoring |
+| `test` | Tests hinzufügen/anpassen |
+| `chore` | Build, Dependencies, Konfiguration |
+| `perf` | Performance-Verbesserung |
+| `ci` | CI/CD-Änderungen |
+
+### Beispiele
+
+```bash
+feat(auth): add 2FA support for admin accounts
+fix(reports): correct receipt code generation for edge case
+docs(deployment): add Kubernetes deployment guide
+chore(deps): update Angular to 18.3.0
+```
+
+## Code-Stil
+
+- TypeScript strict mode aktiviert
+- Prettier für Formatierung (`.prettierrc` in diesem Repo)
+- ESLint für Code-Qualität
+- Kommentare auf Deutsch oder Englisch (konsistent bleiben)
+
+```bash
+# Code formatieren
+npm run format
+
+# Lint-Fehler prüfen
+npm run lint
+
+# Lint-Fehler automatisch beheben
+npm run lint:fix
+```
+
+## Testen
 
 ```bash
 # Unit Tests
@@ -67,37 +156,16 @@ npm test
 # E2E Tests (Playwright)
 npm run test:e2e
 
-# Linting
-npm run lint
-
-# Type-Check
-npm run type-check
+# Load Tests (k6 erforderlich)
+npm run test:load
 ```
 
-## Code-Stil
-
-- **TypeScript** ueberall (kein  wenn vermeidbar)
-- **ESLint + Prettier** - Automatisch via Pre-commit-Hook
-- **Kommentare** auf Deutsch (Code-Identifikatoren Englisch)
-- **Barrierefreiheit** - WCAG 2.1 AA fuer alle UI-Aenderungen
-
-## Sicherheit
-
-Sicherheitsluecken bitte NICHT als oeffentliches Issue melden!
-→ E-Mail an: security@aitema.de (PGP-Schluessel auf Anfrage)
-
-Oder nutze [GitHub Security Advisories](https://github.com/Aitema-gmbh/hinweisgebersystem/security/advisories/new).
-
-## Lizenz
-
-Mit deinem Beitrag stimmst du zu, dass dieser unter der [AGPL-3.0](LICENSE) Lizenz veroeffentlicht wird.
+**Anforderungen**: Jede neue Funktion muss mit Unit-Tests abgedeckt sein. Bug-Fixes sollten einen Regression-Test enthalten.
 
 ## Fragen?
 
-- [GitHub Discussions](https://github.com/Aitema-gmbh/hinweisgebersystem/discussions)
-- E-Mail: community@aitema.de
-- Matrix: #aitema:matrix.org (demnaechst)
+- **GitHub Discussions**: [Diskutiere Ideen und stelle Fragen](https://github.com/Aitema-gmbh/hinweisgebersystem/discussions)
+- **E-Mail**: [info@aitema.de](mailto:info@aitema.de)
+- **Website**: [aitema.de](https://aitema.de)
 
----
-
-*Vielen Dank, dass du aitema besser machst!*
+Vielen Dank für deinen Beitrag!
