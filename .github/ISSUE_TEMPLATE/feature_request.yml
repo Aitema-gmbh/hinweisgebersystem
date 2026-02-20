@@ -1,0 +1,49 @@
+name: "✨ Feature-Anfrage"
+description: "Schlage eine neue Funktion vor"
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke für deinen Vorschlag\! Gute Ideen kommen oft aus der Praxis.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Welches Problem löst diese Funktion?"
+      description: "Beschreibe das Problem, das du hast"
+      placeholder: "Ich finde es frustrierend, wenn..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "Gewünschte Lösung"
+      description: "Wie sollte die Funktion aussehen?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternativen"
+      description: "Hast du andere Lösungen in Betracht gezogen?"
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "Priorität (deine Einschätzung)"
+      options:
+        - Niedrig (Nice-to-have)
+        - Mittel (Würde Workflow verbessern)
+        - Hoch (Blockiert produktiven Einsatz)
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "Weitere Informationen"
+      description: "Mockups, Links, Referenz-Implementierungen etc."

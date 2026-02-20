@@ -1,42 +1,33 @@
 # Sicherheitsrichtlinie
 
-## Unterstuetzte Versionen
+## Unterstützte Versionen
 
-| Version | Support |
-|---------|---------|
-| 1.x.x   | Aktiv |
-| < 1.0   | Kein Support |
+| Version     | Sicherheitsupdates |
+|-------------|-------------------|
+| Aktuell (main) | ✅ Unterstützt  |
+| Ältere Versionen | ❌ Nicht unterstützt |
 
-## Schwachstellen melden
+## Sicherheitslücken melden
 
-**Bitte melde Sicherheitsluecken NICHT oeffentlich.**
+**Bitte melde Sicherheitslücken NICHT über öffentliche GitHub Issues.**
 
-### Option 1: GitHub Security Advisory (bevorzugt)
-1. Gehe zu [Security Advisories](https://github.com/Aitema-gmbh/hinweisgebersystem/security/advisories/new)
-2. Klicke Report a vulnerability
-3. Fuelle das Formular aus
+Sende stattdessen eine E-Mail an: **security@aitema.de**
 
-### Option 2: E-Mail
-- security@aitema.de
-- PGP-Fingerprint: Auf Anfrage verfuegbar
-
-## Was wir benoetigen
-
-- Beschreibung der Schwachstelle
+Bitte gib an:
+- Art der Sicherheitslücke
+- Betroffene Komponenten
 - Schritte zur Reproduktion
-- Moegliche Auswirkungen
-- Ggf. Proof-of-Concept (nur privat)
+- Mögliche Auswirkungen
 
-## Reaktionszeit
+Wir bestätigen den Eingang innerhalb von 48 Stunden und geben innerhalb von 7 Tagen eine Ersteinschätzung.
 
-- **Bestaetigung:** Innerhalb von 48 Stunden
-- **Ersteinschaetzung:** Innerhalb von 5 Werktagen
-- **Patch:** Je nach Schwere 7-30 Tage
+## Sicherheitsprinzipien
 
-## Safe Harbor
+- Regelmäßige Abhängigkeits-Updates (automatisch via Renovate Bot)
+- Kein Telemetrie oder externe Datenübertragung
+- DSGVO-konforme Datenverarbeitung
+- Quellcode vollständig einsehbar (AGPL-3.0)
 
-Wir verpflichten uns: Wer Schwachstellen verantwortungsbewusst meldet, wird nicht rechtlich verfolgt.
+## Responsible Disclosure
 
-## Danksagungen
-
-Wir bedanken uns oeffentlich bei allen, die uns verantwortungsbewusst ueber Sicherheitsluecken informiert haben (mit Erlaubnis).
+Wir bitten darum, uns 90 Tage Zeit zur Behebung zu geben, bevor Details öffentlich gemacht werden. Wir sind dem Grundsatz der verantwortungsvollen Offenlegung verpflichtet und arbeiten transparent mit Sicherheitsforschern zusammen.

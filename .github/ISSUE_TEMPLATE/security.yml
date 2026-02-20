@@ -1,0 +1,57 @@
+name: "🔒 Sicherheitslücke"
+description: "Melde eine Sicherheitslücke (wird vertraulich behandelt)"
+title: "[Security]: "
+labels: ["security", "confidential"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ **Wichtig:** Für kritische Sicherheitslücken bitte NICHT dieses öffentliche Formular verwenden, sondern direkt an **security@aitema.de** schreiben.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Beschreibung der Sicherheitslücke"
+      description: "Bitte beschreibe die Schwachstelle ohne sensible Details"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: "CVSS-Schweregrad (Schätzung)"
+      options:
+        - "Kritisch (9.0-10.0)"
+        - "Hoch (7.0-8.9)"
+        - "Mittel (4.0-6.9)"
+        - "Niedrig (0.1-3.9)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected_component
+    attributes:
+      label: "Betroffene Komponente"
+      options:
+        - Frontend
+        - Backend / API
+        - Datenbank
+        - Infrastruktur / Docker
+        - Authentifizierung
+        - Sonstiges
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Schritte zur Reproduktion"
+      description: "Nur allgemeine Schritte, keine funktionsfähigen Exploits"
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: "Mögliche Auswirkungen"
+      description: "Welche Daten oder Funktionen könnten betroffen sein?"
+    validations:
+      required: true
