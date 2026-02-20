@@ -1,0 +1,274 @@
+openapi: "3.1.0"
+info:
+  title: aitema|Hinweis API
+  description: |
+    REST-API des aitema Hinweisgeberschutzsystems.
+    Ermöglicht anonyme Meldungseinreichung, Statusabfragen und Bearbeiterkommunikation
+    gemäß HinSchG (Hinweisgeberschutzgesetz).
+  version: "1.0.0"
+  contact:
+    name: aitema GmbH
+    email: kontakt@aitema.de
+    url: https://aitema.de
+  license:
+    name: AGPL-3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.html
+
+servers:
+  - url: https://hinweis.ihre-kommune.de/api
+    description: Produktionsinstanz
+  - url: http://localhost:8080/api
+    description: Lokale Entwicklungsumgebung
+
+tags:
+  - name: Meldungen
+    description: Anonyme Hinweisgeber-Meldungen
+  - name: Status
+    description: Statusabfragen ohne Authentifizierung
+  - name: Kommunikation
+    description: Verschlüsselte Nachrichten zwischen Hinweisgeber und Bearbeiter
+  - name: Dashboard
+    description: Bearbeiter-Dashboard (erfordert Authentifizierung)
+
+paths:
+  /meldungen:
+    post:
+      tags: [Meldungen]
+      summary: Neue anonyme Meldung einreichen
+      description: |
+        Erstellt eine neue anonyme Meldung. Gibt einen eindeutigen Zugangscode zurück,
+        mit dem der Hinweisgeber den Status seiner Meldung verfolgen kann.
+        Kein Benutzerkonto erforderlich.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeldungEinreichen'
+            example:
+              kategorie: "Korruption"
+              beschreibung: "Ich habe beobachtet, dass..."
+              dringlichkeit: "mittel"
+      responses:
+        '201':
+          description: Meldung erfolgreich eingereicht
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeldungErstelltAntwort'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          description: Zu viele Anfragen (Rate Limiting)
+
+  /meldungen/{zugangscode}/status:
+    get:
+      tags: [Status]
+      summary: Status einer Meldung abfragen
+      description: Gibt den aktuellen Bearbeitungsstatus zurück. Kein Login erforderlich.
+      parameters:
+        - name: zugangscode
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$'
+          example: "ABCD-1234-EFGH"
+      responses:
+        '200':
+          description: Aktueller Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeldungStatus'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /meldungen/{zugangscode}/nachrichten:
+    get:
+      tags: [Kommunikation]
+      summary: Nachrichten abrufen
+      parameters:
+        - name: zugangscode
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Liste der Nachrichten
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Nachricht'
+    post:
+      tags: [Kommunikation]
+      summary: Nachricht senden (vom Hinweisgeber)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NachrichtSenden'
+      responses:
+        '201':
+          description: Nachricht gesendet
+
+  /admin/meldungen:
+    get:
+      tags: [Dashboard]
+      summary: Alle Meldungen (Bearbeiter)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [neu, in_bearbeitung, abgeschlossen, archiviert]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginierte Liste der Meldungen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeldungenListe'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    MeldungEinreichen:
+      type: object
+      required: [kategorie, beschreibung]
+      properties:
+        kategorie:
+          type: string
+          enum:
+            - Korruption
+            - Betrug
+            - Datenschutzverletzung
+            - Sicherheitsmangel
+            - Diskriminierung
+            - Sonstiges
+        beschreibung:
+          type: string
+          minLength: 50
+          maxLength: 10000
+        dringlichkeit:
+          type: string
+          enum: [niedrig, mittel, hoch, kritisch]
+          default: mittel
+        anhaenge:
+          type: array
+          items:
+            type: string
+            format: binary
+
+    MeldungErstelltAntwort:
+      type: object
+      properties:
+        zugangscode:
+          type: string
+          example: "ABCD-1234-EFGH"
+          description: Sicher aufbewahren! Wird nur einmal angezeigt.
+        meldung_id:
+          type: string
+          format: uuid
+        erstellt_am:
+          type: string
+          format: date-time
+
+    MeldungStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [eingegangen, in_pruefung, in_bearbeitung, abgeschlossen]
+        aktualisiert_am:
+          type: string
+          format: date-time
+        neue_nachrichten:
+          type: integer
+          description: Anzahl ungelesener Nachrichten vom Bearbeiter
+
+    Nachricht:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        von:
+          type: string
+          enum: [hinweisgeber, bearbeiter]
+        inhalt:
+          type: string
+        erstellt_am:
+          type: string
+          format: date-time
+        gelesen:
+          type: boolean
+
+    NachrichtSenden:
+      type: object
+      required: [inhalt]
+      properties:
+        inhalt:
+          type: string
+          minLength: 1
+          maxLength: 5000
+
+    MeldungenListe:
+      type: object
+      properties:
+        daten:
+          type: array
+          items:
+            $ref: '#/components/schemas/MeldungStatus'
+        gesamt:
+          type: integer
+        seite:
+          type: integer
+        seiten_gesamt:
+          type: integer
+
+  responses:
+    BadRequest:
+      description: Ungültige Anfrage
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              fehler:
+                type: string
+    NotFound:
+      description: Ressource nicht gefunden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              nachricht:
+                type: string
+                example: "Kein Eintrag mit diesem Zugangscode gefunden"
+    Unauthorized:
+      description: Authentifizierung erforderlich
