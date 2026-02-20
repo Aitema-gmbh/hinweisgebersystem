@@ -1,16 +1,11 @@
 # aitema|Hinweis – Open-Source-Hinweisgeberschutzsystem
 
-![GitHub License](https://img.shields.io/github/license/Aitema-gmbh/hinweisgebersystem?style=flat-square&color=blue)
-![GitHub Stars](https://img.shields.io/github/stars/Aitema-gmbh/hinweisgebersystem?style=flat-square)
-![GitHub Issues](https://img.shields.io/github/issues/Aitema-gmbh/hinweisgebersystem?style=flat-square)
-![publiccode.yml](https://img.shields.io/badge/publiccode-0.4-brightgreen?style=flat-square)
-![HinSchG konform](https://img.shields.io/badge/HinSchG-konform-blue?style=flat-square)
-![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
-
-
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![GitHub Stars](https://img.shields.io/github/stars/Aitema-gmbh/hinweisgebersystem)](https://github.com/Aitema-gmbh/hinweisgebersystem/stargazers)
-[![Made in Germany](https://img.shields.io/badge/Made_in-Germany-black)](https://aitema.de)
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![GitHub Stars](https://img.shields.io/github/stars/Aitema-gmbh/hinweisgebersystem?style=social)](https://github.com/Aitema-gmbh/hinweisgebersystem/stargazers)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://github.com/Aitema-gmbh/hinweisgebersystem/pkgs/container/hinweisgebersystem)
+[![opencode.de](https://img.shields.io/badge/opencode.de-Kompatibel-0069B4)](https://opencode.de)
+[![HinSchG](https://img.shields.io/badge/HinSchG-konform-green)](https://aitema.de/loesungen/hinweisgebersystem)
+[![API Docs](https://img.shields.io/badge/API-Dokumentation-orange)](https://aitema.de/api-docs/hinweisgebersystem)
 
 Das einzige vollständig quelloffene Hinweisgeberschutzsystem für deutsche Kommunen und Behörden – DSGVO-konform, selbst-hostbar, kostenlos.
 

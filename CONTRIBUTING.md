@@ -1,30 +1,103 @@
-# Beitragen zu aitema
+# Beitrag leisten zu aitema|Hinweis
 
-Vielen Dank für Ihr Interesse an aitema!
+Vielen Dank fuer dein Interesse! Wir freuen uns ueber Beitraege aller Art.
 
-## Commit-Konventionen
+## Schnellstart fuer Entwickler
 
-Wir nutzen [Conventional Commits](https://www.conventionalcommits.org/de/):
+### Voraussetzungen
+- Docker & Docker Compose
+- Node.js 20+
+- Git
 
-| Präfix | Bedeutung | Beispiel |
-|--------|-----------|---------|
-| `feat:` | Neue Funktion | `feat(dashboard): Statistik-Export als CSV` |
-| `fix:` | Bugfix | `fix(auth): Logout-Timeout korrigiert` |
-| `docs:` | Dokumentation | `docs: Installationsanleitung aktualisiert` |
-| `chore:` | Wartung | `chore: Dependencies aktualisiert` |
-| `feat!:` | Breaking Change | `feat!: API v2 – bestehende Clients prüfen` |
+### Lokale Entwicklungsumgebung
+```bash
+git clone https://github.com/Aitema-gmbh/hinweisgebersystem.git
+cd hinweisgebersystem
+cp .env.example .env
+docker compose up -d
+```
 
-Ein `feat:` oder `fix:` Commit triggert automatisch einen Release.
+## Wie du beitragen kannst
 
-## Für Kommunen und Behörden
+### 1. Issues
+- **Bug gefunden?** → [Bug-Report erstellen](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=bug_report.md)
+- **Feature-Idee?** → [Feature-Request erstellen](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=feature_request.md)
+- **Fuer Kommunen:** → [Kommune-Anfrage stellen](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=kommune_anfrage.md)
 
-Sie sind aus einer Behörde und möchten eine Funktion anfragen oder einen Bug melden?
-Nutzen Sie unsere [Issue-Templates](.github/ISSUE_TEMPLATE/) – wir freuen uns besonders
-über Feedback aus der Praxis!
+### 2. Pull Requests
 
-Für Förderprojekte und größere Weiterentwicklungen: [Förderprojekt-Anfrage](.github/ISSUE_TEMPLATE/foerderprojekt.yml)
+```bash
+# Fork erstellen (GitHub UI)
+git clone https://github.com/DEIN-USERNAME/hinweisgebersystem.git
+git checkout -b feat/meine-verbesserung
+# Aenderungen vornehmen
+git commit -m feat: beschreibe deine Aenderung
+git push origin feat/meine-verbesserung
+# Pull Request auf GitHub erstellen
+```
 
-## Kontakt
+### 3. Commit-Konventionen
 
-- E-Mail: kontakt@aitema.de
-- GitHub Discussions: für allgemeine Fragen
+Wir folgen [Conventional Commits](https://www.conventionalcommits.org/de/):
+
+| Prefix | Wann |
+|--------|------|
+|  | Neue Funktionalitaet |
+|  | Fehlerbehebung |
+|  | Dokumentation |
+|  | Formatierung (keine Logik-Aenderung) |
+|  | Code-Verbesserung ohne Feature/Fix |
+|  | Tests hinzufuegen/aendern |
+|  | Wartungsaufgaben (Dependencies etc.) |
+
+### 4. Branch-Strategie
+
+-  - Stabile Produktion
+-  - Entwicklungsbranch (PRs hierhin)
+-  - Feature-Branches
+-  - Bugfix-Branches
+-  - Kritische Fixes direkt auf main
+
+## Tests ausfuehren
+
+```bash
+# Unit Tests
+npm test
+
+# E2E Tests (Playwright)
+npm run test:e2e
+
+# Linting
+npm run lint
+
+# Type-Check
+npm run type-check
+```
+
+## Code-Stil
+
+- **TypeScript** ueberall (kein  wenn vermeidbar)
+- **ESLint + Prettier** - Automatisch via Pre-commit-Hook
+- **Kommentare** auf Deutsch (Code-Identifikatoren Englisch)
+- **Barrierefreiheit** - WCAG 2.1 AA fuer alle UI-Aenderungen
+
+## Sicherheit
+
+Sicherheitsluecken bitte NICHT als oeffentliches Issue melden!
+→ E-Mail an: security@aitema.de (PGP-Schluessel auf Anfrage)
+
+Oder nutze [GitHub Security Advisories](https://github.com/Aitema-gmbh/hinweisgebersystem/security/advisories/new).
+
+## Lizenz
+
+Mit deinem Beitrag stimmst du zu, dass dieser unter der [AGPL-3.0](LICENSE) Lizenz veroeffentlicht wird.
+
+## Fragen?
+
+- [GitHub Discussions](https://github.com/Aitema-gmbh/hinweisgebersystem/discussions)
+- E-Mail: community@aitema.de
+- Matrix: #aitema:matrix.org (demnaechst)
+
+---
+
+*Vielen Dank, dass du aitema besser machst!*
