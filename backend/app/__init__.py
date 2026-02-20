@@ -15,7 +15,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, scoped_session
 from celery import Celery
 import structlog
@@ -299,7 +299,7 @@ def create_app(config_override: dict | None = None) -> Flask:
         # Datenbank-Check
         try:
             with app.Session() as session:
-                session.execute("SELECT 1")
+                session.execute(text("SELECT 1"))
             health_status["database"] = "connected"
         except Exception:
             health_status["database"] = "disconnected"
