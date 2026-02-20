@@ -1,20 +1,41 @@
 {
-  "": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
-  "schedule": ["before 6am on Monday"],
-  "prHourlyLimit": 2,
-  "prConcurrentLimit": 5,
-  "labels": ["dependencies"],
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "schedule": [
+    "before 6am on Monday"
+  ],
+  "prHourlyLimit": 1,
+  "prConcurrentLimit": 1,
+  "labels": [
+    "dependencies"
+  ],
   "commitMessagePrefix": "chore:",
+  "dependencyDashboard": true,
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch"],
-      "automerge": false,
-      "addLabels": ["auto-update"]
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ],
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch",
+      "automerge": true,
+      "automergeType": "pr",
+      "addLabels": [
+        "auto-update"
+      ]
     },
     {
-      "matchUpdateTypes": ["major"],
-      "addLabels": ["breaking-change"],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "major dependency updates",
+      "addLabels": [
+        "breaking-change"
+      ],
       "automerge": false
     }
   ]
