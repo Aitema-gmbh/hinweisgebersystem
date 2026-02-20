@@ -1,0 +1,44 @@
+# aitema|Hinweis – Schnellstart (Produktion)
+# Starten: docker compose up -d
+# Öffnen:  http://localhost:3000
+# Tipp:    Kopiere .env.example nach .env und passe die Werte an!
+
+services:
+  app:
+    image: ghcr.io/aitema-gmbh/hinweisgebersystem:latest
+    # Alternativ: build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://aitema:${DB_PASSWORD:-geheimes_passwort}@db:5432/hinweis
+      - SESSION_SECRET=${SESSION_SECRET:-bitte_aendern_in_produktion}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - hinweis_net
+
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=hinweis
+      - POSTGRES_USER=aitema
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-geheimes_passwort}
+    volumes:
+      - hinweis_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aitema -d hinweis"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hinweis_net
+
+volumes:
+  hinweis_db_data:
+
+networks:
+  hinweis_net:
