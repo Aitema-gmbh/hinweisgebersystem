@@ -103,29 +103,33 @@ services:
       - aitema-hinweis
 
   # ============================================================
-  # Tor Hidden Service (Optional)
+  # Tor Hidden Service - Anonymer Meldekanal (§13 HinSchG)
   # ============================================================
   tor:
-    image: goldy/tor-hidden-service:latest
+    image: torproject/tor:latest
     container_name: aitema-hinweis-tor
-    environment:
-      - SERVICE1_TOR_SERVICE_HOSTS=80:backend:8080
-      - SERVICE1_TOR_SERVICE_VERSION=3
+    restart: unless-stopped
     volumes:
-      - tor-keys:/var/lib/tor/hidden_service
+      - ./docker/tor/torrc:/etc/tor/torrc:ro
+      - tor-data:/var/lib/tor
     depends_on:
-      - backend
+      - nginx
     profiles:
       - tor
     networks:
       - aitema-hinweis
+    # Tor laeuft als unprivilegierter User
+    user: '100:101'
+    read_only: true
+    tmpfs:
+      - /tmp
 
 volumes:
   gl-data:
     driver: local
   redis-data:
     driver: local
-  tor-keys:
+  tor-data:
     driver: local
 
 networks:

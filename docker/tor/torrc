@@ -1,0 +1,21 @@
+# aitema|Hinweis - Tor Hidden Service Configuration
+# Anonymous Whistleblower Channel per §13 HinSchG (Vertraulichkeitsgebot)
+
+# Disable SOCKS proxy - we only need the hidden service
+SocksPort 0
+
+# Logging to stdout (Docker-kompatibel)
+Log notice stdout
+
+# Hidden Service: Anonymes Meldungsportal
+HiddenServiceDir /var/lib/tor/hinweis/
+HiddenServicePort 80 nginx:80
+
+# Security hardening
+HiddenServiceVersion 3
+# Vanguards-like circuit isolation
+HiddenServiceMaxStreams 50
+HiddenServiceMaxStreamsCloseCircuit 1
+
+# Minimize fingerprinting
+AvoidDiskWrites 1

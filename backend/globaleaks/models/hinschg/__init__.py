@@ -327,3 +327,60 @@ class HinschgReport(_HinschgReport, Base):
 
 # Tenant Settings (Multi-Tenant Architecture)
 from globaleaks.models.hinschg.tenant_settings import HinschgTenantSettings
+
+
+# ============================================================
+# Anonymer Meldekanal Modelle (§13 HinSchG Vertraulichkeitsgebot)
+# ============================================================
+
+class _AnonSubmission(Model):
+    """Anonyme Meldung ohne Identitaetsverknuepfung. Zugang nur via Receipt-Code."""
+    __tablename__ = 'hinschg_anon_submission'
+
+    properties = [
+        'id', 'tid', 'receipt_code', 'aktenzeichen',
+        'kategorie', 'beschreibung', 'hinweis_typ',
+        'status', 'eingangsdatum', 'updated_at',
+    ]
+
+    id = Column(UnicodeText, primary_key=True, default=uuid4)
+    tid = Column(Integer, default=1, nullable=False, index=True)
+    receipt_code = Column(UnicodeText, nullable=False, unique=True, index=True)
+    aktenzeichen = Column(UnicodeText, nullable=False, unique=True)
+    kategorie = Column(UnicodeText, nullable=False, default='sonstiges')
+    beschreibung = Column(UnicodeText, nullable=False)
+    hinweis_typ = Column(UnicodeText, nullable=False, default='')
+    status = Column(UnicodeText, nullable=False, default='eingegangen')
+    eingangsdatum = Column(DateTime, nullable=False, default=datetime_now)
+    updated_at = Column(DateTime, nullable=False, default=datetime_now)
+
+    unicode_keys = [
+        'receipt_code', 'aktenzeichen', 'kategorie',
+        'beschreibung', 'hinweis_typ', 'status',
+    ]
+
+
+class AnonSubmission(_AnonSubmission, Base):
+    pass
+
+
+class _AnonMessage(Model):
+    """Anonyme Nachricht. von_bearbeiter=True wenn vom Ombudspersonal."""
+    __tablename__ = 'hinschg_anon_message'
+
+    properties = [
+        'id', 'submission_id', 'nachricht', 'von_bearbeiter', 'created_at',
+    ]
+
+    id = Column(UnicodeText, primary_key=True, default=uuid4)
+    submission_id = Column(UnicodeText, nullable=False, index=True)
+    nachricht = Column(UnicodeText, nullable=False)
+    von_bearbeiter = Column(Boolean, default=False)
+    created_at = Column(DateTime, nullable=False, default=datetime_now)
+
+    unicode_keys = ['submission_id', 'nachricht']
+    bool_keys = ['von_bearbeiter']
+
+
+class AnonMessage(_AnonMessage, Base):
+    pass

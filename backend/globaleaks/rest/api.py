@@ -753,6 +753,11 @@ from globaleaks.handlers.hinschg import (
     OmbudspersonCollection,
     HinschgFristenOverview,
 )
+from globaleaks.handlers.hinschg.anonymous import (
+    AnonSubmitHandler,
+    AnonStatusHandler,
+    AnonMessageHandler,
+)
 
 hinschg_api_spec = [
     # Case Management
@@ -771,6 +776,13 @@ hinschg_api_spec = [
 
     # Ombudsperson Configuration
     ('/api/hinschg/ombudspersonen', OmbudspersonCollection),
+
+    # Anonymer Meldekanal (kein Auth, kein IP-Logging, §13 HinSchG)
+    ('/api/hinschg/anonymous/submit', AnonSubmitHandler),
+    ('/api/hinschg/anonymous/status/', AnonStatusHandler,
+        r'/api/hinschg/anonymous/status/[A-Z2-9]{16}'),
+    ('/api/hinschg/anonymous/message/', AnonMessageHandler,
+        r'/api/hinschg/anonymous/message/[A-Z2-9]{16}'),
 ]
 
 # Add HinSchG routes to main API spec
