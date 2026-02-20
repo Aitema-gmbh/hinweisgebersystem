@@ -1,0 +1,63 @@
+name: "Funktionswunsch (Kommunen)"
+description: "Neue Funktion für kommunale Anforderungen vorschlagen"
+title: "[Feature] "
+labels: ["feature-request", "kommune"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Vielen Dank für Ihren Vorschlag! Als öffentliche Einrichtung ist Ihr Feedback
+        besonders wertvoll für die Weiterentwicklung.
+  - type: dropdown
+    id: behoerden-typ
+    attributes:
+      label: "Behördentyp"
+      description: "Welchem Behördentyp gehören Sie an?"
+      options:
+        - Gemeinde (< 20.000 EW)
+        - Stadt (20.000–100.000 EW)
+        - Großstadt (> 100.000 EW)
+        - Landkreis
+        - Stadtwerk / kommunales Unternehmen
+        - Bundesbehörde / Landesbehörde
+        - Sonstiges
+    validations:
+      required: true
+  - type: textarea
+    id: usecase
+    attributes:
+      label: "Anwendungsfall"
+      description: "Beschreiben Sie den Anwendungsfall"
+      placeholder: "Wir benötigen diese Funktion, weil..."
+    validations:
+      required: true
+  - type: textarea
+    id: current-workaround
+    attributes:
+      label: "Aktuelle Lösung / Workaround"
+      placeholder: "Aktuell lösen wir das durch..."
+  - type: dropdown
+    id: prioritaet
+    attributes:
+      label: "Dringlichkeit"
+      options:
+        - Gerne irgendwann
+        - Wichtig für uns
+        - Blockiert uns aktuell
+    validations:
+      required: true
+  - type: dropdown
+    id: foerderbedarf
+    attributes:
+      label: "Budget / Förderung"
+      options:
+        - Eigenbudget vorhanden
+        - Förderantrag geplant (Prototype Fund etc.)
+        - Noch kein Budget
+        - Kann co-finanzieren (Entwicklungsauftrag)
+  - type: checkboxes
+    id: kontakt
+    attributes:
+      label: "Kontakt"
+      options:
+        - label: "Ich bin bereit, in einem kurzen Call Details zu besprechen"
