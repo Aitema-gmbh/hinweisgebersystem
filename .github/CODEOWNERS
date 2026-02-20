@@ -1,0 +1,6 @@
+# aitema|Hinweis CODEOWNERS
+# Alle Dateien: hinweis-maintainers Team
+* @Aitema-gmbh
+
+# Core security files require extra review
+aitema-hinweis/server/ @Aitema-gmbh
