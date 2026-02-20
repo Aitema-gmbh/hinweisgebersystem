@@ -1,0 +1,277 @@
+# aitema|Hinweis Helm Values
+# Default-Werte - fuer Produktion anpassen
+# Dokumentation: https://aitema.de/api-docs/hinweisgebersystem
+
+# ================================================================
+# REPLIKATION
+# ================================================================
+
+replicaCount: 1
+# Fuer Hochverfuegbarkeit: replicaCount: 2 oder 3
+
+# ================================================================
+# IMAGE-KONFIGURATION
+# ================================================================
+
+image:
+  repository: ghcr.io/aitema-gmbh/hinweisgebersystem
+  pullPolicy: IfNotPresent
+  tag: "latest"
+  # Fuer Produktion: spezifischen Tag setzen, z.B. "1.2.3"
+
+imagePullSecrets: []
+  # Fuer private Registry:
+  # - name: ghcr-secret
+
+nameOverride: ""
+fullnameOverride: ""
+
+# ================================================================
+# SERVICE-ACCOUNT
+# ================================================================
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+# ================================================================
+# POD-KONFIGURATION
+# ================================================================
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8000"
+  prometheus.io/path: "/metrics"
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+# ================================================================
+# SERVICE
+# ================================================================
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+# ================================================================
+# INGRESS (mit cert-manager fuer automatisches SSL)
+# ================================================================
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+  hosts:
+    - host: hinweis.ihre-kommune.de
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: hinweis-tls
+      hosts:
+        - hinweis.ihre-kommune.de
+
+# ================================================================
+# RESSOURCEN-LIMITS
+# ================================================================
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+# Fuer Produktionsumgebung empfohlen:
+# resources:
+#   requests:
+#     memory: "512Mi"
+#     cpu: "250m"
+#   limits:
+#     memory: "1Gi"
+#     cpu: "1000m"
+
+# ================================================================
+# AUTOSCALING (optional)
+# ================================================================
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# ================================================================
+# NODE-SELEKTION
+# ================================================================
+
+nodeSelector: {}
+  # Fuer dedizierte Kommunal-Nodes:
+  # kommunal/system: hinweisgebersystem
+
+tolerations: []
+affinity: {}
+
+# ================================================================
+# POSTGRESQL (via Bitnami Helm Chart)
+# ================================================================
+
+postgresql:
+  enabled: true
+  auth:
+    username: hinweis
+    password: "changeme-in-production"  # In Produktion: Kubernetes Secret nutzen!
+    database: hinweis
+  primary:
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: ""  # Default StorageClass
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+
+# Externes PostgreSQL (falls vorhanden):
+# postgresql:
+#   enabled: false
+# externalDatabase:
+#   host: postgres.ihre-kommune.de
+#   port: 5432
+#   user: hinweis
+#   database: hinweis
+#   existingSecret: hinweis-db-secret
+#   existingSecretPasswordKey: password
+
+# ================================================================
+# REDIS (fuer Sessions und Task-Queue)
+# ================================================================
+
+redis:
+  enabled: true
+  auth:
+    enabled: true
+    password: "redis-changeme"
+  master:
+    persistence:
+      enabled: true
+      size: 2Gi
+
+# ================================================================
+# ANWENDUNGS-KONFIGURATION
+# ================================================================
+
+env:
+  DOMAIN: "hinweis.ihre-kommune.de"
+
+  # E-Mail
+  SMTP_HOST: ""
+  SMTP_PORT: "587"
+  SMTP_TLS: "true"
+  FROM_EMAIL: ""
+  FROM_NAME: "Hinweisgebersystem"
+
+  # Sicherheit
+  SESSION_TIMEOUT: "30"
+  MAX_FILE_SIZE_MB: "50"
+  IP_ANONYMIZATION: "true"
+
+  # HinSchG-Fristen
+  RESPONSE_DEADLINE_DAYS: "7"
+  CLOSURE_DEADLINE_DAYS: "90"
+  RETENTION_AFTER_CLOSURE_DAYS: "1095"
+  DEADLINE_REMINDER_DAYS: "5"
+
+  # TOR-Anonymisierung
+  TOR_ENABLED: "false"
+
+# Sensitive Werte per Kubernetes Secret:
+envFromSecret:
+  # Secret muss vorher erstellt werden:
+  # kubectl create secret generic hinweis-secrets \
+  #   --from-literal=JWT_SECRET=$(openssl rand -hex 32) \
+  #   --from-literal=POSTGRES_PASSWORD=... \
+  #   --from-literal=ENCRYPTION_KEY=$(openssl rand -hex 16) \
+  #   --from-literal=SMTP_PASS=...
+  - secretName: hinweis-secrets
+
+# ================================================================
+# PERSISTENT STORAGE (fuer Meldungsanlagen)
+# ================================================================
+
+persistence:
+  enabled: true
+  storageClass: ""  # Default StorageClass des Clusters
+  accessMode: ReadWriteOnce
+  size: 20Gi
+  # Fuer ReadWriteMany (bei mehreren Replicas):
+  # accessMode: ReadWriteMany
+  # storageClass: nfs-client
+
+# ================================================================
+# HEALTH-CHECKS
+# ================================================================
+
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /api/health
+    port: 8000
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# ================================================================
+# NETZWERK-RICHTLINIEN
+# ================================================================
+
+networkPolicy:
+  enabled: false
+  # Empfohlen fuer Produktion:
+  # enabled: true
+  # ingress:
+  #   - from:
+  #     - namespaceSelector:
+  #         matchLabels:
+  #           name: ingress-nginx
+
+# ================================================================
+# MONITORING (Prometheus/Grafana)
+# ================================================================
+
+serviceMonitor:
+  enabled: false
+  # Aktivieren wenn Prometheus Operator installiert:
+  # enabled: true
+  # interval: 30s
+  # scrapeTimeout: 10s

@@ -1,0 +1,34 @@
+apiVersion: v2
+name: aitema-hinweis
+description: HinSchG-konformes Hinweisgebersystem fuer Kommunen
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - govtech
+  - hinweisgebersystem
+  - kommunen
+  - hinschg
+  - compliance
+  - whistleblowing
+home: https://aitema.de/loesungen/hinweisgebersystem
+sources:
+  - https://github.com/Aitema-gmbh/hinweisgebersystem
+maintainers:
+  - name: aitema GmbH
+    email: hallo@aitema.de
+    url: https://aitema.de
+dependencies:
+  - name: postgresql
+    version: "14.x.x"
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+  - name: redis
+    version: "18.x.x"
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
+annotations:
+  category: GovTech
+  licenses: EUPL-1.2
+  eu-dsgvo-compliant: "true"
+  hinschg-compliant: "true"
