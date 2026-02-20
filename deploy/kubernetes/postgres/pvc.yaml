@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: aitema-hinweis
+  labels:
+    app: postgres
+    app.kubernetes.io/name: aitema-hinweis
+    app.kubernetes.io/component: database
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard

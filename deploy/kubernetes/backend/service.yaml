@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hinweis-backend
+  namespace: aitema-hinweis
+  labels:
+    app: hinweis-backend
+    app.kubernetes.io/name: aitema-hinweis
+    app.kubernetes.io/component: backend
+spec:
+  type: ClusterIP
+  selector:
+    app: hinweis-backend
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+    protocol: TCP

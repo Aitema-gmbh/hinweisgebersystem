@@ -1,0 +1,25 @@
+apiVersion: v2
+name: aitema-hinweis
+description: Helm Chart fuer aitema|Hinweis - Open-Source Hinweisgebersystem nach HinSchG
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - govtech
+  - hinweisgebersystem
+  - hinschg
+  - compliance
+  - whistleblowing
+  - kommunen
+maintainers:
+  - name: aitema GmbH
+    email: hallo@aitema.de
+    url: https://aitema.de
+sources:
+  - https://github.com/Aitema-gmbh/hinweisgebersystem
+home: https://aitema.de/loesungen/hinweisgebersystem/
+annotations:
+  category: GovTech
+  licenses: EUPL-1.2
+  eu-dsgvo-compliant: "true"
+  hinschg-compliant: "true"

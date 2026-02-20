@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hinweis-frontend
+  namespace: aitema-hinweis
+  labels:
+    app: hinweis-frontend
+    app.kubernetes.io/name: aitema-hinweis
+    app.kubernetes.io/component: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: hinweis-frontend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP

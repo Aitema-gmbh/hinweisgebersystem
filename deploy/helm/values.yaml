@@ -1,0 +1,164 @@
+# aitema|Hinweis Helm Chart - Default Values
+# Anpassen fuer Ihre Umgebung\!
+# Dokumentation: https://aitema.de/docs/kubernetes
+
+# ================================================================
+# REPLIKATION
+# ================================================================
+replicaCount:
+  backend: 2
+  frontend: 2
+
+# ================================================================
+# IMAGE-KONFIGURATION
+# ================================================================
+image:
+  backend:
+    repository: ghcr.io/aitema-gmbh/hinweisgebersystem-backend
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  frontend:
+    repository: ghcr.io/aitema-gmbh/hinweisgebersystem-frontend
+    tag: "latest"
+    pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+  # Fuer private Registry:
+  # - name: ghcr-secret
+
+# ================================================================
+# SERVICE-KONFIGURATION
+# ================================================================
+service:
+  backend:
+    type: ClusterIP
+    port: 3000
+  frontend:
+    type: ClusterIP
+    port: 80
+
+# ================================================================
+# INGRESS (mit cert-manager fuer automatisches SSL)
+# ================================================================
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+  host: hinweis.ihre-kommune.de
+  tls:
+    enabled: true
+    secretName: hinweis-tls
+
+# ================================================================
+# POSTGRESQL
+# ================================================================
+postgresql:
+  enabled: true
+  auth:
+    database: hinweis_db
+    username: hinweis_user
+    # Passwort ueber Kubernetes Secret setzen\!
+    # existingSecret: hinweis-secrets
+    # secretKeys:
+    #   adminPasswordKey: postgres-password
+  primary:
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: ""
+
+# ================================================================
+# RESSOURCEN-LIMITS
+# ================================================================
+resources:
+  backend:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "1000m"
+  frontend:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "200m"
+  postgres:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+# ================================================================
+# AUTOSCALING (optional)
+# ================================================================
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+# ================================================================
+# ANWENDUNGS-KONFIGURATION
+# ================================================================
+config:
+  domain: "hinweis.ihre-kommune.de"
+  smtpPort: "587"
+  smtpTls: "true"
+  fromName: "Hinweisgebersystem"
+  sessionTimeout: "30"
+  maxFileSizeMb: "50"
+  ipAnonymization: "true"
+  # HinSchG-konforme Fristen
+  responseDeadlineDays: "7"
+  closureDeadlineDays: "90"
+  retentionAfterClosureDays: "1095"
+  deadlineReminderDays: "5"
+  torEnabled: "false"
+
+# Sensitive Werte als Kubernetes Secret (muss vorher erstellt werden):
+# kubectl create secret generic hinweis-secrets \
+#   --namespace=aitema-hinweis \
+#   --from-literal=postgres-password=$(openssl rand -hex 32) \
+#   --from-literal=jwt-secret=$(openssl rand -hex 32) \
+#   --from-literal=encryption-key=$(openssl rand -hex 16) \
+#   --from-literal=smtp-pass=IHR_SMTP_PASSWORT
+existingSecret: "hinweis-secrets"
+
+# ================================================================
+# PERSISTENTER SPEICHER (fuer Meldungsanlagen)
+# ================================================================
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 20Gi
+
+# ================================================================
+# NETZWERK-RICHTLINIEN
+# ================================================================
+networkPolicy:
+  enabled: false
+
+# ================================================================
+# MONITORING
+# ================================================================
+serviceMonitor:
+  enabled: false
+  interval: 30s
+
+# ================================================================
+# NODE-SELEKTION
+# ================================================================
+nodeSelector: {}
+tolerations: []
+affinity: {}

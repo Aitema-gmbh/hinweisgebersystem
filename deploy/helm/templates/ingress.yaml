@@ -1,0 +1,39 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "aitema-hinweis.fullname" . }}-ingress
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "aitema-hinweis.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.host | quote }}
+    secretName: {{ .Values.ingress.tls.secretName }}
+  {{- end }}
+  rules:
+  - host: {{ .Values.ingress.host | quote }}
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "aitema-hinweis.fullname" . }}-backend
+            port:
+              number: {{ .Values.service.backend.port }}
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "aitema-hinweis.fullname" . }}-frontend
+            port:
+              number: {{ .Values.service.frontend.port }}
+{{- end }}

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "aitema-hinweis.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "aitema-hinweis.labels" . | nindent 4 }}
+data:
+  DOMAIN: {{ .Values.config.domain | quote }}
+  NODE_ENV: "production"
+  SMTP_PORT: {{ .Values.config.smtpPort | quote }}
+  SMTP_TLS: {{ .Values.config.smtpTls | quote }}
+  FROM_NAME: {{ .Values.config.fromName | quote }}
+  SESSION_TIMEOUT: {{ .Values.config.sessionTimeout | quote }}
+  MAX_FILE_SIZE_MB: {{ .Values.config.maxFileSizeMb | quote }}
+  IP_ANONYMIZATION: {{ .Values.config.ipAnonymization | quote }}
+  RESPONSE_DEADLINE_DAYS: {{ .Values.config.responseDeadlineDays | quote }}
+  CLOSURE_DEADLINE_DAYS: {{ .Values.config.closureDeadlineDays | quote }}
+  RETENTION_AFTER_CLOSURE_DAYS: {{ .Values.config.retentionAfterClosureDays | quote }}
+  DEADLINE_REMINDER_DAYS: {{ .Values.config.deadlineReminderDays | quote }}
+  TOR_ENABLED: {{ .Values.config.torEnabled | quote }}

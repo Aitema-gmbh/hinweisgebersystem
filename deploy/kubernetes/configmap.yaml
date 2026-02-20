@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hinweis-config
+  namespace: aitema-hinweis
+  labels:
+    app.kubernetes.io/name: aitema-hinweis
+    app.kubernetes.io/component: config
+data:
+  DOMAIN: "hinweis.ihre-kommune.de"
+  NODE_ENV: "production"
+  SMTP_PORT: "587"
+  SMTP_TLS: "true"
+  FROM_NAME: "Hinweisgebersystem"
+  SESSION_TIMEOUT: "30"
+  MAX_FILE_SIZE_MB: "50"
+  IP_ANONYMIZATION: "true"
+  # HinSchG-konforme Fristen
+  RESPONSE_DEADLINE_DAYS: "7"
+  CLOSURE_DEADLINE_DAYS: "90"
+  RETENTION_AFTER_CLOSURE_DAYS: "1095"
+  DEADLINE_REMINDER_DAYS: "5"
+  TOR_ENABLED: "false"

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aitema-hinweis
+  labels:
+    app.kubernetes.io/name: aitema-hinweis
+    app.kubernetes.io/managed-by: kubectl
+    app.kubernetes.io/part-of: hinweisgebersystem
+    aitema.de/compliance: hinschg

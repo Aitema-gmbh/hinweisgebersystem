@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hinweis-ingress
+  namespace: aitema-hinweis
+  labels:
+    app.kubernetes.io/name: aitema-hinweis
+    app.kubernetes.io/component: ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    # Sicherheitsheader fuer HinSchG-Compliance
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header X-Frame-Options DENY;
+      add_header X-Content-Type-Options nosniff;
+      add_header X-XSS-Protection "1; mode=block";
+      add_header Referrer-Policy strict-origin-when-cross-origin;
+      add_header Permissions-Policy "geolocation=(), microphone=(), camera=()";
+spec:
+  tls:
+  - hosts:
+    - hinweis.ihre-kommune.de
+    secretName: hinweis-tls
+  rules:
+  - host: hinweis.ihre-kommune.de
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: hinweis-backend
+            port:
+              number: 3000
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hinweis-frontend
+            port:
+              number: 80

@@ -61,6 +61,72 @@ docker compose up -d
 - PostgreSQL 15 (oder als Docker-Container)
 - Mindestens 2 GB RAM, 10 GB Speicher
 
+
+
+## Kubernetes & Helm Deployment
+
+Fuer Enterprise-Deployments mit Kubernetes steht eine vollstaendige Infrastruktur bereit:
+
+### Schnellstart mit kubectl
+
+```bash
+# Namespace anlegen
+kubectl apply -f deploy/kubernetes/namespace.yaml
+
+# Secrets erstellen (Beispiel-Datei anpassen!)
+# cp deploy/kubernetes/secret.yaml.example deploy/kubernetes/secret.yaml
+# vim deploy/kubernetes/secret.yaml  # Werte anpassen
+kubectl create secret generic hinweis-secrets \\
+  --namespace=aitema-hinweis \\
+  --from-literal=postgres-db=hinweis_db \\
+  --from-literal=postgres-user=hinweis_user \\
+  --from-literal=postgres-password=$(openssl rand -hex 32) \\
+  --from-literal=database-url="postgresql://hinweis_user:PASS@postgres:5432/hinweis_db" \\
+  --from-literal=jwt-secret=$(openssl rand -hex 32) \\
+  --from-literal=encryption-key=$(openssl rand -hex 16)
+
+# Alle Manifeste anwenden
+kubectl apply -f deploy/kubernetes/
+```
+
+### Schnellstart mit Helm
+
+```bash
+# Helm-Chart installieren
+helm install aitema-hinweis ./deploy/helm \\
+  --namespace aitema-hinweis \\
+  --create-namespace \\
+  --set ingress.host=hinweis.ihre-kommune.de \\
+  --set existingSecret=hinweis-secrets
+
+# Mit eigener values-Datei (empfohlen fuer Produktion)
+cp deploy/helm/values.yaml my-values.yaml
+helm install aitema-hinweis ./deploy/helm \\
+  --namespace aitema-hinweis \\
+  --create-namespace \\
+  -f my-values.yaml
+```
+
+### Verzeichnisstruktur
+
+```
+deploy/
+├── kubernetes/          # Raw Kubernetes Manifeste
+│   ├── namespace.yaml
+│   ├── configmap.yaml
+│   ├── secret.yaml.example
+│   ├── postgres/        # Datenbank-Deployment
+│   ├── backend/         # API-Server
+│   ├── frontend/        # Web-Oberflaeche
+│   └── ingress.yaml     # HTTPS-Routing mit cert-manager
+└── helm/                # Helm Chart fuer Enterprise
+    ├── Chart.yaml
+    ├── values.yaml      # Konfiguration anpassen!
+    └── templates/
+```
+
+Vollstaendige Dokumentation: [docs/kubernetes.md](docs/kubernetes.md)
+
 ## 📞 Support & Mitmachen
 
 - **Bug melden:** [GitHub Issues](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=bug-report.yml)
