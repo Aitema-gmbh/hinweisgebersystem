@@ -64,3 +64,4 @@ backend/uploads/*
 \!backend/uploads/.gitkeep
 aitema-hinweis/
 globaleaks-upstream/
+.claude/worktrees/

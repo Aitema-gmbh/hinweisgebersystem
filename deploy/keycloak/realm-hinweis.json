@@ -1,0 +1,70 @@
+{
+  "realm": "aitema",
+  "enabled": true,
+  "displayName": "aitema SSO",
+  "displayNameHtml": "<strong>aitema</strong> SSO",
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 300,
+  "ssoSessionMaxLifespan": 36000,
+  "clients": [
+    {
+      "clientId": "hinweis-staff",
+      "name": "aitema|Hinweis Staff",
+      "description": "Staff-Login fuer das aitema Hinweisgebersystem (HinSchG)",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "https://hinweis.aitema.de/*",
+        "http://localhost:4200/*"
+      ],
+      "webOrigins": [
+        "https://hinweis.aitema.de",
+        "http://localhost:4200"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://hinweis.aitema.de/login##http://localhost:4200/login"
+      }
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "hinweis-admin",
+        "description": "Vollzugriff auf alle Hinweis-Funktionen"
+      },
+      {
+        "name": "hinweis-ombudsperson",
+        "description": "Ombudsperson - Meldungen empfangen und bearbeiten"
+      },
+      {
+        "name": "hinweis-fallbearbeiter",
+        "description": "Fallbearbeiter - Faelle bearbeiten und schliessen"
+      },
+      {
+        "name": "hinweis-auditor",
+        "description": "Auditor - Lesezugriff und Audit-Log"
+      }
+    ]
+  },
+  "groups": [
+    {
+      "name": "hinweis-staff",
+      "realmRoles": ["hinweis-fallbearbeiter"]
+    },
+    {
+      "name": "hinweis-admins",
+      "realmRoles": ["hinweis-admin"]
+    }
+  ]
+}
