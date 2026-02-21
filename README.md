@@ -1,95 +1,103 @@
-# aitema|Hinweis 🔒
+# aitema|Hinweis
 
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![GitHub Stars](https://img.shields.io/github/stars/Aitema-gmbh/hinweisgebersystem?style=social)](https://github.com/Aitema-gmbh/hinweisgebersystem/stargazers)
-[![GitHub Issues](https://img.shields.io/github/issues/Aitema-gmbh/hinweisgebersystem)](https://github.com/Aitema-gmbh/hinweisgebersystem/issues)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/Aitema-gmbh/hinweisgebersystem)](https://github.com/Aitema-gmbh/hinweisgebersystem/commits/main)
-[![Docker Image](https://img.shields.io/badge/docker-ghcr.io-blue?logo=docker&logoColor=white)](https://ghcr.io/aitema-gmbh/hinweisgebersystem)
-[![HinSchG konform](https://img.shields.io/badge/HinSchG-konform-green)](https://aitema.de/loesungen/hinweisgebersystem)
-[![WCAG 2.1 AA](https://img.shields.io/badge/WCAG%202.1-AA-brightgreen)](https://aitema.de/barrierefreiheit/)
-[![opencode.de](https://img.shields.io/badge/opencode.de-Kompatibel-0069B4)](https://opencode.de)
+> HinSchG-konformes, anonymes Hinweisgebersystem für Behörden und öffentliche Stellen.
 
-> **Open-Source Hinweisgebersystem** für Kommunen und Behörden — vollständig HinSchG-konform, DSGVO-sicher, selbst gehostet.
+[![Status](https://img.shields.io/badge/Status-Live-brightgreen)](https://hinweis.aitema.de)
+[![Stack](https://img.shields.io/badge/Stack-Angular%2017%20%7C%20Flask%20%7C%20Celery-blue)](https://hinweis.aitema.de)
+[![HinSchG](https://img.shields.io/badge/HinSchG-konform-red)](https://hinweis.aitema.de)
+[![DSGVO](https://img.shields.io/badge/DSGVO-konform-009933)](https://hinweis.aitema.de)
 
-**[🌐 Website](https://aitema.de/loesungen/hinweisgebersystem) · [📖 Dokumentation](docs/installation.md) · [🐛 Issues](https://github.com/Aitema-gmbh/hinweisgebersystem/issues) · [💬 Diskussionen](https://github.com/Aitema-gmbh/hinweisgebersystem/discussions)**
+## Screenshots
+
+| Meldeformular | Status-Tracking | Staff-Dashboard |
+|:-:|:-:|:-:|
+| ![Melden](docs/screenshots/hinweis-melden.png) | ![Status](docs/screenshots/hinweis-status.png) | ![Start](docs/screenshots/hinweis-start.png) |
+
+## Features
+
+### Für Hinweisgebende (Bürger/Beschäftigte)
+- **Vollständige Anonymität** – Kein Account, keine E-Mail erforderlich
+- **Verschlüsselter Nachrichtenkanal** – Anonym mit Sachbearbeiter kommunizieren
+- **Belegnummer-System** – Meldung jederzeit anonym nachverfolgen
+- **Datei-Upload** – Beweisdokumente anhängen (EXIF/Metadaten werden automatisch entfernt)
+- **Mehrsprachigkeit** – DE, EN, TR, AR, RU (RTL-Support)
+
+### Für Ombudspersonen und Sachbearbeiter
+- **Case-Management** – Vollständige Fallverwaltung (Öffnen → Bearbeiten → Abschließen)
+- **Fristenmanagement** – HinSchG: 3-Monats-Frist automatisch berechnet
+- **Compliance-Reporting** – Charts: Eingaben je Kategorie, Status-Verteilung, Zeitverlauf
+- **Keycloak SSO** – Single Sign-On (PKCE S256, 4 Rollen: Admin, Ombudsperson, Fallbearbeiter, Auditor)
+- **Metadaten-Strip** – Automatische Bereinigung von PDF/DOCX/Bild-Metadaten
+
+## HinSchG-Compliance
+
+| Anforderung (§ HinSchG) | Status |
+|-------------------------|--------|
+| Interne Meldestelle für >50 MA | ✅ |
+| Anonyme Meldung möglich | ✅ |
+| Rückmeldung innerhalb 7 Tage | ✅ (automatisch) |
+| Abschlussmitteilung 3 Monate | ✅ (Fristkalender) |
+| Vertraulichkeit der Identität | ✅ (kryptographisch) |
+| Keine Repressalien (Dokumentation) | ✅ |
+
+## Technologie-Stack
+
+```
+Frontend:  Angular 17 (Standalone, Signals)
+Backend:   Python / Flask + SQLAlchemy
+Tasks:     Celery + Redis (async Jobs)
+Datenbank: PostgreSQL 16
+Auth:      Keycloak OIDC/PKCE (Staff) + anonym (Bürger)
+Analytics: Plausible (cookiefrei, DSGVO)
+Deploy:    Docker Compose + Traefik
+```
+
+## Schnellstart
+
+```bash
+git clone https://github.com/Aitema-gmbh/hinweisgebersystem.git
+cd hinweisgebersystem
+
+# Backend
+cd backend && python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+flask db upgrade && flask run
+
+# Frontend
+cd ../frontend && npm install && npm start
+```
+
+## Architektur
+
+```
+hinweis.aitema.de
+├── /          → Angular-App (Bürger-Frontend)
+├── /melden    → Anonymes Meldeformular (5-Schritt)
+├── /status    → Fallstatus mit Belegnummer prüfen
+├── /login     → Keycloak SSO (Staff)
+├── /dashboard → Case-Management (Staff, geschützt)
+└── /api       → Flask REST API
+    ├── /api/v1/cases
+    ├── /api/v1/messages
+    └── /api/v1/analytics
+```
+
+## Datenschutz & Sicherheit
+
+- **Keine IP-Logs** für Bürger-Flows
+- **Ende-zu-Ende-Verschlüsselung** der Meldungsinhalte
+- **Metadaten-Strip**: Pillow (Bilder), pypdf (PDFs)
+- **EXIF-Entfernung** automatisch bei Upload
+- **Self-hosted**: Keine Cloud-Abhängigkeiten
+
+## Dokumentation
+
+- [Architektur](docs/ARCHITECTURE.md)
+- [PRD Features Batch 1](docs/PRD-features-2026-02.md)
+- [PRD Features Batch 2](docs/PRD-features-2026-02-batch2.md)
+- [PRD Features Batch 3](docs/PRD-features-2026-02-batch3.md)
+- [PRD Features Batch 4](docs/PRD-features-2026-02-batch4.md)
 
 ---
 
-## Was ist aitema|Hinweis?
-
-aitema|Hinweis ist ein **kostenloses, Open-Source Hinweisgebersystem** (Whistleblower-System), das die Anforderungen des deutschen [Hinweisgeberschutzgesetzes (HinSchG)](https://www.gesetze-im-internet.de/hinschg/) und der EU-Richtlinie 2019/1937 vollständig erfüllt.
-
-Das HinSchG verpflichtet Organisationen ab 50 Beschäftigten zur Einrichtung interner Meldestellen. Proprietäre Lösungen kosten ab 100 €/Monat — aitema|Hinweis ist kostenlos, transparent und selbst-hostbar.
-
-### ✨ Features
-
-| Feature | aitema\|Hinweis | Proprietäre Alternativen |
-|---------|----------------|--------------------------|
-| Preis | **Kostenlos** | 100–500 €/Monat |
-| Selbst-hostbar | ✅ | ❌ |
-| Quellcode-Audit | ✅ Jederzeit möglich | ❌ |
-| DSGVO nachweisbar | ✅ Quellcode prüfbar | ⚠️ Nur vertraglich |
-| Kein Vendor Lock-in | ✅ | ❌ |
-
-- 🔒 **Vollständige Anonymität** — Tor-kompatibel, keine IP-Speicherung
-- 📋 **HinSchG-konform** — Alle gesetzlichen Anforderungen erfüllt (EU 2019/1937)
-- 🏛️ **DSGVO-sicher** — Kein Cloud-Anbieter, eigene Infrastruktur
-- 🌐 **Mehrsprachig** — Deutsch und Englisch (i18n-ready)
-- ♿ **Barrierefrei** — WCAG 2.1 AA / BITV 2.0 konform
-- 🐳 **Docker-ready** — In 5 Minuten deployed
-- 📊 **Dashboard** — Bearbeiter-Oberfläche mit Status-Tracking und Fristen
-- ☕ **Quittungscode** — Hinweisgeber können Fallstatus anonym verfolgen
-
-## 🚀 Quick Start
-
-
-
-Öffne **http://localhost:4200** (Frontend) · **http://localhost:3000** (API)
-
-Vollständige Installationsanleitung: [→ docs/installation.md](docs/installation.md)
-
-## 📋 Anforderungen
-
-- Docker ≥ 24.0 und Docker Compose v2
-- 512 MB RAM (Minimum), 1 GB (empfohlen)
-- PostgreSQL 15+ (via Docker oder extern)
-- Optional: Kubernetes / Helm für Enterprise-Deployments
-
-## 🏗️ Technologie
-
-| Schicht | Technologie |
-|---------|-------------|
-| Frontend | Angular 17 |
-| Backend | Node.js |
-| Datenbank | PostgreSQL 15 |
-| Deployment | Docker Compose / Helm |
-| Lizenz | AGPL-3.0 |
-
-## ⚙️ Kubernetes & Helm Deployment
-
-Für Enterprise-Deployments steht eine vollständige Kubernetes-Infrastruktur bereit:
-
-
-
-Vollständige Kubernetes-Dokumentation: [→ docs/kubernetes.md](docs/kubernetes.md)
-
-## 📞 Support & Mitmachen
-
-- **Bug melden:** [GitHub Issues](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=bug-report.yml)
-- **Feature anfragen:** [Feature-Request](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=kommune-feature-request.yml)
-- **Förderprojekt:** [Förderanfrage](https://github.com/Aitema-gmbh/hinweisgebersystem/issues/new?template=foerderprojekt.yml)
-- **E-Mail:** kontakt@aitema.de
-- **Website:** [aitema.de](https://aitema.de)
-
-Aus einer Behörde? Wir freuen uns besonders über Feedback aus der Praxis!
-
-## 📄 Lizenz
-
-[GNU AGPLv3](LICENSE) — Open Source, Änderungen müssen veröffentlicht werden.
-
----
-
-<p align="center">
-  Made with ❤️ by <a href="https://aitema.de">aitema GmbH</a> &middot;
-  <a href="https://github.com/Aitema-gmbh/hinweisgebersystem/stargazers">⭐ Star uns auf GitHub</a>
-</p>
+*Entwickelt von [aitema GmbH](https://aitema.de) · Fragen: datenschutz@aitema.de*

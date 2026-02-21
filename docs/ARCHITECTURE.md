@@ -1,118 +1,168 @@
-# aitema|Hinweis - Architektur
+# aitema|Hinweis – Architektur
 
-## Systemueberblick
-
-```
-                    +------------------+
-                    |   Tor Hidden     |
-                    |   Service (opt.) |
-                    +--------+---------+
-                             |
-   Melder/Browser -----> +---+---+
-                          | Nginx | (TLS, Rate Limiting, Security Headers)
-                          +---+---+
-                              |
-                    +---------+---------+
-                    |                   |
-              +-----+------+    +------+------+
-              |  Frontend  |    |   Backend   |
-              |  Angular   |    | Flask/Twisted|
-              |  17+ SPA   |    | REST-API    |
-              +------------+    +------+------+
-                                       |
-                          +------------+------------+
-                          |            |            |
-                   +------+----+ +----+-----+ +----+-----+
-                   | PostgreSQL| |   Redis  | |  Celery  |
-                   | 16 (MT)  | | 7 (Cache)| | (Worker) |
-                   +-----------+ +----------+ +----------+
-```
-
-## Schichten-Architektur
-
-### 1. Praesentationsschicht (Frontend)
-- **Angular 17+** Standalone Components
-- **Angular Material** UI-Bibliothek
-- **WCAG 2.1 AA** Barrierefreiheit
-- Lazy Loading via Route-Level Code Splitting
-- Client-seitige Verschluesselung (Web Crypto API)
-
-### 2. API-Schicht (Backend)
-- **Flask** REST-API mit Blueprints
-- **JWT** Token-basierte Authentifizierung
-- **Rate Limiting** via Flask-Limiter + Redis
-- **CORS** konfigurierbar pro Tenant
-- API-Versionierung (/api/v1/)
-
-### 3. Geschaeftslogik (Services)
-- **HinSchG Compliance**: Fristenberechnung, Pflichtpruefungen
-- **Encryption**: AES-256-GCM, HKDF Key Derivation
-- **Notification**: E-Mail, Portal-Nachrichten
-- **Audit**: Revisionssicherer Trail
-- **Tenant Manager**: Multi-Tenant-Isolation
-
-### 4. Datenschicht (Models)
-- **SQLAlchemy ORM** mit Mapped Column Pattern
-- **Alembic** fuer Migrationen
-- **Multi-Tenant**: Row-Level, Schema, DB-per-Tenant
-
-## Multi-Tenant-Architektur
+## System-Übersicht
 
 ```
-Modus: Row-Level (Standard)
-  +-----------------------------+
-  | hinweis_platform (DB)       |
-  | +-------------------------+ |
-  | | tenants                 | |
-  | | users (tenant_id FK)    | |
-  | | hinweise (tenant_id FK) | |
-  | | cases (tenant_id FK)    | |
-  | +-------------------------+ |
-  +-----------------------------+
-
-Modus: DB-per-Tenant
-  +------------------+  +------------------+
-  | hinweis_platform |  | hinweis_tenant_X |
-  | (Master-DB)      |  | (Tenant-DB)      |
-  | tenants-Tabelle  |  | users, hinweise  |
-  +------------------+  +------------------+
+┌──────────────────────────────────────────────────────┐
+│                 hinweis.aitema.de                     │
+│               Traefik Reverse Proxy                   │
+└────────┬──────────────────┬────────────────────────────┘
+         │                  │
+  ┌──────▼──────┐    ┌──────▼──────┐
+  │  Angular 17 │    │    Flask    │
+  │  Frontend   │    │   Backend   │
+  │  :4200      │    │   :5000     │
+  └──────┬──────┘    └──────┬──────┘
+         │                  │
+  ┌──────▼──────────────────▼──────┐
+  │          PostgreSQL 16          │
+  │       + Redis (Celery-Broker)  │
+  └────────────────────────────────┘
 ```
 
-## Sicherheitsarchitektur
+## Komponenten
 
-### Verschluesselung
-- **At Rest**: AES-256-GCM fuer sensible Felder
-- **In Transit**: TLS 1.2/1.3 (BSI TR-02102-2)
-- **Key Management**: Master Key -> HKDF -> Per-Record Keys
-- **Passwoerter**: Argon2id Hashing
+| Komponente | Technologie | Port | Beschreibung |
+|------------|------------|------|--------------|
+| Frontend | Angular 17 | :4200 | Bürger-App + Staff-Dashboard |
+| Backend API | Flask (Python) | :5000 | REST API, Anonymisierung |
+| Task Queue | Celery + Redis | :6379 | Fristen, Benachrichtigungen |
+| Datenbank | PostgreSQL 16 | :5432 | Fälle, Nachrichten |
+| Auth | Keycloak | :8080 | SSO für Staff (4 Rollen) |
+| Analytics | Plausible | :8888 | Cookiefrei, DSGVO |
 
-### Authentifizierung
-- JWT Access/Refresh Token
-- MFA via TOTP (RFC 6238)
-- Brute-Force-Schutz
-- Session-Management via Redis
-
-### BSI-Grundschutz
-- Security Headers (CSP, HSTS, X-Frame-Options)
-- Rate Limiting
-- Audit-Trail (nicht loeschbar)
-- Eingabevalidierung
-- SQL-Injection-Schutz (SQLAlchemy ORM)
-
-## Datenfluss: Meldung einreichen
+## Datenfluss: Anonyme Meldung
 
 ```
-1. Melder oeffnet /melden (kein Login noetig)
-2. Formular ausfuellen (mehrstufig)
-3. POST /api/v1/submissions/
-   -> Pflichtfelder validieren
-   -> Sensible Daten mit AES-256-GCM verschluesseln
-   -> IP-Adresse hashen (SHA-256)
-   -> Fristen berechnen (7 Tage / 3 Monate)
-   -> Referenz-Code + Zugangscode generieren
-   -> In DB speichern
-   -> Audit-Log schreiben
-4. Response: {reference_code, access_code}
-5. Celery-Task: Eingangsbestaetigung senden
-6. Celery-Beat: Stuendliche Fristenueberwachung
+Bürger öffnet /melden (kein Login, keine IP-Speicherung)
+
+Schritt 1: Kategorie wählen (Korruption, Betrug, etc.)
+Schritt 2: Beschreibung eingeben (Freitext)
+Schritt 3: Dateien anhängen (optional)
+           └── Celery-Job: EXIF-Strip, Metadaten-Strip
+Schritt 4: Zusammenfassung prüfen
+Schritt 5: Absenden
+
+POST /api/v1/cases
+  ├── Belegnummer generieren (UUID, dem Bürger angezeigt)
+  ├── Meldung in PostgreSQL speichern
+  ├── Celery: Frist berechnen (7-Tage + 3-Monate)
+  └── Celery: Ombudsperson per E-Mail benachrichtigen
+
+→ Bürger erhält Belegnummer (Screenshot/Notieren)
 ```
+
+## Datenfluss: Statusabfrage (anonym)
+
+```
+Bürger öffnet /status
+→ Belegnummer eingeben
+→ GET /api/v1/cases/status/:token
+→ Fallstatus anzeigen: OFFEN | IN_BEARBEITUNG | ABGESCHLOSSEN
+→ Nachrichten des Sachbearbeiters lesen
+→ Antwort senden (anonym, verschlüsselt)
+```
+
+## Verschlüsselung & Anonymität
+
+```
+Meldungsinhalte:
+  ├── Symmetrisch verschlüsselt (AES-256-GCM)
+  ├── Schlüssel: abgeleitet aus Belegnummer (PBKDF2)
+  └── Nur Bürger (mit Belegnummer) kann entschlüsseln
+
+Nachrichten-Kanal:
+  ├── Ende-zu-Ende zwischen Bürger und Sachbearbeiter
+  ├── Backend sieht nur verschlüsselte Blobs
+  └── Kein Klartext in Datenbank
+
+IP-Adressen:
+  └── Nginx: access_log off für /melden und /status
+```
+
+## Metadaten-Strip (Celery Jobs)
+
+```python
+# Bilder: Pillow
+from PIL import Image
+img = Image.open(upload)
+img_clean = Image.new(img.mode, img.size)
+img_clean.putdata(list(img.getdata()))
+img_clean.save(output)  # Kein EXIF
+
+# PDFs: pypdf
+from pypdf import PdfReader, PdfWriter
+writer = PdfWriter()
+for page in PdfReader(upload).pages:
+    writer.add_page(page)
+writer.add_metadata({})  # Metadaten löschen
+```
+
+## Fristenmanagement (HinSchG)
+
+```
+Nach Eingang der Meldung:
+  ├── +7 Tage:  Eingangsbestätigung an Bürger (Pflicht §17 HinSchG)
+  ├── +3 Monate: Abschlussmitteilung (Pflicht §17 HinSchG)
+  └── Celery Beat: täglicher Check, Erinnerungen an Sachbearbeiter
+
+Status-Automaten:
+  EINGEGANGEN → IN_PRÜFUNG → IN_BEARBEITUNG → ABGESCHLOSSEN
+                                            └→ NICHT_ZUSTÄNDIG
+```
+
+## Keycloak-Rollen
+
+| Rolle | Berechtigungen |
+|-------|---------------|
+| Admin | Alle Fälle, Konfiguration, Mandanten |
+| Ombudsperson | Alle Fälle lesen + bearbeiten |
+| Fallbearbeiter | Zugewiesene Fälle bearbeiten |
+| Auditor | Read-only, Reporting |
+
+## Datenbankschema (Kernentitäten)
+
+```
+Case (Hinweisgeberfall)
+  ├── token: UUID (Belegnummer des Bürgers)
+  ├── category: ENUM
+  ├── status: EINGEGANGEN | IN_PRÜFUNG | IN_BEARBEITUNG | ABGESCHLOSSEN
+  ├── content_encrypted: BYTEA
+  ├── deadline_7d: TIMESTAMP
+  ├── deadline_3m: TIMESTAMP
+  ├── attachments: Attachment[]
+  └── messages: Message[]
+
+Message (Anonymer Kommunikationskanal)
+  ├── caseId
+  ├── sender: BUERGER | SACHBEARBEITER
+  ├── content_encrypted: BYTEA
+  └── createdAt: TIMESTAMP
+
+Attachment (Dateianlage)
+  ├── caseId
+  ├── filename_original (gestripped)
+  ├── mimetype
+  └── storage_path (lokal, kein Cloud)
+```
+
+## Deployment (Hetzner)
+
+```
+/opt/aitema/hinweisgebersystem/
+├── docker-compose.yml
+├── docker-compose.prod.yml
+├── docker-compose.traefik.yml
+├── nginx/
+│   └── nginx.conf          # access_log off für Bürger-Routes
+└── .env.production
+```
+
+## Sicherheit
+
+- **HTTPS**: Traefik + Let's Encrypt
+- **Keine IP-Logs**: Nginx-Konfiguration für /melden, /status
+- **CSP-Header**: Strict Content Security Policy
+- **File Upload**: Max 10 MB, Whitelist: PDF, JPG, PNG, DOCX
+- **Rate Limiting**: Flask-Limiter (10 Meldungen/Stunde pro IP)
+- **Audit Log**: Alle Staff-Aktionen protokolliert (Wer hat was wann gesehen)
