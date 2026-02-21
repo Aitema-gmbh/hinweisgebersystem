@@ -159,6 +159,14 @@ export class ApiService {
 
   // === Health ===
 
+  // === Analytics ===
+
+  getDashboardAnalytics(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/analytics/dashboard`);
+  }
+
+  // === Health ===
+
   getHealth(): Observable<any> {
     return this.http.get(`${this.baseUrl}/health`);
   }
