@@ -796,3 +796,28 @@ input, select, textarea {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ===================== RTL SUPPORT (Arabisch) ===================== */
+[dir=rtl] {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir=rtl] .glass-card,
+[dir=rtl] .sub-wrapper,
+[dir=rtl] .status-wrapper {
+  direction: rtl;
+}
+
+[dir=rtl] .form-actions {
+  flex-direction: row-reverse;
+}
+
+[dir=rtl] .field-label {
+  flex-direction: row-reverse;
+}
+
+/* Body RTL class */
+body.rtl {
+  direction: rtl;
+}
