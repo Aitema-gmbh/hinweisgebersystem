@@ -139,7 +139,16 @@ interface Kategorie {
               </div>
             }
 
-            <div class="form-actions">
+                        <!-- M5: Metadaten-Stripping Hinweis -->
+            <div style="display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.75rem; background: #f0fdf4; border-radius: 0.375rem; border: 1px solid #bbf7d0; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+              <span style="color: #059669; font-size: 1rem;">&#128274;</span>
+              <div>
+                <p style="font-size: 0.875rem; color: #065f46; font-weight: 500; margin: 0;">Dateianhaenge: Metadaten werden automatisch entfernt</p>
+                <p style="font-size: 0.75rem; color: #047857; margin: 0.25rem 0 0;">GPS-Koordinaten, Geraetedaten und Zeitstempel werden vor dem Speichern geloescht.</p>
+                <p style="font-size: 0.75rem; color: var(--aitema-muted, #64748b); margin: 0.25rem 0 0;">Erlaubte Dateitypen: JPEG, PNG, PDF &middot; Max. 10 MB</p>
+              </div>
+            </div>
+<div class="form-actions">
               <button type="button" class="btn-aitema btn-aitema--primary" (click)="goToStep(2)">
                 Weiter <span>&#8594;</span>
               </button>
@@ -998,6 +1007,11 @@ export class SubmissionFormComponent implements OnInit {
         );
         this.step.set(5);
         this.submitting.set(false);
+        // M1: Plausible Analytics - meldung_eingereicht Event (cookiefrei, DSGVO-konform)
+        const selectedCategory = this.inhaltForm.get('kategorie')?.value ?? 'unbekannt';
+        if (typeof window !== 'undefined' && (window as any).plausible) {
+          (window as any).plausible('meldung_eingereicht', { props: { category: selectedCategory } });
+        }
         window.scrollTo(0, 0);
       },
       error: (error) => {

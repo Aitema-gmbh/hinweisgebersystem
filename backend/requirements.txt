@@ -45,6 +45,7 @@ aiosmtplib==3.0.2
 # === Dateien & Upload ===
 python-magic==0.4.27
 Pillow==11.1.0
+pypdf==5.1.0
 
 # === Logging & Monitoring ===
 structlog==24.4.0

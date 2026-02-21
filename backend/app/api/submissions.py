@@ -399,3 +399,58 @@ def get_submission(submission_id: str):
         return jsonify({"error": "Fehler beim Laden der Meldung"}), 500
     finally:
         session.close()
+
+
+@submissions_bp.route("/<submission_id>/attachments", methods=["POST"])
+def upload_attachment(submission_id: str):
+    from app.services.file_sanitizer import sanitize_file
+    import os
+    import hashlib
+
+    if "file" not in request.files:
+        return jsonify({"error": "Keine Datei im Request"}), 400
+
+    file = request.files["file"]
+    if not file or file.filename == "":
+        return jsonify({"error": "Leere Datei"}), 400
+
+    raw_bytes = file.read()
+    original_filename = file.filename or "upload"
+    content_type = file.content_type or "application/octet-stream"
+
+    try:
+        clean_bytes, clean_content_type = sanitize_file(
+            file_bytes=raw_bytes,
+            filename=original_filename,
+            content_type=content_type,
+        )
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+    log.info(
+        "attachment_sanitized",
+        submission_id=submission_id,
+        filename=original_filename,
+        original_size=len(raw_bytes),
+        clean_size=len(clean_bytes),
+        metadata_removed=len(raw_bytes) != len(clean_bytes),
+    )
+
+    upload_folder = current_app.config.get("UPLOAD_FOLDER", "/app/uploads")
+    stored_name = f"{uuid.uuid4()}{os.path.splitext(original_filename)[1]}"
+    store_path = os.path.join(upload_folder, stored_name)
+
+    os.makedirs(upload_folder, exist_ok=True)
+    with open(store_path, "wb") as f_out:
+        f_out.write(clean_bytes)
+
+    checksum = hashlib.sha256(clean_bytes).hexdigest()
+
+    return jsonify({
+        "message": "Datei erfolgreich hochgeladen. Metadaten wurden entfernt.",
+        "filename": original_filename,
+        "stored_as": stored_name,
+        "size": len(clean_bytes),
+        "checksum_sha256": checksum,
+        "metadata_stripped": True,
+    }), 201
