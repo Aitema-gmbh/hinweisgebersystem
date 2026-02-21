@@ -170,4 +170,51 @@ export class ApiService {
   getHealth(): Observable<any> {
     return this.http.get(`${this.baseUrl}/health`);
   }
+
+  // === Generische Methoden fuer D3/D4 ===
+
+  get<T>(path: string, params?: Record<string, string>): Observable<T> {
+    let httpParams = new HttpParams();
+    if (params) {
+      Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined && v !== null) httpParams = httpParams.set(k, v);
+      });
+    }
+    return this.http.get<T>(this.baseUrl + path, { params: httpParams });
+  }
+
+  post<T = any>(path: string, body: any): Observable<T> {
+    return this.http.post<T>(this.baseUrl + path, body);
+  }
+
+  // === D3: Fristenampel ===
+
+  acknowledgeCase(caseId: string): Observable<any> {
+    return this.http.post(this.baseUrl + '/cases/' + caseId + '/acknowledge', {});
+  }
+
+  resolveCase(caseId: string, kommentar?: string): Observable<any> {
+    return this.http.post(this.baseUrl + '/cases/' + caseId + '/resolve', { kommentar });
+  }
+
+  getDeadlineSummary(): Observable<any> {
+    return this.http.get(this.baseUrl + '/cases/deadline-summary');
+  }
+
+  // === D4: Ombudsperson ===
+
+  forwardCaseToOmbudsperson(caseId: string, kommentar?: string): Observable<any> {
+    return this.http.post(this.baseUrl + '/cases/' + caseId + '/forward-to-ombudsperson', { kommentar });
+  }
+
+  getOmbudspersonCases(params?: { reviewed?: string }): Observable<any> {
+    let httpParams = new HttpParams();
+    if (params?.reviewed !== undefined) httpParams = httpParams.set('reviewed', params.reviewed);
+    return this.http.get(this.baseUrl + '/ombudsperson/cases', { params: httpParams });
+  }
+
+  submitOmbudspersonRecommendation(caseId: string, recommendation: string, notes?: string): Observable<any> {
+    return this.http.post(this.baseUrl + '/ombudsperson/cases/' + caseId + '/recommendation', { recommendation, notes });
+  }
+
 }

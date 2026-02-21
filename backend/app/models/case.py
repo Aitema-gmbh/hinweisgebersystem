@@ -1,6 +1,8 @@
 """
 aitema|Hinweis - Case Model
 Fallbearbeitung mit Status-Workflow.
+D3: HinSchG-Fristenampel (acknowledged_at, resolved_at)
+D4: Ombudsperson-Rolle (forwarded_to_ombudsperson_at, etc.)
 """
 
 import uuid
@@ -31,6 +33,13 @@ class CaseStatus(str, enum.Enum):
     ESKALIERT = "eskaliert"                # An hoehere Instanz eskaliert
 
 
+class OmbudspersonEmpfehlung(str, enum.Enum):
+    """Empfehlung der Ombudsperson fuer einen Fall."""
+    VERFOLGEN = "pursue"     # Fall weiter verfolgen
+    SCHLIESSEN = "close"     # Fall schliessen
+    ESKALIEREN = "escalate"  # An externe Stelle eskalieren
+
+
 class CaseEvent(Base):
     """
     Ereignis in der Fallbearbeitung.
@@ -51,7 +60,8 @@ class CaseEvent(Base):
 
     event_type: Mapped[str] = mapped_column(
         String(50), nullable=False
-    )  # "status_change", "note_added", "assignment", "attachment", "notification"
+    )  # "status_change", "note_added", "assignment", "attachment", "notification",
+       # "acknowledged", "forwarded_to_ombudsperson", "ombudsperson_recommendation"
 
     # Statusaenderung
     old_status: Mapped[Optional[str]] = mapped_column(String(50))
@@ -89,6 +99,9 @@ class Case(Base):
 
     Wird aus einem Hinweis eroeffnet und durchlaeuft
     einen definierten Bearbeitungs-Workflow.
+
+    D3: acknowledged_at (Eingangsbestaetigung), resolved_at (Abschluss-Rueckmeldung)
+    D4: forwarded_to_ombudsperson_at, ombudsperson_recommendation, etc.
     """
 
     __tablename__ = "cases"
@@ -147,6 +160,39 @@ class Case(Base):
     externe_stelle: Mapped[Optional[str]] = mapped_column(String(255))
     extern_gemeldet_am: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
 
+    # ==========================================================
+    # D3: HinSchG-Fristenampel - Eingangsbestaetigung + Abschluss
+    # HinSchG §17: 7 Tage Eingangsbestaetigung, 3 Monate Rueckmeldung
+    # ==========================================================
+    acknowledged_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )  # Eingangsbestaetigung an den Melder versendet
+    resolved_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )  # Abschluss-Rueckmeldung an den Melder versendet
+
+    # ==========================================================
+    # D4: Ombudsperson-Rolle - Weiterleitungsworkflow
+    # ==========================================================
+    forwarded_to_ombudsperson_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )  # Zeitpunkt der Weiterleitung an Ombudsperson
+    forwarded_to_ombudsperson_by: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )  # Sachbearbeiter der weitergeleitet hat
+    ombudsperson_recommendation: Mapped[Optional[str]] = mapped_column(
+        String(20), nullable=True
+    )  # 'pursue', 'close', 'escalate'
+    ombudsperson_notes_encrypted: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True
+    )  # Notizen der Ombudsperson (verschluesselt)
+    ombudsperson_reviewed_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )  # Zeitpunkt der Empfehlung durch Ombudsperson
+    ombudsperson_reviewed_by: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )  # Ombudsperson die die Empfehlung abgegeben hat
+
     # Zeitstempel
     opened_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
@@ -166,6 +212,12 @@ class Case(Base):
         "User", back_populates="assigned_cases", foreign_keys=[assignee_id]
     )
     created_by: Mapped[Optional["User"]] = relationship("User", foreign_keys=[created_by_id])
+    forwarded_by: Mapped[Optional["User"]] = relationship(
+        "User", foreign_keys=[forwarded_to_ombudsperson_by]
+    )
+    ombudsperson_reviewer: Mapped[Optional["User"]] = relationship(
+        "User", foreign_keys=[ombudsperson_reviewed_by]
+    )
     events: Mapped[List["CaseEvent"]] = relationship(
         "CaseEvent", back_populates="case", cascade="all, delete-orphan",
         order_by="CaseEvent.created_at.desc()"
@@ -175,6 +227,8 @@ class Case(Base):
         Index("ix_cases_tenant_status", "tenant_id", "status"),
         Index("ix_cases_assignee", "assignee_id"),
         Index("ix_cases_case_number", "case_number"),
+        Index("ix_cases_forwarded_ombudsperson", "forwarded_to_ombudsperson_at"),
+        Index("ix_cases_acknowledged", "acknowledged_at"),
     )
 
     def __repr__(self) -> str:
@@ -222,3 +276,13 @@ class Case(Base):
             CaseStatus.ESKALIERT: {CaseStatus.IN_ERMITTLUNG, CaseStatus.ABGESCHLOSSEN},
         }
         return new_status in allowed_transitions.get(self.status, set())
+
+    @property
+    def is_forwarded_to_ombudsperson(self) -> bool:
+        """Prueft ob der Fall an die Ombudsperson weitergeleitet wurde."""
+        return self.forwarded_to_ombudsperson_at is not None
+
+    @property
+    def ombudsperson_has_recommendation(self) -> bool:
+        """Prueft ob die Ombudsperson eine Empfehlung abgegeben hat."""
+        return self.ombudsperson_recommendation is not None

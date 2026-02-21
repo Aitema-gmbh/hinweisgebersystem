@@ -27,7 +27,7 @@ class Base(DeclarativeBase):
 from app.models.tenant import Tenant
 from app.models.user import User, UserRole
 from app.models.hinweis import Hinweis, HinweisKategorie, HinweisPrioritaet, HinweisStatus
-from app.models.case import Case, CaseStatus, CaseEvent
+from app.models.case import Case, CaseStatus, CaseEvent, OmbudspersonEmpfehlung
 from app.models.audit_log import AuditLog, AuditAction
 from app.models.attachment import Attachment
 
@@ -43,6 +43,7 @@ __all__ = [
     "Case",
     "CaseStatus",
     "CaseEvent",
+    "OmbudspersonEmpfehlung",
     "AuditLog",
     "AuditAction",
     "Attachment",

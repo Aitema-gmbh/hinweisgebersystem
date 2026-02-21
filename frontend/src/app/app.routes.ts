@@ -145,6 +145,20 @@ export const routes: Routes = [
     ],
   },
 
+  // ==========================================================
+  // D4: OMBUDSPERSON-BEREICH - Nur fuer Rolle hinweis-ombudsperson
+  // ==========================================================
+  {
+    path: 'ombudsperson',
+    canActivate: [staffAuthGuard, staffRoleGuard],
+    data: { roles: ['hinweis-admin', 'hinweis-ombudsperson'] },
+    loadComponent: () =>
+      import('./features/ombudsperson/ombudsperson-dashboard.component').then(
+        (m) => m.OmbudspersonDashboardComponent
+      ),
+    title: 'Ombudsperson | aitema|Hinweis',
+  },
+
   // 404
   {
     path: '**',

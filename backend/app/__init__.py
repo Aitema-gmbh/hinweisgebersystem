@@ -146,6 +146,7 @@ def register_blueprints(app: Flask) -> None:
     from app.api.admin import admin_bp
     from app.api.webhooks import webhooks_bp
     from app.api.analytics import analytics_bp
+    from app.api.ombudsperson import ombudsperson_bp
 
     api_prefix = "/api/v1"
 
@@ -156,6 +157,7 @@ def register_blueprints(app: Flask) -> None:
     app.register_blueprint(admin_bp, url_prefix=f"{api_prefix}/admin")
     app.register_blueprint(webhooks_bp, url_prefix=f"{api_prefix}/webhooks")
     app.register_blueprint(analytics_bp, url_prefix=f"{api_prefix}/analytics")
+    app.register_blueprint(ombudsperson_bp, url_prefix=f"{api_prefix}/ombudsperson")
 
 
 def register_error_handlers(app: Flask) -> None:
