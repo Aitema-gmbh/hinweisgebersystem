@@ -1,51 +1,50 @@
 <!-- 
   Main layout container. 
-  A CSS class is dynamically applied based on authentication status.
-  - 'aitema-main-layout': Default layout for authenticated users with a sidebar.
-  - 'aitema-main-layout--anonymous': Simplified layout for public-facing pages, no sidebar.
+  CSS class applied based on auth status:
+  - 'aitema-main-layout': Authenticated users with sidebar.
+  - 'aitema-main-layout--anonymous': Public pages, no sidebar.
 -->
 <div 
   class="aitema-main-layout" 
   [class.aitema-main-layout--anonymous]="!authService.isAuthenticated()">
 
-  <!-- 
-    Sidebar navigation.
-    This is only rendered and visible for authenticated users.
-  -->
+  <!-- Sidebar: Authenticated users only -->
   @if (authService.isAuthenticated()) {
     <aside class="aitema-sidebar">
-      <!-- Sidebar Header with Logo -->
       <div class="sidebar-header">
-        <a routerLink="/dashboard" class="aitema-logo-badge" aria-label="Zur Dashboard-Startseite">
+        <a routerLink="/dashboard" class="aitema-logo-badge sidebar-logo" aria-label="Zur Dashboard-Startseite">
           aitema|Hinweis
         </a>
       </div>
 
-      <!-- Main Navigation Links -->
       <nav class="sidebar-nav" aria-label="Hauptnavigation">
         <a routerLink="/dashboard" routerLinkActive="active" class="sidebar-nav-item">
-          <!-- icon placeholder -->
+          <span class="sidebar-nav-icon" aria-hidden="true">&#9632;</span>
           <span>Dashboard</span>
         </a>
-        <a routerLink="/cases" routerLinkActive="active" class="sidebar-nav-item">
-          <!-- icon placeholder -->
+        <a routerLink="/meldungen" routerLinkActive="active" class="sidebar-nav-item">
+          <span class="sidebar-nav-icon" aria-hidden="true">&#128065;</span>
           <span>Alle Meldungen</span>
         </a>
-        <a routerLink="/admin/users" routerLinkActive="active" class="sidebar-nav-item">
-          <!-- icon placeholder -->
+        <a routerLink="/admin" routerLinkActive="active" class="sidebar-nav-item">
+          <span class="sidebar-nav-icon" aria-hidden="true">&#9881;</span>
           <span>Administration</span>
         </a>
       </nav>
 
-      <!-- Sidebar Footer for User Info and Logout -->
       <div class="sidebar-footer">
         @if(authService.currentUser(); as user) {
-          <div class="user-info">
-            <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
-            <span class="user-email">{{ user.email }}</span>
+          <div class="sidebar-user">
+            <div class="sidebar-user-avatar" aria-hidden="true">
+              {{ user.firstName?.charAt(0) }}{{ user.lastName?.charAt(0) }}
+            </div>
+            <div class="sidebar-user-info">
+              <span class="sidebar-user-name">{{ user.firstName }} {{ user.lastName }}</span>
+              <span class="sidebar-user-email">{{ user.email }}</span>
+            </div>
           </div>
         }
-        <button (click)="authService.logout()" class="aitema-button aitema-button--secondary">
+        <button (click)="authService.logout()" class="aitema-button aitema-button--ghost sidebar-logout-btn">
           Abmelden
         </button>
       </div>
@@ -54,29 +53,40 @@
 
   <!-- Main Content Wrapper -->
   <div class="aitema-content-wrap">
-    <!-- 
-      Sticky top navigation bar (Glassmorphism).
-      This bar is always present but its content may change.
-    -->
-    <header class="aitema-top-nav">
+    <header class="aitema-top-nav" role="banner">
       @if (!authService.isAuthenticated()) {
-        <div>
-          <a routerLink="/" class="aitema-logo-badge" aria-label="Zur Startseite">
+        <!-- Anonymous: Logo left -->
+        <div class="anon-nav-brand">
+          <a routerLink="/" class="aitema-logo-badge" aria-label="aitema|Hinweis — Zur Startseite">
             aitema|Hinweis
           </a>
         </div>
+
+        <!-- Anonymous: Center nav links -->
+        <nav class="anon-nav-links" aria-label="Seitennavigation">
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="anon-nav-link">
+            Startseite
+          </a>
+          <a routerLink="/status" routerLinkActive="active" class="anon-nav-link">
+            Status pr&uuml;fen
+          </a>
+          <a routerLink="/login" routerLinkActive="active" class="anon-nav-link">
+            Mitarbeiter
+          </a>
+        </nav>
       }
+
+      <!-- Nav Actions -->
       <div class="navbar-actions">
         <hw-language-switcher />
         @if (!authService.isAuthenticated()) {
-          <a routerLink="/login" class="aitema-button aitema-button--primary">
-            Mitarbeiter-Login
+          <a routerLink="/" class="anon-cta-btn">
+            &#128274; Jetzt melden
           </a>
         }
       </div>
     </header>
 
-    <!-- Router Outlet for page content -->
     <main class="aitema-main-content" id="main-content" tabindex="-1">
       <router-outlet />
     </main>

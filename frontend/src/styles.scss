@@ -1,11 +1,11 @@
 /*
-* aitema GovTech Design System
-* Version: 1.0
-* Description: A modern, professional design system for GovTech applications.
-*/
+ * aitema GovTech Design System
+ * Version: 2.0 — State-of-the-Art Overhaul
+ * Font: Inter Variable (via Google Fonts, preconnect in index.html)
+ */
 
 /* ==========================================================================
-   1. CSS Resets & Base Styles
+   1. CSS Reset & Base
    ========================================================================== */
 
 *,
@@ -20,77 +20,112 @@ html {
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
   scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-img, picture, video, canvas, svg {
-  display: block;
-  max-width: 100%;
-}
-
-input, button, textarea, select {
-  font: inherit;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  text-wrap: balance;
-  line-height: 1.2;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
+img, picture, video, canvas, svg { display: block; max-width: 100%; }
+input, button, textarea, select { font: inherit; }
+h1, h2, h3, h4, h5, h6 { text-wrap: balance; line-height: 1.2; }
+p { text-wrap: pretty; }
+a { text-decoration: none; color: inherit; }
 
 /* ==========================================================================
-   2. Design Tokens (aitema)
+   2. Design Tokens — aitema Color System
    ========================================================================== */
 
 :root {
-  /* Colors */
-  --aitema-navy: #0f172a;
-  --aitema-blue: #1e3a5f;
-  --aitema-accent: #3b82f6;
-  --aitema-accent-hover: #2563eb;
-  --aitema-emerald: #059669;
-  --aitema-emerald-hover: #047857;
-  --aitema-amber: #d97706;
-  --aitema-red: #dc2626;
-  --aitema-slate-50: #f8fafc;
-  --aitema-slate-100: #f1f5f9;
-  --aitema-slate-200: #e2e8f0;
-  --aitema-slate-300: #cbd5e1;
-  --aitema-slate-400: #94a3b8;
-  --aitema-muted: #64748b;
-  --aitema-text: #0f172a;
-  --aitema-text-inverse: #f8fafc;
-  --aitema-bg: var(--aitema-slate-50);
-  --aitema-surface: #ffffff;
-  --aitema-border: var(--aitema-slate-200);
+  /* Brand Colors */
+  --aitema-navy:        #0f172a;
+  --aitema-blue:        #1e3a5f;
+  --aitema-accent:      #3b82f6;
+  --aitema-accent-hover:#2563eb;
+  --aitema-accent-dark: #1d4ed8;
+  --aitema-emerald:     #059669;
+  --aitema-emerald-hover:#047857;
+  --aitema-amber:       #d97706;
+  --aitema-red:         #dc2626;
+
+  /* Surface & Neutral */
+  --aitema-slate-50:    #f8fafc;
+  --aitema-slate-100:   #f1f5f9;
+  --aitema-slate-200:   #e2e8f0;
+  --aitema-slate-300:   #cbd5e1;
+  --aitema-slate-400:   #94a3b8;
+  --aitema-slate-500:   #64748b;
+  --aitema-slate-600:   #475569;
+  --aitema-slate-700:   #334155;
+  --aitema-slate-800:   #1e293b;
+  --aitema-slate-900:   #0f172a;
+  --aitema-muted:       #64748b;
+  --aitema-text:        #0f172a;
+  --aitema-text-inverse:#f8fafc;
+
+  /* Semantic Surface Tokens */
+  --aitema-bg:          var(--aitema-slate-50);
+  --aitema-surface:     #ffffff;
+  --aitema-border:      var(--aitema-slate-200);
 
   /* Typography */
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "Courier New", Courier, monospace;
 
   /* Shadows */
-  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md:    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg:    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl:    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-card:  0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
   --shadow-focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  --shadow-navy:  0 4px 24px rgba(15, 23, 42, 0.12);
+  --shadow-blue:  0 4px 16px rgba(59, 130, 246, 0.3);
+  --shadow-emerald: 0 4px 16px rgba(5, 150, 105, 0.3);
 
-  /* Border-Radius */
-  --radius-card: 0.5rem;
-  --radius-button: 0.375rem;
-  --radius-input: 0.375rem;
-  --radius-badge: 9999px;
+  /* Border Radius */
+  --radius-xs:     0.25rem;
+  --radius-sm:     0.375rem;
+  --radius-md:     0.5rem;
+  --radius-lg:     0.75rem;
+  --radius-xl:     1rem;
+  --radius-2xl:    1.5rem;
+  --radius-full:   9999px;
+  --radius-card:   var(--radius-xl);
+  --radius-button: var(--radius-md);
+  --radius-input:  var(--radius-md);
+  --radius-badge:  var(--radius-full);
 
   /* Transitions */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast:   150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow:   350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Layout */
+  --nav-height:    70px;
+  --sidebar-width: 260px;
+  --content-max:   1280px;
+
+  /* Bootstrap Overrides via CSS Variables */
+  --bs-primary:        var(--aitema-accent);
+  --bs-primary-rgb:    59, 130, 246;
+  --bs-success:        var(--aitema-emerald);
+  --bs-success-rgb:    5, 150, 105;
+  --bs-danger:         var(--aitema-red);
+  --bs-warning:        var(--aitema-amber);
+  --bs-body-font-family: var(--font-sans);
+  --bs-body-color:     var(--aitema-text);
+  --bs-border-color:   var(--aitema-border);
+  --bs-border-radius:  var(--radius-md);
+  --bs-link-color:     var(--aitema-accent);
+  --bs-link-hover-color: var(--aitema-accent-hover);
 }
 
 /* ==========================================================================
@@ -99,136 +134,176 @@ a {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --aitema-navy: #e2e8f0;
-    --aitema-blue: #94a3b8;
-    --aitema-muted: #94a3b8;
-    --aitema-text: #f8fafc;
-    --aitema-text-inverse: #0f172a;
-    --aitema-bg: #0f172a;
-    --aitema-surface: #1e293b;
-    --aitema-border: #334155;
+    --aitema-text:        #f1f5f9;
+    --aitema-text-inverse:#0f172a;
+    --aitema-bg:          #0f172a;
+    --aitema-surface:     #1e293b;
+    --aitema-border:      #334155;
+    --aitema-muted:       #94a3b8;
+    --bs-body-color:      #f1f5f9;
+    --bs-border-color:    #334155;
   }
 }
 
 /* ==========================================================================
-   4. Global Styles & Base Elements
+   4. Global Base Styles
    ========================================================================== */
 
 body {
   background-color: var(--aitema-bg);
   color: var(--aitema-text);
+  min-height: 100vh;
 }
 
 /* ==========================================================================
-   5. Animations
+   5. Animations & Keyframes
    ========================================================================== */
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 8px 3px rgba(5, 150, 105, 0.1);
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-@keyframes shimmer-effect {
-  0% { transform: translateX(-100%); }
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
 }
 
-.animate-fadeInUp {
-  animation: fadeInUp var(--transition-normal) forwards;
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4); }
+  50%       { box-shadow: 0 0 8px 4px rgba(5, 150, 105, 0.08); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 @keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
 }
 
 @keyframes stroke-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
+  to { stroke-dashoffset: 0; }
 }
 
 @keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Utility animation classes */
+.animate-fade-in-up  { animation: fadeInUp var(--transition-normal) both; }
+.animate-fade-in     { animation: fadeIn var(--transition-normal) both; }
+.animate-scale-in    { animation: scaleIn var(--transition-normal) both; }
+.animate-float       { animation: float 4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
 /* ==========================================================================
-   6. Styled Components
+   6. Cards
    ========================================================================== */
 
-/* Cards */
 .aitema-card {
   background-color: var(--aitema-surface);
   border-radius: var(--radius-card);
   border: 1px solid var(--aitema-border);
   box-shadow: var(--shadow-card);
   transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+  overflow: hidden;
 }
 
-.aitema-card:hover {
+.aitema-card--hoverable:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-hover);
 }
 
-/* Buttons */
+.aitema-card--glass {
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08), 0 1px 4px rgba(15, 23, 42, 0.04);
+}
+
+@media (prefers-color-scheme: dark) {
+  .aitema-card--glass {
+    background: rgba(30, 41, 59, 0.95);
+    border: 1px solid rgba(51, 65, 85, 0.6);
+  }
+}
+
+.aitema-card--elevated {
+  box-shadow: var(--shadow-xl);
+}
+
+/* ==========================================================================
+   7. Buttons
+   ========================================================================== */
+
 .aitema-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1.5rem;
+  gap: 0.5rem;
+  padding: 0.625rem 1.375rem;
   border-radius: var(--radius-button);
+  font-family: var(--font-sans);
   font-weight: 600;
-  border: 1px solid transparent;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  border: none;
   cursor: pointer;
   transition: all var(--transition-fast);
+  text-decoration: none;
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
 }
 
+.aitema-button:disabled,
+.aitema-button[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Primary */
 .aitema-button--primary {
-  background: linear-gradient(135deg, var(--aitema-accent), var(--aitema-blue));
-  color: var(--aitema-text-inverse);
-  box-shadow: var(--shadow-card);
+  background: linear-gradient(135deg, var(--aitema-accent) 0%, var(--aitema-accent-hover) 100%);
+  color: #ffffff;
+  box-shadow: var(--shadow-blue);
 }
 
-.aitema-button--primary:hover {
+.aitema-button--primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--aitema-accent-hover) 0%, var(--aitema-accent-dark) 100%);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
 }
 
 .aitema-button--primary::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  inset: 0;
+  background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%);
   transform: translateX(-100%);
   transition: transform 600ms ease;
 }
@@ -237,156 +312,556 @@ body {
   transform: translateX(100%);
 }
 
-/* Status Badges */
+/* Secondary */
+.aitema-button--secondary {
+  background: var(--aitema-slate-100);
+  color: var(--aitema-text);
+  border: 1px solid var(--aitema-border);
+}
+
+.aitema-button--secondary:hover:not(:disabled) {
+  background: var(--aitema-slate-200);
+  transform: translateY(-1px);
+}
+
+/* Ghost */
+.aitema-button--ghost {
+  background: transparent;
+  color: var(--aitema-muted);
+  border: 1.5px solid var(--aitema-border);
+}
+
+.aitema-button--ghost:hover:not(:disabled) {
+  background: var(--aitema-slate-50);
+  border-color: var(--aitema-slate-300);
+  color: var(--aitema-text);
+}
+
+/* Navy (dark) */
+.aitema-button--navy {
+  background: linear-gradient(135deg, var(--aitema-navy) 0%, var(--aitema-blue) 100%);
+  color: #ffffff;
+  box-shadow: var(--shadow-navy);
+}
+
+.aitema-button--navy:hover:not(:disabled) {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.35);
+  transform: translateY(-2px);
+}
+
+/* Success / Emerald */
+.aitema-button--success {
+  background: linear-gradient(135deg, var(--aitema-emerald) 0%, var(--aitema-emerald-hover) 100%);
+  color: #ffffff;
+  box-shadow: var(--shadow-emerald);
+}
+
+/* Size Variants */
+.aitema-button--sm {
+  padding: 0.375rem 0.875rem;
+  font-size: 0.8125rem;
+}
+
+.aitema-button--lg {
+  padding: 0.875rem 2rem;
+  font-size: 1.0625rem;
+}
+
+.aitema-button--full {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   8. Badges & Status Indicators
+   ========================================================================== */
+
 .aitema-badge {
-  display: inline-block;
-  padding: 0.25em 0.6em;
-  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2em 0.65em;
+  font-size: 0.6875rem;
   font-weight: 700;
+  letter-spacing: 0.04em;
   line-height: 1;
   text-align: center;
   white-space: nowrap;
-  vertical-align: baseline;
+  vertical-align: middle;
   border-radius: var(--radius-badge);
+  text-transform: uppercase;
 }
 
-.aitema-badge--success {
-  color: var(--aitema-emerald);
-  background-color: rgba(5, 150, 105, 0.1);
+.aitema-badge--success  { color: var(--aitema-emerald); background-color: rgba(5, 150, 105, 0.1); }
+.aitema-badge--danger   { color: var(--aitema-red);     background-color: rgba(220, 38, 38, 0.1); }
+.aitema-badge--warning  { color: var(--aitema-amber);   background-color: rgba(217, 119, 6, 0.1); }
+.aitema-badge--info     { color: var(--aitema-accent);  background-color: rgba(59, 130, 246, 0.1); }
+.aitema-badge--neutral  { color: var(--aitema-muted);   background-color: rgba(100, 116, 139, 0.1); }
+
+.aitema-badge--pulse { animation: pulse-ring 2s infinite; }
+
+/* ==========================================================================
+   9. Form Elements
+   ========================================================================== */
+
+.aitema-input,
+.aitema-textarea,
+.aitema-select {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--aitema-text);
+  background-color: var(--aitema-surface);
+  border: 1.5px solid var(--aitema-border);
+  border-radius: var(--radius-input);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-sizing: border-box;
+  appearance: none;
 }
 
-.aitema-badge--critical {
-  color: var(--aitema-red);
-  background-color: rgba(220, 38, 38, 0.1);
+.aitema-input:hover,
+.aitema-textarea:hover,
+.aitema-select:hover {
+  border-color: var(--aitema-slate-400);
 }
 
-.aitema-badge--warning {
-  color: var(--aitema-amber);
-  background-color: rgba(217, 119, 6, 0.1);
+.aitema-input:focus,
+.aitema-textarea:focus,
+.aitema-select:focus {
+  outline: none;
+  border-color: var(--aitema-accent);
+  box-shadow: var(--shadow-focus-ring);
 }
 
-.aitema-badge--success.pulse-glow {
-  animation: pulse-glow 2s infinite;
+.aitema-input--mono { font-family: var(--font-mono); letter-spacing: 0.08em; }
+.aitema-textarea    { resize: vertical; min-height: 120px; }
+
+/* Labels */
+.aitema-label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--aitema-slate-700);
+  margin-bottom: 0.375rem;
 }
 
-/* Tables */
+/* ==========================================================================
+   10. Gradient & Glassmorphism Utilities
+   ========================================================================== */
+
+/* Gradient Backgrounds */
+.bg-gradient-navy {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #1e40af 100%);
+}
+
+.bg-gradient-blue {
+  background: linear-gradient(135deg, var(--aitema-accent) 0%, var(--aitema-blue) 100%);
+}
+
+.bg-gradient-mesh {
+  background-color: #0f172a;
+  background-image:
+    radial-gradient(at 20% 30%, rgba(59, 130, 246, 0.15) 0, transparent 50%),
+    radial-gradient(at 80% 70%, rgba(30, 58, 95, 0.3) 0, transparent 50%),
+    radial-gradient(at 50% 10%, rgba(5, 150, 105, 0.08) 0, transparent 40%);
+}
+
+.bg-gradient-animated {
+  background: linear-gradient(270deg, #0f172a, #1e3a5f, #1e40af, #1e3a5f, #0f172a);
+  background-size: 400% 400%;
+  animation: gradient-shift 12s ease infinite;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-navy {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================================================
+   11. Tables
+   ========================================================================== */
+
 .aitema-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.9375rem;
 }
 
 .aitema-table th,
 .aitema-table td {
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
   text-align: left;
   border-bottom: 1px solid var(--aitema-border);
 }
 
 .aitema-table th {
   font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--aitema-muted);
+  background-color: var(--aitema-slate-50);
+}
+
+.aitema-table tbody tr {
+  transition: background-color var(--transition-fast);
 }
 
 .aitema-table tbody tr:hover {
-  background-color: rgba(59, 130, 246, 0.05);
+  background-color: rgba(59, 130, 246, 0.04);
 }
 
-@media (prefers-color-scheme: dark) {
-  .aitema-table tbody tr:hover {
-    background-color: rgba(59, 130, 246, 0.1);
-  }
-}
-
-.aitema-table tbody tr:nth-child(even) {
-  background-color: var(--aitema-surface);
-}
-
-.aitema-table tbody tr:nth-child(odd) {
-  background-color: var(--aitema-bg);
-}
-
-/* Form Inputs */
-.aitema-input {
-  display: block;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  color: var(--aitema-text);
-  background-color: var(--aitema-surface);
-  border: 1px solid var(--aitema-border);
-  border-radius: var(--radius-input);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.aitema-input:focus {
-  outline: none;
-  border-color: var(--aitema-accent);
-  box-shadow: var(--shadow-focus-ring);
-}
+.aitema-table tbody tr:nth-child(even) { background-color: var(--aitema-surface); }
+.aitema-table tbody tr:nth-child(odd)  { background-color: var(--aitema-bg); }
 
 /* ==========================================================================
-   7. Main Layout (App Component)
+   12. Main Layout — App Shell
    ========================================================================== */
 
 .aitema-main-layout {
   display: flex;
+  min-height: 100vh;
 }
 
+/* SIDEBAR */
 .aitema-sidebar {
-  width: 260px;
+  width: var(--sidebar-width);
   flex-shrink: 0;
-  background-color: var(--aitema-navy);
+  background: var(--aitema-navy);
+  background-image:
+    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.1) 0, transparent 60%),
+    radial-gradient(at 100% 100%, rgba(30, 58, 95, 0.2) 0, transparent 60%);
   color: var(--aitema-text-inverse);
-  height: 100vh;
-  position: sticky;
-  top: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 32px rgba(15, 23, 42, 0.25);
+  z-index: 1000;
+  position: relative;
 }
 
+.sidebar-header {
+  padding: 1.375rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-nav {
+  flex-grow: 1;
+  padding: 0.75rem 0;
+  overflow-y: auto;
+}
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.8rem 1.5rem;
+  color: rgba(148, 163, 184, 0.85);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border-left: 3px solid transparent;
+  text-decoration: none;
+  margin: 0.125rem 0;
+}
+
+.sidebar-nav-item:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-nav-item.active {
+  color: #ffffff;
+  background: rgba(59, 130, 246, 0.18);
+  border-left-color: var(--aitema-accent);
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* TOP NAV */
 .aitema-content-wrap {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  min-width: 0;
 }
 
 .aitema-top-nav {
-  height: 70px;
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
+  height: var(--nav-height);
+  background: rgba(248, 250, 252, 0.75);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--aitema-border);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 999;
+  padding: 0 2rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem;
+  justify-content: flex-end;
 }
 
 @media (prefers-color-scheme: dark) {
   .aitema-top-nav {
-    background: rgba(15, 23, 42, 0.7); /* navy-tinted */
+    background: rgba(15, 23, 42, 0.75);
+    border-bottom-color: rgba(51, 65, 85, 0.5);
   }
 }
 
-.aitema-logo-badge {
-  display: inline-block;
-  font-weight: 800;
-  font-size: 1.1rem;
-  color: #0f172a;
-  background: none;
-  padding: 0;
-  letter-spacing: -0.02em;
-  text-decoration: none;
-  border: none;
-  border-radius: 0;
+/* Anonymous layout top-nav: navy pill nav */
+.aitema-main-layout--anonymous .aitema-top-nav {
+  background: var(--aitema-navy);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  justify-content: space-between;
 }
 
+.aitema-main-layout--anonymous .aitema-sidebar {
+  display: none;
+}
+
+/* Logo Badge */
+.aitema-logo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 800;
+  font-size: 1.125rem;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.aitema-logo-badge::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--aitema-accent);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.7);
+}
+
+/* Content area for authenticated nav */
+.aitema-main-layout:not(.aitema-main-layout--anonymous) .aitema-logo-badge {
+  color: var(--aitema-text);
+}
+
+.aitema-main-layout:not(.aitema-main-layout--anonymous) .aitema-logo-badge::before {
+  display: none;
+}
+
+/* Main Content */
 .aitema-main-content {
   padding: 2rem;
+  flex-grow: 1;
+  background-color: var(--aitema-bg);
+}
+
+/* Nav Actions */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 /* ==========================================================================
-   8. Utility Classes
+   13. Navigation Pills (Anonymous Top Nav)
    ========================================================================== */
+
+.nav-pill-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.nav-pill-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-pill-link.active {
+  color: #ffffff;
+  background: rgba(59, 130, 246, 0.25);
+}
+
+/* ==========================================================================
+   14. Section & Page Utilities
+   ========================================================================== */
+
+.aitema-section {
+  padding: 4rem 2rem;
+}
+
+.aitema-section--compact {
+  padding: 2rem;
+}
+
+.aitema-container {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.aitema-page-header {
+  margin-bottom: 2rem;
+}
+
+.aitema-page-title {
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: var(--aitema-text);
+  letter-spacing: -0.02em;
+  margin: 0 0 0.375rem;
+}
+
+.aitema-page-subtitle {
+  font-size: 1rem;
+  color: var(--aitema-muted);
+  margin: 0;
+}
+
+/* ==========================================================================
+   15. Alerts & Notifications
+   ========================================================================== */
+
+.aitema-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.aitema-alert--info    { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+.aitema-alert--success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #065f46; }
+.aitema-alert--warning { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; }
+.aitema-alert--danger  { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; }
+
+.aitema-alert-icon { font-size: 1.125rem; flex-shrink: 0; margin-top: 0.0625rem; }
+
+/* ==========================================================================
+   16. Stat Cards / KPI Widgets
+   ========================================================================== */
+
+.aitema-stat-card {
+  background: var(--aitema-surface);
+  border: 1px solid var(--aitema-border);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+}
+
+.aitema-stat-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.aitema-stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--aitema-text);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.aitema-stat-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--aitema-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 0.25rem;
+}
+
+/* ==========================================================================
+   17. Timeline Component
+   ========================================================================== */
+
+.aitema-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0.5rem 0;
+}
+
+.aitema-timeline-item {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  position: relative;
+}
+
+.aitema-timeline-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 1.5rem;
+  flex-shrink: 0;
+}
+
+.aitema-timeline-dot {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 50%;
+  background: var(--aitema-slate-200);
+  border: 2px solid var(--aitema-border);
+  flex-shrink: 0;
+  transition: all var(--transition-normal);
+  z-index: 1;
+}
+
+.aitema-timeline-connector {
+  flex: 1;
+  width: 2px;
+  background: var(--aitema-border);
+  margin: 0.25rem 0;
+  min-height: 1.5rem;
+}
+
+.aitema-timeline-item--done   .aitema-timeline-dot { background: linear-gradient(135deg, #059669, #047857); border-color: #059669; }
+.aitema-timeline-item--done   .aitema-timeline-connector { background: rgba(5, 150, 105, 0.3); }
+.aitema-timeline-item--active .aitema-timeline-dot { background: var(--aitema-accent); border-color: var(--aitema-accent-hover); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); }
+
+.aitema-timeline-content { padding-top: 0.0625rem; flex: 1; }
+
+/* ==========================================================================
+   18. Accessibility Utilities
+   ========================================================================== */
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -397,4 +872,141 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+.sr-only-focusable:focus {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 9999;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: var(--aitema-accent);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Focus visible styles for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--aitema-accent);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   19. Spinner / Loading
+   ========================================================================== */
+
+.aitema-spinner {
+  display: inline-block;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: currentColor;
+  animation: spin 0.8s linear infinite;
+}
+
+.aitema-spinner--sm { width: 0.875rem; height: 0.875rem; }
+.aitema-spinner--md { width: 1.5rem;   height: 1.5rem; }
+.aitema-spinner--lg { width: 3rem;     height: 3rem; border-width: 3px; }
+
+/* Skeleton loading */
+.aitema-skeleton {
+  background: linear-gradient(90deg, var(--aitema-slate-200) 25%, var(--aitema-slate-100) 50%, var(--aitema-slate-200) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ==========================================================================
+   20. Step Indicator
+   ========================================================================== */
+
+.aitema-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 1.5rem 0;
+}
+
+.aitema-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  position: relative;
+}
+
+.aitema-step-circle {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  border: 2px solid var(--aitema-border);
+  background: var(--aitema-surface);
+  color: var(--aitema-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+  z-index: 1;
+}
+
+.aitema-step-connector {
+  flex: 1;
+  height: 2px;
+  background: var(--aitema-border);
+  max-width: 64px;
+  margin: 0 0.25rem 1.5rem;
+  transition: background var(--transition-normal);
+}
+
+.aitema-step-item--active .aitema-step-circle {
+  border-color: var(--aitema-accent);
+  background: linear-gradient(135deg, var(--aitema-accent), var(--aitema-accent-hover));
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+}
+
+.aitema-step-item--done .aitema-step-circle {
+  border-color: var(--aitema-emerald);
+  background: linear-gradient(135deg, var(--aitema-emerald), var(--aitema-emerald-hover));
+  color: #ffffff;
+}
+
+.aitema-step-connector--done {
+  background: linear-gradient(90deg, var(--aitema-emerald), var(--aitema-accent));
+}
+
+.aitema-step-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--aitema-muted);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.aitema-step-item--active .aitema-step-label { color: var(--aitema-text); }
+.aitema-step-item--done   .aitema-step-label { color: var(--aitema-emerald); }
+
+/* ==========================================================================
+   21. Print Styles
+   ========================================================================== */
+
+@media print {
+  .aitema-sidebar,
+  .aitema-top-nav,
+  .navbar-actions,
+  .btn-print-hide { display: none !important; }
+
+  .aitema-content-wrap { display: block; }
+  .aitema-main-content { padding: 0; }
+  body { background: #fff; color: #000; }
 }
