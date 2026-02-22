@@ -8,19 +8,17 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="hero-content">
       <div class="text-content">
+        <p class="product-label">aitema | Hinweisgeberschutzsystem</p>
         <h1 class="title">Sicher melden.<br>Geschützt nach HinSchG.</h1>
         <p class="subtitle">Das offene Hinweisgeberschutzsystem für Unternehmen und Behörden.</p>
         <div class="feature-chips">
           <div class="chip">
-            <img src="assets/icons/anonymous.svg" alt="Anonymous Icon"/>
             <span>100% Anonym</span>
           </div>
           <div class="chip">
-            <img src="assets/icons/open-source.svg" alt="Open Source Icon"/>
             <span>Open Source</span>
           </div>
           <div class="chip">
-            <img src="assets/icons/legal.svg" alt="Legal Icon"/>
             <span>HinSchG-konform</span>
           </div>
         </div>
@@ -51,20 +49,30 @@ import { CommonModule } from '@angular/common';
 
     @media (min-width: 992px) {
       .hero-content {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-columns: 1.2fr 0.8fr;
       }
     }
 
     .text-content {
       animation: fadeInUp 1s ease-out;
     }
+    
+    .product-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #64748b;
+      margin-bottom: 1rem;
+    }
 
     .title {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: 800;
-      color: #fff;
+      line-height: 1.15;
+      color: white;
+      letter-spacing: -0.03em;
+      text-align: left;
       margin-bottom: 1rem;
-      line-height: 1.2;
     }
 
     .subtitle {
@@ -80,22 +88,13 @@ import { CommonModule } from '@angular/common';
     }
 
     .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: transparent;
-      padding: 0.375rem 0.75rem;
-      border-radius: 3px;
-      font-weight: 400;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      padding: 0.3rem 0.75rem;
       font-size: 0.8rem;
-      border: 1px solid #334155;
-      color: #94a3b8;
-    }
-
-    .chip img {
-      width: 20px;
-      height: 20px;
-      filter: invert(1);
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
     }
 
     .animation-container {
@@ -106,7 +105,7 @@ import { CommonModule } from '@angular/common';
 
     .hero-svg {
       width: 100%;
-      max-width: 600px;
+      max-width: 480px;
       height: auto;
     }
     

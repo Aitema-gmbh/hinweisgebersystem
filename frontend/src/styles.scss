@@ -365,6 +365,10 @@ body {
   position: sticky;
   top: 0;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -374,12 +378,16 @@ body {
 }
 
 .aitema-logo-badge {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-badge);
-    font-weight: 700;
-    color: white;
-    background: linear-gradient(45deg, var(--aitema-accent), var(--aitema-emerald));
+  display: inline-block;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: white;
+  background: none;
+  padding: 0;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  border: none;
+  border-radius: 0;
 }
 
 .aitema-main-content {
