@@ -17,6 +17,14 @@
 
 ---
 
+
+## Screenshots
+
+| Landing Page — Meldeprozess |
+|:---:|
+| ![Landing Page](docs/screenshots/hinweis-start.png) |
+
+
 ## Was ist aitema|Hinweis?
 
 aitema|Hinweis ist ein vollständiges, selbst-gehostetes **Hinweisgeberschutzsystem** nach dem deutschen HinSchG (Hinweisgeberschutzgesetz). Behörden und Unternehmen ab 50 Mitarbeitenden sind seit 2023 gesetzlich verpflichtet, eine sichere interne Meldestelle anzubieten.
@@ -207,3 +215,4 @@ Entwickelt von [aitema GmbH](https://aitema.de) · AI Innovation for Public Sect
 *GovTech aus Deutschland — für Deutschland.*
 
 </div>
+
