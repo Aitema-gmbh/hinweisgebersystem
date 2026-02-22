@@ -1,0 +1,103 @@
+:host {
+  display: block;
+}
+
+.aitema-main-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar for authenticated users */
+.aitema-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--aitema-navy);
+  color: var(--aitema-text-inverse);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 24px rgba(15, 23, 42, 0.2);
+  z-index: 1000;
+}
+
+.sidebar-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav {
+  flex-grow: 1;
+  padding: 1rem 0;
+}
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.8rem 1.5rem;
+  color: var(--aitema-muted);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border-left: 4px solid transparent;
+  text-decoration: none;
+}
+
+.sidebar-nav-item:hover {
+  color: var(--aitema-text-inverse);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-nav-item.active {
+  color: var(--aitema-text-inverse);
+  background: rgba(59, 130, 246, 0.15);
+  border-left-color: var(--aitema-accent);
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Content Area */
+.aitema-content-wrap {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.aitema-top-nav {
+  height: 70px;
+  background: rgba(248, 250, 252, 0.6); /* --aitema-slate-50 with alpha */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--aitema-border);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+:host-context(.dark-theme) .aitema-top-nav {
+    background: rgba(15, 23, 42, 0.6); /* --aitema-bg (dark) with alpha */
+}
+
+.aitema-main-content {
+  padding: 2rem;
+  flex-grow: 1;
+}
+
+/* Layout for anonymous users (no sidebar) */
+.aitema-main-layout--anonymous {
+  .aitema-sidebar {
+    display: none;
+  }
+  .aitema-top-nav {
+    justify-content: space-between;
+  }
+}

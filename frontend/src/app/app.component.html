@@ -1,0 +1,87 @@
+<!-- 
+  Main layout container. 
+  A CSS class is dynamically applied based on authentication status.
+  - 'aitema-main-layout': Default layout for authenticated users with a sidebar.
+  - 'aitema-main-layout--anonymous': Simplified layout for public-facing pages, no sidebar.
+-->
+<div 
+  class="aitema-main-layout" 
+  [class.aitema-main-layout--anonymous]="!authService.isAuthenticated()">
+
+  <!-- 
+    Sidebar navigation.
+    This is only rendered and visible for authenticated users.
+  -->
+  @if (authService.isAuthenticated()) {
+    <aside class="aitema-sidebar">
+      <!-- Sidebar Header with Logo -->
+      <div class="sidebar-header">
+        <a routerLink="/dashboard" class="aitema-logo-badge" aria-label="Zur Dashboard-Startseite">
+          aitema|Hinweis
+        </a>
+      </div>
+
+      <!-- Main Navigation Links -->
+      <nav class="sidebar-nav" aria-label="Hauptnavigation">
+        <a routerLink="/dashboard" routerLinkActive="active" class="sidebar-nav-item">
+          <!-- icon placeholder -->
+          <span>Dashboard</span>
+        </a>
+        <a routerLink="/cases" routerLinkActive="active" class="sidebar-nav-item">
+          <!-- icon placeholder -->
+          <span>Alle Meldungen</span>
+        </a>
+        <a routerLink="/admin/users" routerLinkActive="active" class="sidebar-nav-item">
+          <!-- icon placeholder -->
+          <span>Administration</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer for User Info and Logout -->
+      <div class="sidebar-footer">
+        @if(authService.currentUser(); as user) {
+          <div class="user-info">
+            <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+            <span class="user-email">{{ user.email }}</span>
+          </div>
+        }
+        <button (click)="authService.logout()" class="aitema-button aitema-button--secondary">
+          Abmelden
+        </button>
+      </div>
+    </aside>
+  }
+
+  <!-- Main Content Wrapper -->
+  <div class="aitema-content-wrap">
+    <!-- 
+      Sticky top navigation bar (Glassmorphism).
+      This bar is always present but its content may change.
+    -->
+    <header class="aitema-top-nav">
+      @if (!authService.isAuthenticated()) {
+        <div>
+          <a routerLink="/" class="aitema-logo-badge" aria-label="Zur Startseite">
+            aitema|Hinweis
+          </a>
+        </div>
+      }
+      <div class="navbar-actions">
+        <hw-language-switcher />
+        @if (!authService.isAuthenticated()) {
+          <a routerLink="/login" class="aitema-button aitema-button--primary">
+            Mitarbeiter-Login
+          </a>
+        }
+      </div>
+    </header>
+
+    <!-- Router Outlet for page content -->
+    <main class="aitema-main-content" id="main-content" tabindex="-1">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+<!-- Accessibility Skip Link -->
+<a href="#main-content" class="sr-only sr-only-focusable">Zum Hauptinhalt springen</a>
