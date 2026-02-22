@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <style>
+    :host, svg {
+      --aitema-navy: #0f172a;
+      --aitema-blue: #1e3a5f;
+      --aitema-accent: #3b82f6;
+      --aitema-emerald: #059669;
+    }
+  </style>
+  <g stroke="var(--aitema-navy)">
+    <!-- Shield -->
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="var(--aitema-accent)" opacity="0.1"></path>
+    <!-- Person -->
+    <circle cx="12" cy="10" r="3" />
+    <path d="M12 13a5 5 0 0 0-5 5h10a5 5 0 0 0-5-5z"/>
+    <!-- Megaphone -->
+    <path d="m3 11 4 4" stroke="var(--aitema-blue)"/>
+    <path d="m9 5 4 4" stroke="var(--aitema-blue)"/>
+    <path d="M13.5 6.5 18 2" stroke="var(--aitema-blue)"/>
+    <path d="m2 15 5-1" stroke="var(--aitema-blue)"/>
+  </g>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <style>
+    :host, svg {
+      --aitema-navy: #0f172a;
+      --aitema-blue: #1e3a5f;
+      --aitema-accent: #3b82f6;
+      --aitema-emerald: #059669;
+    }
+  </style>
+  <g stroke="var(--aitema-emerald)">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" fill="var(--aitema-navy)" opacity="0.1"/>
+    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    <path d="m9 16.5 2 2 4-4" stroke-width="3" stroke="var(--aitema-emerald)"/>
+  </g>
+</svg>

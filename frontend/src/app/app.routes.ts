@@ -17,20 +17,20 @@ import { staffAuthGuard } from './core/guards/staff-auth.guard';
 import { staffRoleGuard } from './core/guards/staff-role.guard';
 
 export const routes: Routes = [
-  // Root: Redirect zu Buerger-Flow
-  { path: '', redirectTo: 'melden', pathMatch: 'full' },
+  // Root: Show the new landing page with hero, explainer, and form.
+  {
+    path: '',
+    loadComponent: () =>
+      import('./features/public/landing/landing.component').then((m) => m.LandingComponent),
+    title: 'Sicher & Anonym Melden | aitema|Hinweis',
+  },
+
+  // Redirect the old submission form path to the new landing page
+  { path: 'melden', redirectTo: '', pathMatch: 'full' },
 
   // ==========================================================
   // BUERGER-FLOWS - Anonym, kein Auth-Guard
   // ==========================================================
-  {
-    path: 'melden',
-    loadComponent: () =>
-      import('./features/submission/components/submission-form/submission-form.component').then(
-        (m) => m.SubmissionFormComponent
-      ),
-    title: 'Hinweis melden | aitema|Hinweis',
-  },
   {
     path: 'status',
     loadComponent: () =>
