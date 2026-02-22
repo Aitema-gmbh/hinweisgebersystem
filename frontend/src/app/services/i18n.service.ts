@@ -19,7 +19,6 @@ export class I18nService {
     { code: 'de', label: 'DE', flag: '🇩🇪', dir: 'ltr', nativeLabel: 'Deutsch' },
     { code: 'en', label: 'EN', flag: '🇬🇧', dir: 'ltr', nativeLabel: 'English' },
     { code: 'tr', label: 'TR', flag: '🇹🇷', dir: 'ltr', nativeLabel: 'Türkçe' },
-    { code: 'ar', label: 'AR', flag: '🇸🇦', dir: 'rtl', nativeLabel: 'العربية' },
     { code: 'ru', label: 'RU', flag: '🇷🇺', dir: 'ltr', nativeLabel: 'Русский' },
   ];
 
